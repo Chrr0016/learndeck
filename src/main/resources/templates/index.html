@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnDeck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- ==============================
+     NAVBAR
+============================== -->
+<nav style="background: rgba(10,10,20,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(124,58,237,0.15);"
+     class="fixed w-full z-50 top-0">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-6 py-4">
+
+        <a href="/" class="flex items-center gap-2">
+            <span style="font-size: 1.4rem; font-weight: 900; color: var(--violeta-claro); letter-spacing: -0.5px;">learn</span><span
+                style="font-size: 1.4rem; font-weight: 900; color: var(--cyan); letter-spacing: -0.5px;">deck</span>
+        </a>
+
+        <div class="flex md:order-2 items-center gap-3">
+            <a href="/registro" class="btn-primario">Empieza gratis</a>
+            <button data-collapse-toggle="navbar-sticky" type="button"
+                    class="inline-flex items-center p-2 w-10 h-10 justify-center md:hidden"
+                    style="color: var(--violeta-claro); border: 1px solid rgba(124,58,237,0.3); border-radius: 8px;"
+                    aria-controls="navbar-sticky" aria-expanded="false">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="items-center hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
+            <ul class="flex md:flex-row md:gap-8 mt-4 md:mt-0">
+                <li><a href="#funciones" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#funciones</a>
+                </li>
+                <li><a href="#como-funciona" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#protocolo</a>
+                </li>
+                <li><a href="#beneficios" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#ventajas</a>
+                </li>
+                <li><a href="/login"
+                       class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#login</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- ==============================
+     HERO
+============================== -->
+<section class="pt-40 pb-24 px-6 max-w-6xl mx-auto relative z-10">
+    <div class="flex flex-col lg:flex-row items-center gap-16">
+
+        <div class="flex-1 text-center lg:text-left fade-izquierda">
+
+            <div class="badge mb-6">
+                <span class="pulso inline-block w-1.5 h-1.5 rounded-full" style="background: var(--cyan);"></span>
+                Sistema activo — repetición espaciada
+            </div>
+
+            <h1 class="text-5xl md:text-6xl font-black leading-tight mb-4">
+                Aprende más rápido,<br>
+                <span style="background: linear-gradient(135deg, var(--violeta-claro), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                    recuerda más tiempo
+                </span>
+            </h1>
+
+            <div class="linea mt-2 mb-6"></div>
+
+            <p class="text-gray-400 max-w-xl mb-10 leading-relaxed">
+                LearnDeck usa la técnica de repetición espaciada para ayudarte a memorizar cualquier cosa de forma
+                eficiente y duradera.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 mb-12">
+                <a href="/registro" class="btn-primario">Crear cuenta gratis</a>
+                <a href="/login" class="btn-outline">Iniciar sesión</a>
+            </div>
+
+            <div class="flex items-center justify-center lg:justify-start gap-8">
+                <div class="text-center">
+                    <div class="stat-num">2x</div>
+                    <div class="etiqueta mt-1">velocidad</div>
+                </div>
+                <div style="width: 1px; height: 40px; background: rgba(124,58,237,0.25);"></div>
+                <div class="text-center">
+                    <div class="stat-num">90%</div>
+                    <div class="etiqueta mt-1">retención</div>
+                </div>
+                <div style="width: 1px; height: 40px; background: rgba(124,58,237,0.25);"></div>
+                <div class="text-center">
+                    <div class="stat-num">free</div>
+                    <div class="etiqueta mt-1">siempre</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carrusel -->
+        <div class="flex-1 w-full max-w-sm mx-auto fade-derecha">
+            <div class="relative h-72" id="carrusel">
+
+                <!-- Tarjeta 1 -->
+                <div class="tarjeta" data-indice="0">
+                    <div class="tarjeta-contenedor">
+                        <div class="tarjeta-interior">
+                            <div class="tarjeta-frente rounded-2xl cursor-pointer"
+                                 style="border: 1px solid rgba(124,58,237,0.25);">
+                                <div class="hover-3d">
+                                    <div class="flex flex-col items-center justify-center p-8 w-full h-full rounded-2xl"
+                                         style="background: var(--fondo2);">
+                                        <div class="etiqueta mb-4">// módulo_01</div>
+                                        <div class="icono-wrap">
+                                            <svg style="width:22px;height:22px;color:var(--violeta-claro);" fill="none"
+                                                 stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-white font-black text-lg text-center mb-1">Crea tus barajas</h3>
+                                        <p style="color: #555; font-size: 0.7rem; letter-spacing: 0.1em;">[ toca para
+                                            ver más ]</p>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div class="tarjeta-reverso rounded-2xl flex items-center justify-center p-8"
+                                 style="background: var(--fondo3); border: 1px solid rgba(34,211,238,0.25); box-shadow: 0 0 20px rgba(34,211,238,0.06);">
+                                <div class="hover-3d">
+                                    <div class="flex flex-col items-center justify-center p-8 w-full h-full rounded-2xl"
+                                         style="background: var(--fondo2);">
+                                        <div class="text-center">
+                                            <div class="etiqueta mb-3">// descripción</div>
+                                            <p class="text-gray-300 text-sm leading-relaxed">Organiza tus tarjetas por
+                                                temas
+                                                y
+                                                asignaturas. Añade preguntas y respuestas personalizadas.</p>
+                                        </div>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2 -->
+                <div class="tarjeta" data-indice="1">
+                    <div class="tarjeta-contenedor">
+                        <div class="tarjeta-interior">
+                            <div class="tarjeta-frente rounded-2xl cursor-pointer"
+                                 style="border: 1px solid rgba(124,58,237,0.25);">
+                                <div class="hover-3d">
+                                    <div class="flex flex-col items-center justify-center p-8 w-full h-full rounded-2xl"
+                                         style="background: var(--fondo2);">
+                                        <div class="etiqueta mb-4">// módulo_02</div>
+                                        <div class="icono-wrap">
+                                            <svg style="width:22px;height:22px;color:var(--violeta-claro);" fill="none"
+                                                 stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-white font-black text-lg text-center mb-1">Repaso
+                                            inteligente</h3>
+                                        <p style="color: #555; font-size: 0.7rem; letter-spacing: 0.1em;">[ toca para
+                                            ver más ]</p>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div class="tarjeta-reverso rounded-2xl flex items-center justify-center p-8"
+                                 style="background: var(--fondo3); border: 1px solid rgba(34,211,238,0.25); box-shadow: 0 0 20px rgba(34,211,238,0.06);">
+                                <div class="hover-3d">
+                                    <div class="text-center">
+                                        <div class="etiqueta mb-3">// descripción</div>
+                                        <p class="text-gray-300 text-sm leading-relaxed">El algoritmo decide qué
+                                            tarjetas
+                                            necesitas repasar hoy para optimizar tu memoria a largo plazo.</p>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 3 -->
+                <div class="tarjeta" data-indice="2">
+                    <div class="tarjeta-contenedor">
+                        <div class="tarjeta-interior">
+                            <div class="tarjeta-frente rounded-2xl cursor-pointer"
+                                 style="border: 1px solid rgba(124,58,237,0.25);">
+                                <div class="hover-3d">
+                                    <div class="flex flex-col items-center justify-center p-8 w-full h-full rounded-2xl"
+                                         style="background: var(--fondo2);">
+                                        <div class="etiqueta mb-4">// módulo_03</div>
+                                        <div class="icono-wrap">
+                                            <svg style="width:22px;height:22px;color:var(--violeta-claro);" fill="none"
+                                                 stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10"/>
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-white font-black text-lg text-center mb-1">Estadísticas</h3>
+                                        <p style="color: #555; font-size: 0.7rem; letter-spacing: 0.1em;">[ toca para
+                                            ver más ]</p>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div class="tarjeta-reverso rounded-2xl flex items-center justify-center p-8"
+                                 style="background: var(--fondo3); border: 1px solid rgba(34,211,238,0.25); box-shadow: 0 0 20px rgba(34,211,238,0.06);">
+                                <div class="hover-3d">
+                                    <div class="text-center">
+                                        <div class="etiqueta mb-3">// descripción</div>
+                                        <p class="text-gray-300 text-sm leading-relaxed">Consulta tu porcentaje de
+                                            aciertos, tarjetas repasadas y evolución semanal.</p>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 4 -->
+                <div class="tarjeta" data-indice="3">
+                    <div class="tarjeta-contenedor">
+                        <div class="tarjeta-interior">
+                            <div class="tarjeta-frente rounded-2xl cursor-pointer"
+                                 style="border: 1px solid rgba(124,58,237,0.25);">
+                                <div class="hover-3d">
+                                    <div class="flex flex-col items-center justify-center p-8 w-full h-full rounded-2xl"
+                                         style="background: var(--fondo2);">
+                                        <div class="etiqueta mb-4">// módulo_04</div>
+                                        <div class="icono-wrap">
+                                            <svg style="width:22px;height:22px;color:var(--violeta-claro);" fill="none"
+                                                 stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                      d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/>
+                                            </svg>
+                                        </div>
+                                        <h3 class="text-white font-black text-lg text-center mb-1">Revisión errores</h3>
+                                        <p style="color: #555; font-size: 0.7rem; letter-spacing: 0.1em;">[ toca para
+                                            ver más ]</p>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div class="tarjeta-reverso rounded-2xl flex items-center justify-center p-8"
+                                 style="background: var(--fondo3); border: 1px solid rgba(34,211,238,0.25); box-shadow: 0 0 20px rgba(34,211,238,0.06);">
+                                <div class="hover-3d">
+                                    <div class="text-center">
+                                        <div class="etiqueta mb-3">// descripción</div>
+                                        <p class="text-gray-300 text-sm leading-relaxed">Accede a todas las tarjetas que
+                                            has
+                                            fallado y refuerza tus puntos débiles.</p>
+                                    </div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Controles -->
+            <div class="flex items-center justify-center gap-4 mt-8">
+                <button id="anterior"
+                        style="width:36px;height:36px;border:1px solid rgba(124,58,237,0.25);background:transparent;color:var(--violeta-claro);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;">
+                    <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                </button>
+                <div class="flex gap-2" id="puntos"></div>
+                <button id="siguiente"
+                        style="width:36px;height:36px;border:1px solid rgba(124,58,237,0.25);background:transparent;color:var(--violeta-claro);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;">
+                    <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="sep max-w-6xl mx-auto px-6"></div>
+
+<!-- ==============================
+     FUNCIONES
+============================== -->
+<section id="funciones" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
+    <div class="text-center mb-14 animado">
+        <div class="etiqueta mb-2">// módulos disponibles</div>
+        <h2 class="text-4xl font-black text-white">Todo lo que necesitas</h2>
+        <div class="linea mx-auto mt-3"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="card p-6 animado delay-1">
+            <div class="icono-wrap">
+                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+            </div>
+            <h3 class="text-white font-bold mb-2">Crea barajas</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Organiza tus tarjetas por temas. Añade, edita y elimina
+                cuando quieras.</p>
+        </div>
+        <div class="card p-6 animado delay-2">
+            <div class="icono-wrap">
+                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
+                </svg>
+            </div>
+            <h3 class="text-white font-bold mb-2">Repaso inteligente</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">El algoritmo decide qué repasar para optimizar tu
+                memoria.</p>
+        </div>
+        <div class="card p-6 animado delay-3">
+            <div class="icono-wrap">
+                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10"/>
+                </svg>
+            </div>
+            <h3 class="text-white font-bold mb-2">Estadísticas</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Consulta tu progreso y evolución a lo largo del tiempo.</p>
+        </div>
+        <div class="card p-6 animado delay-4">
+            <div class="icono-wrap">
+                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/>
+                </svg>
+            </div>
+            <h3 class="text-white font-bold mb-2">Revisión errores</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Repasa solo las tarjetas que has fallado para mejorar.</p>
+        </div>
+    </div>
+</section>
+
+<div class="sep max-w-6xl mx-auto px-6"></div>
+
+<!-- ==============================
+     CÓMO FUNCIONA
+============================== -->
+<section id="como-funciona" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
+    <div class="text-center mb-14 animado">
+        <div class="etiqueta mb-2">// protocolo de aprendizaje</div>
+        <h2 class="text-4xl font-black text-white">Cómo funciona</h2>
+        <div class="linea mx-auto mt-3"></div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="card-cyan p-8 text-center animado delay-1">
+            <div class="num-paso mb-2">01</div>
+            <div class="etiqueta mb-3">// paso</div>
+            <h3 class="text-white font-bold text-lg mb-3">Crea tus tarjetas</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Añade preguntas y respuestas sobre cualquier tema que
+                quieras aprender.</p>
+        </div>
+        <div class="card-cyan p-8 text-center animado delay-2">
+            <div class="num-paso mb-2">02</div>
+            <div class="etiqueta mb-3">// paso</div>
+            <h3 class="text-white font-bold text-lg mb-3">Estudia inteligente</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">El sistema te muestra las tarjetas en el momento óptimo
+                para tu memoria.</p>
+        </div>
+        <div class="card-cyan p-8 text-center animado delay-3">
+            <div class="num-paso mb-2">03</div>
+            <div class="etiqueta mb-3">// paso</div>
+            <h3 class="text-white font-bold text-lg mb-3">Mejora cada día</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Consolida lo que sabes y refuerza lo que fallas con
+                repetición espaciada.</p>
+        </div>
+    </div>
+</section>
+
+<div class="sep max-w-6xl mx-auto px-6"></div>
+
+<!-- ==============================
+     BENEFICIOS
+============================== -->
+<section id="beneficios" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
+    <div class="text-center mb-14 animado">
+        <div class="etiqueta mb-2">// ventajas del sistema</div>
+        <h2 class="text-4xl font-black text-white">Por qué LearnDeck</h2>
+        <div class="linea mx-auto mt-3"></div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="card p-8 animado delay-1">
+            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                01_
+            </div>
+            <h3 class="text-white font-bold text-lg mt-3 mb-2">Memoriza más rápido</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Optimiza tu tiempo de estudio mostrando solo lo que
+                necesitas repasar.</p>
+        </div>
+        <div class="card p-8 animado delay-2">
+            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                02_
+            </div>
+            <h3 class="text-white font-bold text-lg mt-3 mb-2">Reduce el olvido</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Refuerza automáticamente lo que más te cuesta antes de
+                olvidarlo.</p>
+        </div>
+        <div class="card p-8 animado delay-3">
+            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                03_
+            </div>
+            <h3 class="text-white font-bold text-lg mt-3 mb-2">Mejora constante</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">Aprende de tus errores y mejora tu rendimiento con
+                estadísticas claras.</p>
+        </div>
+    </div>
+</section>
+
+<div class="sep max-w-6xl mx-auto px-6"></div>
+
+<!-- ==============================
+     FAQ
+============================== -->
+<section id="faq" class="py-24 px-6 max-w-4xl mx-auto relative z-10">
+    <div class="text-center mb-14 animado">
+        <div class="etiqueta mb-2">// preguntas frecuentes</div>
+        <h2 class="text-4xl font-black text-white">FAQ</h2>
+        <div class="linea mx-auto mt-3"></div>
+    </div>
+    <div class="space-y-3">
+        <div class="faq-item animado delay-1 card overflow-hidden" style="border-radius:12px;">
+            <button class="faq-boton w-full flex items-center justify-between p-6 text-left"
+                    style="background:none;border:none;cursor:pointer;width:100%;">
+                <span class="text-white font-semibold">&gt; ¿Es completamente gratis?</span>
+                <span class="faq-icono text-xl font-black">+</span>
+            </button>
+            <div class="faq-respuesta px-6">
+                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí. Todas las funciones principales están
+                    disponibles sin coste. Sin suscripción, sin trampa.</p>
+            </div>
+        </div>
+        <div class="faq-item animado delay-2 card overflow-hidden" style="border-radius:12px;">
+            <button class="faq-boton w-full flex items-center justify-between p-6 text-left"
+                    style="background:none;border:none;cursor:pointer;width:100%;">
+                <span class="text-white font-semibold">&gt; ¿Funciona en móvil?</span>
+                <span class="faq-icono text-xl font-black">+</span>
+            </button>
+            <div class="faq-respuesta px-6">
+                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí, diseño mobile-first. Compatible con cualquier
+                    dispositivo y navegador moderno.</p>
+            </div>
+        </div>
+        <div class="faq-item animado delay-3 card overflow-hidden" style="border-radius:12px;">
+            <button class="faq-boton w-full flex items-center justify-between p-6 text-left"
+                    style="background:none;border:none;cursor:pointer;width:100%;">
+                <span class="text-white font-semibold">&gt; ¿Qué es la repetición espaciada?</span>
+                <span class="faq-icono text-xl font-black">+</span>
+            </button>
+            <div class="faq-respuesta px-6">
+                <p class="text-gray-500 text-sm leading-relaxed pb-5">Técnica científicamente probada que consiste en
+                    repasar el contenido justo antes de olvidarlo, espaciando los intervalos para consolidar la memoria
+                    a largo plazo.</p>
+            </div>
+        </div>
+        <div class="faq-item animado delay-4 card overflow-hidden" style="border-radius:12px;">
+            <button class="faq-boton w-full flex items-center justify-between p-6 text-left"
+                    style="background:none;border:none;cursor:pointer;width:100%;">
+                <span class="text-white font-semibold">&gt; ¿Puedo crear mis propias barajas?</span>
+                <span class="faq-icono text-xl font-black">+</span>
+            </button>
+            <div class="faq-respuesta px-6">
+                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí. Sin límite de barajas ni tarjetas. Control
+                    total sobre tu contenido de estudio.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="sep max-w-6xl mx-auto px-6"></div>
+
+<!-- ==============================
+     CTA FINAL
+============================== -->
+<section class="py-24 px-6 relative z-10 animado">
+    <div class="max-w-2xl mx-auto text-center card p-12"
+         style="border-color: rgba(124,58,237,0.3); box-shadow: 0 0 40px rgba(124,58,237,0.08);">
+        <div class="etiqueta mb-4">// iniciar sesión</div>
+        <h2 class="text-4xl font-black text-white mb-4">¿Listo para empezar?</h2>
+        <p class="text-gray-500 mb-8 text-sm">Crea tu cuenta gratis y empieza a estudiar de forma más inteligente.</p>
+        <a href="/registro" class="btn-primario">Crear cuenta gratis</a>
+    </div>
+</section>
+
+<!-- ==============================
+     FOOTER
+============================== -->
+<footer style="border-top: 1px solid rgba(124,58,237,0.12); padding: 2rem 1.5rem;" class="relative z-10">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <span style="font-weight:900;font-size:1.2rem;">
+            <span style="color:var(--violeta-claro);">learn</span><span style="color:var(--cyan);">deck</span>
+        </span>
+        <p style="color:#333;font-size:0.75rem;font-family:'Courier New',monospace;">© 2025 LearnDeck — Christian Laguna
+            Suarez</p>
+        <div style="display:flex;gap:1.5rem;">
+            <a href="/login" class="text-gray-600 hover:text-violet-300 transition text-sm">#login</a>
+            <a href="/registro" class="text-gray-600 hover:text-violet-300 transition text-sm">#registro</a>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+<script th:src="@{/js/landing.js}"></script>
+</body>
+</html>
