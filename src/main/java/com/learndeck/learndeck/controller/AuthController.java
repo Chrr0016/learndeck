@@ -15,12 +15,6 @@ public class AuthController {
 
     @Autowired
     private UsuarioService usuarioService;
-
-
-    @GetMapping("/")
-    public String landing() {
-        return "index";
-    }
     // Mostrar login
     @GetMapping("/login")
     public String mostrarLogin() {

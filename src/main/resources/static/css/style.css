@@ -1,64 +1,32 @@
-.tarjeta {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(40px);
-    transition: opacity 0.5s, transform 0.5s;
-    position: absolute;
-    inset: 0;
-}
+/* ============================================================
+   LEARNDECK — style.css
+   Estilos globales para: index, login, registro, dashboard
+   ============================================================ */
 
-.tarjeta.activa {
-    opacity: 1 !important;
-    pointer-events: all !important;
-    transform: translateX(0) !important;
-}
 
-.tarjeta-contenedor {
-    width: 100%;
-    height: 100%;
-    perspective: 1000px !important;
-}
-
-.tarjeta-interior {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d !important;
-    transition: transform 0.6s ease !important;
-}
-
-.tarjeta.girada .tarjeta-interior {
-    transform: rotateY(180deg) !important;
-}
-
-.tarjeta-frente,
-.tarjeta-reverso {
-    position: absolute;
-    inset: 0;
-    backface-visibility: hidden !important;
-    -webkit-backface-visibility: hidden !important;
-}
-
-.tarjeta-reverso {
-    transform: rotateY(180deg) !important;
-}
-
-/*  adawdawsssssssssssssssss*/
+/* ── 1. VARIABLES ──────────────────────────────────────────── */
 
 :root {
-    --violeta: #7c3aed;
+    --violeta:       #7c3aed;
     --violeta-claro: #a78bfa;
-    --cyan: #22d3ee;
-    --fondo: #0a0a14;
-    --fondo2: #111122;
-    --fondo3: #16162a;
+    --cyan:          #22d3ee;
+    --fondo:         #0a0a14;
+    --fondo2:        #111122;
+    --fondo3:        #16162a;
 }
 
-html { scroll-behavior: smooth; }
-::selection { background: var(--violeta); color: white; }
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--fondo); }
-::-webkit-scrollbar-thumb { background: var(--violeta); border-radius: 2px; }
+
+/* ── 2. BASE ────────────────────────────────────────────────── */
+
+html {
+    scroll-behavior: smooth;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
 
 body {
     background-color: var(--fondo);
@@ -66,20 +34,30 @@ body {
     overflow-x: hidden;
 }
 
-/* Grid de fondo muy sutil */
+::selection {
+    background: var(--violeta);
+    color: white;
+}
+
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: var(--fondo); }
+::-webkit-scrollbar-thumb { background: var(--violeta); border-radius: 2px; }
+
+
+/* ── 3. FONDO (grid + gradiente) ───────────────────────────── */
+
 body::before {
     content: '';
     position: fixed;
     inset: 0;
     background-image:
-            linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+        linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
     background-size: 60px 60px;
     pointer-events: none;
     z-index: 0;
 }
 
-/* Gradiente superior decorativo */
 body::after {
     content: '';
     position: fixed;
@@ -90,10 +68,13 @@ body::after {
     z-index: 0;
 }
 
-/* ── Tipografía ── */
-.mono { font-family: 'Courier New', monospace; }
 
-/* ── Etiqueta sutil cyber ── */
+/* ── 4. TIPOGRAFÍA ──────────────────────────────────────────── */
+
+.mono {
+    font-family: 'Courier New', monospace;
+}
+
 .etiqueta {
     font-family: 'Courier New', monospace;
     font-size: 0.65rem;
@@ -103,7 +84,6 @@ body::after {
     opacity: 0.7;
 }
 
-/* ── Línea decorativa ── */
 .linea {
     height: 2px;
     width: 40px;
@@ -112,15 +92,37 @@ body::after {
     margin: 0.75rem 0;
 }
 
-/* ── Separador ── */
 .sep {
     height: 1px;
     background: linear-gradient(to right, transparent, rgba(124,58,237,0.3), rgba(34,211,238,0.2), transparent);
 }
 
-/* ── Botón primario ── */
+.stat-num {
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--violeta-claro), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.num-paso {
+    font-size: 2.5rem;
+    font-weight: 900;
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, var(--violeta-claro), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+
+/* ── 5. BOTONES ─────────────────────────────────────────────── */
+
 .btn-primario {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     background: var(--violeta);
     color: white;
     font-weight: 700;
@@ -136,9 +138,16 @@ body::after {
     background: #6d28d9;
     box-shadow: 0 0 20px rgba(124,58,237,0.4);
 }
+.btn-primario:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 
 .btn-outline {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     background: transparent;
     color: var(--cyan);
     font-weight: 600;
@@ -148,6 +157,7 @@ body::after {
     border: 1px solid rgba(34,211,238,0.3);
     transition: all 0.25s;
     text-decoration: none;
+    cursor: pointer;
 }
 .btn-outline:hover {
     background: rgba(34,211,238,0.06);
@@ -155,7 +165,29 @@ body::after {
     box-shadow: 0 0 16px rgba(34,211,238,0.15);
 }
 
-/* ── Cards ── */
+.btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.04);
+    color: #9ca3af;
+    font-weight: 600;
+    font-size: 0.82rem;
+    padding: 0.6rem 1.4rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.07);
+    transition: all 0.25s;
+    cursor: pointer;
+    text-decoration: none;
+}
+.btn-ghost:hover {
+    background: rgba(255,255,255,0.07);
+    color: white;
+}
+
+
+/* ── 6. CARDS GENERALES ─────────────────────────────────────── */
+
 .card {
     background: var(--fondo2);
     border: 1px solid rgba(124,58,237,0.15);
@@ -180,7 +212,24 @@ body::after {
     transform: translateY(-4px);
 }
 
-/* ── Badge hero ── */
+
+/* ── 7. ICONO WRAP ──────────────────────────────────────────── */
+
+.icono-wrap {
+    width: 44px;
+    height: 44px;
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+
+/* ── 8. BADGES ──────────────────────────────────────────────── */
+
 .badge {
     display: inline-flex;
     align-items: center;
@@ -197,96 +246,129 @@ body::after {
     font-family: 'Courier New', monospace;
 }
 
-/* ── Stat número ── */
-.stat-num {
-    font-size: 2rem;
-    font-weight: 900;
-    background: linear-gradient(135deg, var(--violeta-claro), var(--cyan));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* ── Icono ── */
-.icono-wrap {
-    width: 44px;
-    height: 44px;
-    background: rgba(124,58,237,0.12);
-    border: 1px solid rgba(124,58,237,0.2);
-    border-radius: 10px;
-    display: flex;
+.badge-nivel {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-}
-
-/* ── Número paso ── */
-.num-paso {
-    font-size: 2.5rem;
-    font-weight: 900;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--violeta-claro);
+    border: 1px solid rgba(167,139,250,0.25);
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+    background: rgba(124,58,237,0.1);
     font-family: 'Courier New', monospace;
-    background: linear-gradient(135deg, var(--violeta-claro), var(--cyan));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
 }
 
-/* ── Animaciones ── */
+.badge-zona {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--cyan);
+    border: 1px solid rgba(34,211,238,0.25);
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    background: rgba(34,211,238,0.06);
+    font-family: 'Courier New', monospace;
+}
+
+
+/* ── 9. ANIMACIONES ─────────────────────────────────────────── */
+
 .animado {
     opacity: 0;
     transform: translateY(28px);
     transition: opacity 0.65s ease, transform 0.65s ease;
 }
 .animado.visible { opacity: 1; transform: translateY(0); }
-.animado.delay-1 { transition-delay: 0.1s; }
-.animado.delay-2 { transition-delay: 0.2s; }
-.animado.delay-3 { transition-delay: 0.3s; }
-.animado.delay-4 { transition-delay: 0.4s; }
+.animado.delay-1  { transition-delay: 0.1s; }
+.animado.delay-2  { transition-delay: 0.2s; }
+.animado.delay-3  { transition-delay: 0.3s; }
+.animado.delay-4  { transition-delay: 0.4s; }
+.animado.delay-5  { transition-delay: 0.5s; }
 
 .fade-izquierda {
-    opacity: 0; transform: translateX(-36px);
+    opacity: 0;
+    transform: translateX(-36px);
     transition: opacity 0.8s ease, transform 0.8s ease;
 }
 .fade-derecha {
-    opacity: 0; transform: translateX(36px);
+    opacity: 0;
+    transform: translateX(36px);
     transition: opacity 0.8s ease, transform 0.8s ease;
 }
 .fade-izquierda.visible,
-.fade-derecha.visible { opacity: 1; transform: translateX(0); }
+.fade-derecha.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
 
 @keyframes pulso {
     0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
+    50%       { opacity: 0.3; }
 }
 .pulso { animation: pulso 2.5s ease-in-out infinite; }
 
-/* ── Carrusel ── */
+@keyframes fuego {
+    0%, 100% { transform: scale(1) rotate(-3deg); }
+    50%       { transform: scale(1.15) rotate(3deg); }
+}
+.fuego { animation: fuego 1.5s ease-in-out infinite; display: inline-block; }
+
+
+/* ── 10. CARRUSEL (index) ───────────────────────────────────── */
+
 .tarjeta {
-    opacity: 0; pointer-events: none;
+    opacity: 0;
+    pointer-events: none;
     transform: translateX(40px);
     transition: opacity 0.5s, transform 0.5s;
-    position: absolute; inset: 0;
+    position: absolute;
+    inset: 0;
 }
-.tarjeta.activa { opacity: 1; pointer-events: all; transform: translateX(0); }
-.tarjeta-contenedor { width: 100%; height: 100%; perspective: 1000px; }
+.tarjeta.activa {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+}
+.tarjeta-contenedor {
+    width: 100%;
+    height: 100%;
+    perspective: 1000px;
+}
 .tarjeta-interior {
-    width: 100%; height: 100%; position: relative;
+    width: 100%;
+    height: 100%;
+    position: relative;
     transform-style: preserve-3d;
     transition: transform 0.6s ease;
 }
-.tarjeta.girada .tarjeta-interior { transform: rotateY(180deg); }
-.tarjeta-frente, .tarjeta-reverso {
-    position: absolute; inset: 0;
+.tarjeta.girada .tarjeta-interior {
+    transform: rotateY(180deg);
+}
+.tarjeta-frente,
+.tarjeta-reverso {
+    position: absolute;
+    inset: 0;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
 }
-.tarjeta-reverso { transform: rotateY(180deg); }
+.tarjeta-reverso {
+    transform: rotateY(180deg);
+}
 
-/* ── Hover 3D ── */
+
+/* ── 11. HOVER 3D ───────────────────────────────────────────── */
+
 .hover-3d {
     display: inline-grid;
     perspective: 75rem;
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     --transform: 0, 0;
     --shine: 100% 100%;
     --shadow: 0rem 0rem 0rem;
@@ -296,22 +378,34 @@ body::after {
 }
 .hover-3d > :nth-child(n + 2) { isolation: isolate; z-index: 1; scale: 1.2; }
 .hover-3d > :first-child {
-    overflow: hidden; grid-area: 1/1/4/4;
+    overflow: hidden;
+    grid-area: 1/1/4/4;
     transform: rotate3d(var(--transform), 0, 8deg);
     transition: transform var(--ease) 500ms, scale var(--ease) 500ms, outline-color ease-out 500ms;
-    outline: 1px solid transparent; outline-offset: -1px; position: relative;
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+    position: relative;
 }
 .hover-3d > :first-child::before {
-    content: ""; width: 33.33%; height: 33.33%;
-    pointer-events: none; position: absolute; z-index: 1;
-    scale: 500%; opacity: 0; filter: blur(0.75rem);
+    content: "";
+    width: 33.33%;
+    height: 33.33%;
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+    scale: 500%;
+    opacity: 0;
+    filter: blur(0.75rem);
     background-image: radial-gradient(circle at 50%, rgba(167,139,250,0.25) 10%, transparent 50%);
     translate: var(--shine);
     transition: translate ease-out 400ms, opacity ease-out 400ms;
 }
-.hover-3d:hover { --ease: linear(0, 0.708 15.2%, 0.927 23.6%, 1.067 33%, 1.12 41%, 1.13 50.2%, 1.019 83.2%, 1); }
+.hover-3d:hover {
+    --ease: linear(0, 0.708 15.2%, 0.927 23.6%, 1.067 33%, 1.12 41%, 1.13 50.2%, 1.019 83.2%, 1);
+}
 .hover-3d:hover > :first-child { outline-color: rgba(167,139,250,0.2); scale: 1.03; }
 .hover-3d:hover > :first-child::before { opacity: 1; }
+
 .hover-3d > :nth-child(2) { grid-area: 1/1/2/2; }
 .hover-3d > :nth-child(3) { grid-area: 1/2/2/3; }
 .hover-3d > :nth-child(4) { grid-area: 1/3/2/4; }
@@ -320,6 +414,7 @@ body::after {
 .hover-3d > :nth-child(7) { grid-area: 3/1/4/2; }
 .hover-3d > :nth-child(8) { grid-area: 3/2/4/3; }
 .hover-3d > :nth-child(9) { grid-area: 3/3/4/4; }
+
 .hover-3d:has(> :nth-child(2):hover) { --transform: -1, 1;  --shine: 0% 0%;     --shadow: -0.4rem -0.4rem; }
 .hover-3d:has(> :nth-child(3):hover) { --transform: -1, 0;  --shine: 100% 0%;   --shadow: 0rem -0.4rem;    }
 .hover-3d:has(> :nth-child(4):hover) { --transform: -1, -1; --shine: 200% 0%;   --shadow: 0.4rem -0.4rem;  }
@@ -329,8 +424,350 @@ body::after {
 .hover-3d:has(> :nth-child(8):hover) { --transform: 1, 0;   --shine: 100% 200%; --shadow: 0rem 0.4rem;     }
 .hover-3d:has(> :nth-child(9):hover) { --transform: 1, -1;  --shine: 200% 200%; --shadow: 0.4rem 0.4rem;   }
 
-/* ── FAQ ── */
-.faq-respuesta { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+
+/* ── 12. FAQ (index) ────────────────────────────────────────── */
+
+.faq-respuesta {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
 .faq-respuesta.abierta { max-height: 200px; }
-.faq-icono { transition: transform 0.3s ease; color: var(--violeta-claro); }
+.faq-icono {
+    transition: transform 0.3s ease;
+    color: var(--violeta-claro);
+}
 .faq-item.abierto .faq-icono { transform: rotate(45deg); }
+
+
+/* ── 13. FORMULARIOS (login / registro) ─────────────────────── */
+
+.contenedor-login {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.form-card {
+    background: var(--fondo2);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    padding: 2.5rem;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 0 40px rgba(124,58,237,0.08);
+}
+
+.input-cp {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 10px;
+    color: white;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-cp::placeholder { color: #444; }
+.input-cp:focus {
+    border-color: rgba(124,58,237,0.6);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+}
+
+.alerta-error {
+    background: rgba(239,68,68,0.08);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #f87171;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    font-family: 'Courier New', monospace;
+}
+
+.alerta-exito {
+    background: rgba(34,197,94,0.08);
+    border: 1px solid rgba(34,197,94,0.25);
+    color: #4ade80;
+    font-size: 0.8rem;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1.25rem;
+    font-family: 'Courier New', monospace;
+}
+
+
+/* ── 14. DASHBOARD — STATS ──────────────────────────────────── */
+
+.stat-card {
+    background: var(--fondo2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+.stat-card:hover { transform: translateY(-3px); }
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+}
+
+.stat-card.s-violeta { border: 1px solid rgba(124,58,237,0.2); }
+.stat-card.s-violeta::before { background: linear-gradient(to right, var(--violeta), transparent); }
+
+.stat-card.s-cyan { border: 1px solid rgba(34,211,238,0.2); }
+.stat-card.s-cyan::before { background: linear-gradient(to right, var(--cyan), transparent); }
+
+.stat-card.s-verde { border: 1px solid rgba(74,222,128,0.2); }
+.stat-card.s-verde::before { background: linear-gradient(to right, #4ade80, transparent); }
+
+.stat-card.s-rosa { border: 1px solid rgba(244,114,182,0.2); }
+.stat-card.s-rosa::before { background: linear-gradient(to right, #f472b4, transparent); }
+
+
+/* ── 15. DASHBOARD — XP BAR ─────────────────────────────────── */
+
+.xp-bar-bg {
+    height: 8px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 100px;
+    overflow: hidden;
+}
+.xp-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(to right, var(--violeta), var(--cyan));
+    box-shadow: 0 0 10px rgba(124,58,237,0.5);
+    transition: width 1.5s ease;
+}
+
+
+/* ── 16. DASHBOARD — BARAJAS ────────────────────────────────── */
+
+.barajas-scroll {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124,58,237,0.3) transparent;
+}
+.barajas-scroll::-webkit-scrollbar        { height: 4px; }
+.barajas-scroll::-webkit-scrollbar-track  { background: transparent; }
+.barajas-scroll::-webkit-scrollbar-thumb  { background: rgba(124,58,237,0.3); border-radius: 2px; }
+
+.baraja-card {
+    background: var(--fondo2);
+    border: 1px solid rgba(124,58,237,0.2);
+    border-radius: 14px;
+    width: 160px;
+    min-width: 160px;
+    height: 210px;
+    display: flex;
+    flex-direction: column;
+    cursor: grab;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+}
+.baraja-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--violeta), var(--cyan));
+}
+.baraja-card:hover {
+    border-color: rgba(124,58,237,0.5);
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(124,58,237,0.15);
+}
+.baraja-card.arrastrando {
+    opacity: 0.4;
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+.baraja-card.en-zona {
+    border-color: var(--cyan);
+    box-shadow: 0 0 20px rgba(34,211,238,0.2);
+}
+
+.baraja-imagen {
+    width: 100%;
+    height: 110px;
+    background: var(--fondo3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    border-bottom: 1px solid rgba(124,58,237,0.1);
+    flex-shrink: 0;
+}
+
+.baraja-info {
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+}
+
+/* Baraja en el dashboard antiguo (lista) */
+.baraja-lista {
+    background: var(--fondo3);
+    border: 1px solid rgba(124,58,237,0.15);
+    border-radius: 14px;
+    padding: 1.25rem;
+    transition: all 0.25s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+.baraja-lista::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--violeta), var(--cyan));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    transform-origin: left;
+}
+.baraja-lista:hover {
+    border-color: rgba(124,58,237,0.35);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(124,58,237,0.1);
+}
+.baraja-lista:hover::after { transform: scaleX(1); }
+
+
+/* ── 17. DASHBOARD — ZONA DROP ──────────────────────────────── */
+
+.zona-drop {
+    border: 1.5px dashed rgba(124,58,237,0.2);
+    border-radius: 20px;
+    min-height: 180px;
+    background: rgba(124,58,237,0.03);
+    transition: all 0.3s;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1.5rem;
+    align-items: center;
+}
+.zona-drop.drag-over {
+    border-color: var(--cyan);
+    background: rgba(34,211,238,0.05);
+    box-shadow: 0 0 30px rgba(34,211,238,0.08);
+}
+.zona-drop.tiene-barajas {
+    border-color: rgba(124,58,237,0.3);
+    background: rgba(124,58,237,0.05);
+}
+
+.baraja-en-zona {
+    background: var(--fondo2);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 10px;
+    width: 120px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+.baraja-en-zona::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--violeta), var(--cyan));
+}
+.baraja-en-zona .imagen-mini {
+    height: 75px;
+    background: var(--fondo3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+}
+.baraja-en-zona .info-mini {
+    padding: 0.5rem;
+    flex: 1;
+}
+
+.btn-quitar {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 20px;
+    height: 20px;
+    background: rgba(239,68,68,0.15);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.65rem;
+    color: #f87171;
+    z-index: 10;
+    transition: all 0.2s;
+}
+.btn-quitar:hover { background: rgba(239,68,68,0.3); }
+
+.zona-vacia {
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+}
+
+/* ── 18. DASHBOARD — BOTÓN CREAR BARAJA ─────────────────────── */
+
+.btn-crear {
+    width: 160px;
+    min-width: 160px;
+    height: 210px;
+    background: rgba(124,58,237,0.05);
+    border: 1.5px dashed rgba(124,58,237,0.25);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+    color: #555;
+}
+.btn-crear:hover {
+    border-color: rgba(124,58,237,0.5);
+    background: rgba(124,58,237,0.08);
+    color: var(--violeta-claro);
+}
+.btn-crear:hover .icono-mas {
+    border-color: var(--violeta-claro);
+    color: var(--violeta-claro);
+}
+
+.icono-mas {
+    width: 44px;
+    height: 44px;
+    border: 1.5px dashed rgba(124,58,237,0.3);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    transition: all 0.25s;
+}

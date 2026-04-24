@@ -1,4 +1,4 @@
-package com.learndeck.controller;
+package com.learndeck.learndeck.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
