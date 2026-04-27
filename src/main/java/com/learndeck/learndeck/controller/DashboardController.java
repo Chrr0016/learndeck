@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class DashboardController {
@@ -34,6 +35,8 @@ public class DashboardController {
         // Barajas del usuario
         List<Baraja> barajas = barajaService.obtenerBarajasPorUsuario(usuarioId);
 
+        List<String> categorias = barajaService.obtenerCategorias(usuarioId);
+
         // Estadísticas calculadas desde historial
         int totalEstudiadas = historialService.totalEstudiadas(usuarioId);
         long totalAciertos = historialService.totalAciertos(usuarioId);
@@ -48,7 +51,8 @@ public class DashboardController {
         model.addAttribute("totalAciertos", totalAciertos);
         model.addAttribute("totalFallos", totalFallos);
         model.addAttribute("porcentaje", String.format("%.0f", porcentaje));
+        model.addAttribute("categorias", categorias);
 
-        return "dashboard";
+        return "menuPrincipal";
     }
 }

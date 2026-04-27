@@ -62,4 +62,8 @@ public class BarajaService {
         barajaRepository.deleteById(id);
         return true;
     }
+
+    public List<String> obtenerCategorias(Long userId) {
+        return barajaRepository.findCategoriasByUsuario(userId);
+    }
 }
