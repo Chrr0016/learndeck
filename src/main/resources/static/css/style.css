@@ -285,7 +285,7 @@ body::after {
 
 /* ── 11. HOVER 3D ── */
 .hover-3d {
-    display: inline-grid;
+    display: grid;
     perspective: 75rem;
     width: 100%; height: 100%;
     --transform: 0, 0;
@@ -297,10 +297,17 @@ body::after {
 }
 .hover-3d > :nth-child(n + 2) { isolation: isolate; z-index: 1; scale: 1.2; }
 .hover-3d > :first-child {
-    overflow: hidden; grid-area: 1/1/4/4;
+    overflow: hidden;
+    grid-area: 1/1/4/4;
+
+    margin: auto;
+    z-index: 0;
+
+    width: auto;
+    height: auto;
+
     transform: rotate3d(var(--transform), 0, 8deg);
-    transition: transform var(--ease) 500ms, scale var(--ease) 500ms, outline-color ease-out 500ms;
-    outline: 1px solid transparent; outline-offset: -1px; position: relative;
+    transition: transform var(--ease) 500ms, scale var(--ease) 500ms;
 }
 .hover-3d > :first-child::before {
     content: ""; width: 33.33%; height: 33.33%;
@@ -311,7 +318,8 @@ body::after {
     transition: translate ease-out 400ms, opacity ease-out 400ms;
 }
 .hover-3d:hover { --ease: linear(0, 0.708 15.2%, 0.927 23.6%, 1.067 33%, 1.12 41%, 1.13 50.2%, 1.019 83.2%, 1); }
-.hover-3d:hover > :first-child { outline-color: rgba(167,139,250,0.2); scale: 1.03; }
+.hover-3d:hover > :first-child {
+    /*outline-color: rgba(167, 139, 250, 0.2);*/ scale: 1.03; }
 .hover-3d:hover > :first-child::before { opacity: 1; }
 .hover-3d > :nth-child(2) { grid-area: 1/1/2/2; }
 .hover-3d > :nth-child(3) { grid-area: 1/2/2/3; }
@@ -1085,3 +1093,4 @@ select.input-cp:focus {
     background: rgba(239,68,68,0.3);
     box-shadow: 0 0 16px rgba(239,68,68,0.2);
 }
+

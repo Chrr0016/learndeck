@@ -15,7 +15,8 @@
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-6 py-4">
 
         <a href="/" class="flex items-center">
-            <img th:src="@{/imagenes/logo.png}" src="/imagenes/logo.png" alt="LearnDeck" style="height: 48px; width: auto;">
+            <img th:src="@{/imagenes/logo.png}" src="/imagenes/logo.png" alt="LearnDeck"
+                 style="height: 48px; width: auto;">
         </a>
 
         <div class="flex md:order-2 items-center gap-3">
@@ -32,10 +33,14 @@
 
         <div class="items-center hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
             <ul class="flex md:flex-row md:gap-8 mt-4 md:mt-0">
-                <li><a href="#funciones" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#funciones</a></li>
-                <li><a href="#como-funciona" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#protocolo</a></li>
-                <li><a href="#beneficios" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#ventajas</a></li>
-                <li><a href="/login" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#login</a></li>
+                <li><a href="#funciones" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#funciones</a>
+                </li>
+                <li><a href="#como-funciona" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#protocolo</a>
+                </li>
+                <li><a href="#beneficios" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#ventajas</a>
+                </li>
+                <li><a href="/login"
+                       class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#login</a></li>
             </ul>
         </div>
     </div>
@@ -62,7 +67,8 @@
             <div class="linea mt-2 mb-6"></div>
 
             <p class="text-gray-400 max-w-xl mb-10 leading-relaxed">
-                LearnDeck usa la técnica de repetición espaciada para ayudarte a memorizar cualquier cosa de forma eficiente y duradera.
+                LearnDeck usa la técnica de repetición espaciada para ayudarte a memorizar cualquier cosa de forma
+                eficiente y duradera.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 mb-12">
@@ -91,12 +97,9 @@
         <!-- Imagen derecha con hover 3D directo -->
         <div class="flex-1 w-full max-w-xs mx-auto fade-derecha" style="perspective: 1000px;">
             <div class="hover-3d" style="width:100%; height: 420px;">
-
-                <!-- La imagen ES el primer hijo → recibe el efecto 3D -->
                 <img src="/imagenes/carta2.png"
-                     style="width:100%; height:100%; object-fit:contain; object-position:center; background:#0a0a14; border-radius:20px; display:block; border: 1px solid rgba(124,58,237,0.25); box-shadow: 0 0 40px rgba(124,58,237,0.15);">
+                     class="max-w-full max-h-full w-auto h-auto block rounded-[20px] shadow-2xl">
 
-                <!-- 8 divs vacíos para las zonas de hover -->
                 <div></div><div></div><div></div><div></div>
                 <div></div><div></div><div></div><div></div>
             </div>
@@ -117,26 +120,34 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         <div class="card p-6 animado delay-1">
             <div class="icono-wrap">
-                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
             </div>
             <h3 class="text-white font-bold mb-2">Crea barajas</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Organiza tus tarjetas por temas. Añade, edita y elimina cuando quieras.</p>
+            <p class="text-gray-500 text-sm leading-relaxed">Organiza tus tarjetas por temas. Añade, edita y elimina
+                cuando quieras.</p>
         </div>
         <div class="card p-6 animado delay-2">
             <div class="icono-wrap">
-                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
+                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
                 </svg>
             </div>
             <h3 class="text-white font-bold mb-2">Repaso inteligente</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">El algoritmo decide qué repasar para optimizar tu memoria.</p>
+            <p class="text-gray-500 text-sm leading-relaxed">El algoritmo decide qué repasar para optimizar tu
+                memoria.</p>
         </div>
         <div class="card p-6 animado delay-3">
             <div class="icono-wrap">
-                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10"/>
+                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10"/>
                 </svg>
             </div>
             <h3 class="text-white font-bold mb-2">Estadísticas</h3>
@@ -144,8 +155,10 @@
         </div>
         <div class="card p-6 animado delay-4">
             <div class="icono-wrap">
-                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/>
+                <svg style="width:20px;height:20px;color:var(--violeta-claro);" fill="none" stroke="currentColor"
+                     viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/>
                 </svg>
             </div>
             <h3 class="text-white font-bold mb-2">Revisión errores</h3>
@@ -168,19 +181,22 @@
             <div class="num-paso mb-2">01</div>
             <div class="etiqueta mb-3">// paso</div>
             <h3 class="text-white font-bold text-lg mb-3">Crea tus tarjetas</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Añade preguntas y respuestas sobre cualquier tema que quieras aprender.</p>
+            <p class="text-gray-500 text-sm leading-relaxed">Añade preguntas y respuestas sobre cualquier tema que
+                quieras aprender.</p>
         </div>
         <div class="card-cyan p-8 text-center animado delay-2">
             <div class="num-paso mb-2">02</div>
             <div class="etiqueta mb-3">// paso</div>
             <h3 class="text-white font-bold text-lg mb-3">Estudia inteligente</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">El sistema te muestra las tarjetas en el momento óptimo para tu memoria.</p>
+            <p class="text-gray-500 text-sm leading-relaxed">El sistema te muestra las tarjetas en el momento óptimo
+                para tu memoria.</p>
         </div>
         <div class="card-cyan p-8 text-center animado delay-3">
             <div class="num-paso mb-2">03</div>
             <div class="etiqueta mb-3">// paso</div>
             <h3 class="text-white font-bold text-lg mb-3">Mejora cada día</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Consolida lo que sabes y refuerza lo que fallas con repetición espaciada.</p>
+            <p class="text-gray-500 text-sm leading-relaxed">Consolida lo que sabes y refuerza lo que fallas con
+                repetición espaciada.</p>
         </div>
     </div>
 </section>
@@ -196,19 +212,28 @@
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         <div class="card p-8 animado delay-1">
-            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">01_</div>
+            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                01_
+            </div>
             <h3 class="text-white font-bold text-lg mt-3 mb-2">Memoriza más rápido</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Optimiza tu tiempo de estudio mostrando solo lo que necesitas repasar.</p>
+            <p class="text-gray-500 text-sm leading-relaxed">Optimiza tu tiempo de estudio mostrando solo lo que
+                necesitas repasar.</p>
         </div>
         <div class="card p-8 animado delay-2">
-            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">02_</div>
+            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                02_
+            </div>
             <h3 class="text-white font-bold text-lg mt-3 mb-2">Reduce el olvido</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Refuerza automáticamente lo que más te cuesta antes de olvidarlo.</p>
+            <p class="text-gray-500 text-sm leading-relaxed">Refuerza automáticamente lo que más te cuesta antes de
+                olvidarlo.</p>
         </div>
         <div class="card p-8 animado delay-3">
-            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">03_</div>
+            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+                03_
+            </div>
             <h3 class="text-white font-bold text-lg mt-3 mb-2">Mejora constante</h3>
-            <p class="text-gray-500 text-sm leading-relaxed">Aprende de tus errores y mejora tu rendimiento con estadísticas claras.</p>
+            <p class="text-gray-500 text-sm leading-relaxed">Aprende de tus errores y mejora tu rendimiento con
+                estadísticas claras.</p>
         </div>
     </div>
 </section>
@@ -224,39 +249,48 @@
     </div>
     <div class="space-y-3">
         <div class="faq-item animado delay-1 card overflow-hidden" style="border-radius:12px;">
-            <button class="faq-boton w-full flex items-center justify-between p-6 text-left" style="background:none;border:none;cursor:pointer;width:100%;">
+            <button class="faq-boton w-full flex items-center justify-between p-6 text-left"
+                    style="background:none;border:none;cursor:pointer;width:100%;">
                 <span class="text-white font-semibold">&gt; ¿Es completamente gratis?</span>
                 <span class="faq-icono text-xl font-black">+</span>
             </button>
             <div class="faq-respuesta px-6">
-                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí. Todas las funciones principales están disponibles sin coste. Sin suscripción, sin trampa.</p>
+                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí. Todas las funciones principales están
+                    disponibles sin coste. Sin suscripción, sin trampa.</p>
             </div>
         </div>
         <div class="faq-item animado delay-2 card overflow-hidden" style="border-radius:12px;">
-            <button class="faq-boton w-full flex items-center justify-between p-6 text-left" style="background:none;border:none;cursor:pointer;width:100%;">
+            <button class="faq-boton w-full flex items-center justify-between p-6 text-left"
+                    style="background:none;border:none;cursor:pointer;width:100%;">
                 <span class="text-white font-semibold">&gt; ¿Funciona en móvil?</span>
                 <span class="faq-icono text-xl font-black">+</span>
             </button>
             <div class="faq-respuesta px-6">
-                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí, diseño mobile-first. Compatible con cualquier dispositivo y navegador moderno.</p>
+                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí, diseño mobile-first. Compatible con cualquier
+                    dispositivo y navegador moderno.</p>
             </div>
         </div>
         <div class="faq-item animado delay-3 card overflow-hidden" style="border-radius:12px;">
-            <button class="faq-boton w-full flex items-center justify-between p-6 text-left" style="background:none;border:none;cursor:pointer;width:100%;">
+            <button class="faq-boton w-full flex items-center justify-between p-6 text-left"
+                    style="background:none;border:none;cursor:pointer;width:100%;">
                 <span class="text-white font-semibold">&gt; ¿Qué es la repetición espaciada?</span>
                 <span class="faq-icono text-xl font-black">+</span>
             </button>
             <div class="faq-respuesta px-6">
-                <p class="text-gray-500 text-sm leading-relaxed pb-5">Técnica científicamente probada que consiste en repasar el contenido justo antes de olvidarlo, espaciando los intervalos para consolidar la memoria a largo plazo.</p>
+                <p class="text-gray-500 text-sm leading-relaxed pb-5">Técnica científicamente probada que consiste en
+                    repasar el contenido justo antes de olvidarlo, espaciando los intervalos para consolidar la memoria
+                    a largo plazo.</p>
             </div>
         </div>
         <div class="faq-item animado delay-4 card overflow-hidden" style="border-radius:12px;">
-            <button class="faq-boton w-full flex items-center justify-between p-6 text-left" style="background:none;border:none;cursor:pointer;width:100%;">
+            <button class="faq-boton w-full flex items-center justify-between p-6 text-left"
+                    style="background:none;border:none;cursor:pointer;width:100%;">
                 <span class="text-white font-semibold">&gt; ¿Puedo crear mis propias barajas?</span>
                 <span class="faq-icono text-xl font-black">+</span>
             </button>
             <div class="faq-respuesta px-6">
-                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí. Sin límite de barajas ni tarjetas. Control total sobre tu contenido de estudio.</p>
+                <p class="text-gray-500 text-sm leading-relaxed pb-5">Sí. Sin límite de barajas ni tarjetas. Control
+                    total sobre tu contenido de estudio.</p>
             </div>
         </div>
     </div>
@@ -266,7 +300,8 @@
 
 <!-- CTA FINAL -->
 <section class="py-24 px-6 relative z-10 animado">
-    <div class="max-w-2xl mx-auto text-center card p-12" style="border-color: rgba(124,58,237,0.3); box-shadow: 0 0 40px rgba(124,58,237,0.08);">
+    <div class="max-w-2xl mx-auto text-center card p-12"
+         style="border-color: rgba(124,58,237,0.3); box-shadow: 0 0 40px rgba(124,58,237,0.08);">
         <div class="etiqueta mb-4">// iniciar sesión</div>
         <h2 class="text-4xl font-black text-white mb-4">¿Listo para empezar?</h2>
         <p class="text-gray-500 mb-8 text-sm">Crea tu cuenta gratis y empieza a estudiar de forma más inteligente.</p>
@@ -278,7 +313,8 @@
 <footer style="border-top: 1px solid rgba(124,58,237,0.12); padding: 2rem 1.5rem;" class="relative z-10">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <img th:src="@{/imagenes/logo.png}" src="/imagenes/logo.png" alt="LearnDeck" style="height: 36px; width: auto;">
-        <p style="color:#333;font-size:0.75rem;font-family:'Courier New',monospace;">© 2025 LearnDeck — Christian Laguna Suarez</p>
+        <p style="color:#333;font-size:0.75rem;font-family:'Courier New',monospace;">© 2025 LearnDeck — Christian Laguna
+            Suarez</p>
         <div style="display:flex;gap:1.5rem;">
             <a href="/login" class="text-gray-600 hover:text-violet-300 transition text-sm">#login</a>
             <a href="/registro" class="text-gray-600 hover:text-violet-300 transition text-sm">#registro</a>
