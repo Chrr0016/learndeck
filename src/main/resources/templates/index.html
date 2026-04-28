@@ -9,9 +9,7 @@
 </head>
 <body>
 
-<!-- ==============================
-     NAVBAR
-============================== -->
+<!-- NAVBAR -->
 <nav style="background: rgba(10,10,20,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(124,58,237,0.15);"
      class="fixed w-full z-50 top-0">
     <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-6 py-4">
@@ -43,15 +41,12 @@
     </div>
 </nav>
 
-<!-- ==============================
-     HERO
-============================== -->
+<!-- HERO -->
 <section class="pt-40 pb-24 px-6 max-w-6xl mx-auto relative z-10">
     <div class="flex flex-col lg:flex-row items-center gap-16">
 
         <!-- Texto izquierda -->
         <div class="flex-1 text-center lg:text-left fade-izquierda">
-
             <div class="badge mb-6">
                 <span class="pulso inline-block w-1.5 h-1.5 rounded-full" style="background: var(--cyan);"></span>
                 Sistema activo — repetición espaciada
@@ -93,204 +88,26 @@
             </div>
         </div>
 
-        <!-- Carrusel derecha -->
-        <div class="flex-1 w-full max-w-sm mx-auto fade-derecha">
-            <div class="relative h-72" id="carrusel">
+        <!-- Imagen derecha con hover 3D directo -->
+        <div class="flex-1 w-full max-w-xs mx-auto fade-derecha" style="perspective: 1000px;">
+            <div class="hover-3d" style="width:100%; height: 420px;">
 
-                <!-- ── Tarjeta 1 ── -->
-                <div class="tarjeta" data-indice="0">
-                    <div class="tarjeta-contenedor">
-                        <div class="tarjeta-interior">
-                            <div class="tarjeta-frente rounded-2xl cursor-pointer" style="border: 1px solid rgba(124,58,237,0.25);">
-                                <div class="hover-3d">
-                                    <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center p-8" style="position:relative;overflow:hidden;">
-                                        <img src="/imagenes/carta.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;pointer-events:none;">
-                                        <div style="position:absolute;inset:0;background:rgba(10,10,20,0.55);border-radius:inherit;pointer-events:none;"></div>
-                                        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;">
-                                            <div class="etiqueta mb-4">// módulo_01</div>
-                                            <div class="icono-wrap">
-                                                <svg style="width:22px;height:22px;color:var(--violeta-claro);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                                                </svg>
-                                            </div>
-                                            <h3 class="text-white font-black text-lg text-center mb-1">Crea tus barajas</h3>
-                                            <p style="color:#aaa;font-size:0.7rem;letter-spacing:0.1em;">[ toca para ver más ]</p>
-                                        </div>
-                                    </div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            </div>
-                            <div class="tarjeta-reverso rounded-2xl cursor-pointer" style="border: 1px solid rgba(34,211,238,0.25);">
-                                <div class="hover-3d">
-                                    <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center p-8" style="position:relative;overflow:hidden;">
-                                        <img src="/imagenes/carta.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;pointer-events:none;">
-                                        <div style="position:absolute;inset:0;background:rgba(0,20,40,0.65);border-radius:inherit;pointer-events:none;"></div>
-                                        <div style="position:relative;z-index:1;text-align:center;">
-                                            <div class="etiqueta mb-3">// descripción</div>
-                                            <p class="text-gray-300 text-sm leading-relaxed">Organiza tus tarjetas por temas y asignaturas. Añade preguntas y respuestas personalizadas.</p>
-                                        </div>
-                                    </div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- La imagen ES el primer hijo → recibe el efecto 3D -->
+                <img src="/imagenes/carta2.png"
+                     style="width:100%; height:100%; object-fit:contain; object-position:center; background:#0a0a14; border-radius:20px; display:block; border: 1px solid rgba(124,58,237,0.25); box-shadow: 0 0 40px rgba(124,58,237,0.15);">
 
-                <!-- ── Tarjeta 2 ── -->
-                <div class="tarjeta" data-indice="1">
-                    <div class="tarjeta-contenedor">
-                        <div class="tarjeta-interior">
-                            <div class="tarjeta-frente rounded-2xl cursor-pointer" style="border: 1px solid rgba(124,58,237,0.25);">
-                                <div class="hover-3d">
-                                    <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center p-8" style="position:relative;overflow:hidden;">
-                                        <img src="/imagenes/carta.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;pointer-events:none;">
-                                        <div style="position:absolute;inset:0;background:rgba(10,10,20,0.55);border-radius:inherit;pointer-events:none;"></div>
-                                        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;">
-                                            <div class="etiqueta mb-4">// módulo_02</div>
-                                            <div class="icono-wrap">
-                                                <svg style="width:22px;height:22px;color:var(--violeta-claro);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2"/>
-                                                </svg>
-                                            </div>
-                                            <h3 class="text-white font-black text-lg text-center mb-1">Repaso inteligente</h3>
-                                            <p style="color:#aaa;font-size:0.7rem;letter-spacing:0.1em;">[ toca para ver más ]</p>
-                                        </div>
-                                    </div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            </div>
-                            <div class="tarjeta-reverso rounded-2xl cursor-pointer" style="border: 1px solid rgba(34,211,238,0.25);">
-                                <div class="hover-3d">
-                                    <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center p-8" style="position:relative;overflow:hidden;">
-                                        <img src="/imagenes/carta.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;pointer-events:none;">
-                                        <div style="position:absolute;inset:0;background:rgba(0,20,40,0.65);border-radius:inherit;pointer-events:none;"></div>
-                                        <div style="position:relative;z-index:1;text-align:center;">
-                                            <div class="etiqueta mb-3">// descripción</div>
-                                            <p class="text-gray-300 text-sm leading-relaxed">El algoritmo decide qué tarjetas necesitas repasar hoy para optimizar tu memoria a largo plazo.</p>
-                                        </div>
-                                    </div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ── Tarjeta 3 ── -->
-                <div class="tarjeta" data-indice="2">
-                    <div class="tarjeta-contenedor">
-                        <div class="tarjeta-interior">
-                            <div class="tarjeta-frente rounded-2xl cursor-pointer" style="border: 1px solid rgba(124,58,237,0.25);">
-                                <div class="hover-3d">
-                                    <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center p-8" style="position:relative;overflow:hidden;">
-                                        <img src="/imagenes/carta.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;pointer-events:none;">
-                                        <div style="position:absolute;inset:0;background:rgba(10,10,20,0.55);border-radius:inherit;pointer-events:none;"></div>
-                                        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;">
-                                            <div class="etiqueta mb-4">// módulo_03</div>
-                                            <div class="icono-wrap">
-                                                <svg style="width:22px;height:22px;color:var(--violeta-claro);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10"/>
-                                                </svg>
-                                            </div>
-                                            <h3 class="text-white font-black text-lg text-center mb-1">Estadísticas</h3>
-                                            <p style="color:#aaa;font-size:0.7rem;letter-spacing:0.1em;">[ toca para ver más ]</p>
-                                        </div>
-                                    </div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            </div>
-                            <div class="tarjeta-reverso rounded-2xl cursor-pointer" style="border: 1px solid rgba(34,211,238,0.25);">
-                                <div class="hover-3d">
-                                    <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center p-8" style="position:relative;overflow:hidden;">
-                                        <img src="/imagenes/carta.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;pointer-events:none;">
-                                        <div style="position:absolute;inset:0;background:rgba(0,20,40,0.65);border-radius:inherit;pointer-events:none;"></div>
-                                        <div style="position:relative;z-index:1;text-align:center;">
-                                            <div class="etiqueta mb-3">// descripción</div>
-                                            <p class="text-gray-300 text-sm leading-relaxed">Consulta tu porcentaje de aciertos, tarjetas repasadas y evolución semanal.</p>
-                                        </div>
-                                    </div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ── Tarjeta 4 ── -->
-                <div class="tarjeta" data-indice="3">
-                    <div class="tarjeta-contenedor">
-                        <div class="tarjeta-interior">
-                            <div class="tarjeta-frente rounded-2xl cursor-pointer" style="border: 1px solid rgba(124,58,237,0.25);">
-                                <div class="hover-3d">
-                                    <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center p-8" style="position:relative;overflow:hidden;">
-                                        <img src="/imagenes/carta.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;pointer-events:none;">
-                                        <div style="position:absolute;inset:0;background:rgba(10,10,20,0.55);border-radius:inherit;pointer-events:none;"></div>
-                                        <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;">
-                                            <div class="etiqueta mb-4">// módulo_04</div>
-                                            <div class="icono-wrap">
-                                                <svg style="width:22px;height:22px;color:var(--violeta-claro);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z"/>
-                                                </svg>
-                                            </div>
-                                            <h3 class="text-white font-black text-lg text-center mb-1">Revisión errores</h3>
-                                            <p style="color:#aaa;font-size:0.7rem;letter-spacing:0.1em;">[ toca para ver más ]</p>
-                                        </div>
-                                    </div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            </div>
-                            <div class="tarjeta-reverso rounded-2xl cursor-pointer" style="border: 1px solid rgba(34,211,238,0.25);">
-                                <div class="hover-3d">
-                                    <div class="w-full h-full rounded-2xl flex flex-col items-center justify-center p-8" style="position:relative;overflow:hidden;">
-                                        <img src="/imagenes/carta.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;border-radius:inherit;pointer-events:none;">
-                                        <div style="position:absolute;inset:0;background:rgba(0,20,40,0.65);border-radius:inherit;pointer-events:none;"></div>
-                                        <div style="position:relative;z-index:1;text-align:center;">
-                                            <div class="etiqueta mb-3">// descripción</div>
-                                            <p class="text-gray-300 text-sm leading-relaxed">Accede a todas las tarjetas que has fallado y refuerza tus puntos débiles.</p>
-                                        </div>
-                                    </div>
-                                    <div></div><div></div><div></div><div></div>
-                                    <div></div><div></div><div></div><div></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div><!-- fin #carrusel -->
-
-            <!-- Controles -->
-            <div class="flex items-center justify-center gap-4 mt-8">
-                <button id="anterior" style="width:36px;height:36px;border:1px solid rgba(124,58,237,0.25);background:transparent;color:var(--violeta-claro);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;">
-                    <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                </button>
-                <div class="flex gap-2" id="puntos"></div>
-                <button id="siguiente" style="width:36px;height:36px;border:1px solid rgba(124,58,237,0.25);background:transparent;color:var(--violeta-claro);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;">
-                    <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </button>
+                <!-- 8 divs vacíos para las zonas de hover -->
+                <div></div><div></div><div></div><div></div>
+                <div></div><div></div><div></div><div></div>
             </div>
+        </div>
 
-        </div><!-- fin carrusel derecha -->
-    </div><!-- fin flex hero -->
-</section><!-- fin hero -->
+    </div>
+</section>
 
 <div class="sep max-w-6xl mx-auto px-6"></div>
 
-<!-- ==============================
-     FUNCIONES
-============================== -->
+<!-- FUNCIONES -->
 <section id="funciones" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
     <div class="text-center mb-14 animado">
         <div class="etiqueta mb-2">// módulos disponibles</div>
@@ -339,9 +156,7 @@
 
 <div class="sep max-w-6xl mx-auto px-6"></div>
 
-<!-- ==============================
-     CÓMO FUNCIONA
-============================== -->
+<!-- CÓMO FUNCIONA -->
 <section id="como-funciona" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
     <div class="text-center mb-14 animado">
         <div class="etiqueta mb-2">// protocolo de aprendizaje</div>
@@ -372,9 +187,7 @@
 
 <div class="sep max-w-6xl mx-auto px-6"></div>
 
-<!-- ==============================
-     BENEFICIOS
-============================== -->
+<!-- BENEFICIOS -->
 <section id="beneficios" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
     <div class="text-center mb-14 animado">
         <div class="etiqueta mb-2">// ventajas del sistema</div>
@@ -402,9 +215,7 @@
 
 <div class="sep max-w-6xl mx-auto px-6"></div>
 
-<!-- ==============================
-     FAQ
-============================== -->
+<!-- FAQ -->
 <section id="faq" class="py-24 px-6 max-w-4xl mx-auto relative z-10">
     <div class="text-center mb-14 animado">
         <div class="etiqueta mb-2">// preguntas frecuentes</div>
@@ -453,9 +264,7 @@
 
 <div class="sep max-w-6xl mx-auto px-6"></div>
 
-<!-- ==============================
-     CTA FINAL
-============================== -->
+<!-- CTA FINAL -->
 <section class="py-24 px-6 relative z-10 animado">
     <div class="max-w-2xl mx-auto text-center card p-12" style="border-color: rgba(124,58,237,0.3); box-shadow: 0 0 40px rgba(124,58,237,0.08);">
         <div class="etiqueta mb-4">// iniciar sesión</div>
@@ -465,9 +274,7 @@
     </div>
 </section>
 
-<!-- ==============================
-     FOOTER
-============================== -->
+<!-- FOOTER -->
 <footer style="border-top: 1px solid rgba(124,58,237,0.12); padding: 2rem 1.5rem;" class="relative z-10">
     <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <img th:src="@{/imagenes/logo.png}" src="/imagenes/logo.png" alt="LearnDeck" style="height: 36px; width: auto;">
