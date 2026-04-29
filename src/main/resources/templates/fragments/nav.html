@@ -1,0 +1,30 @@
+<nav th:fragment="navbar(usuarioNombre, paginaActiva)" style="background: rgba(10,10,20,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(124,58,237,0.15);"
+    class="sticky top-0 z-50 w-full">
+    <div class="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
+
+        <a href="/" class="flex items-center">
+            <img th:src="@{/imagenes/logo2.png}" src="/imagenes/logo.png" alt="LearnDeck"
+                style="height: 3.8rem; width: 11rem;">
+        </a>
+
+        <div class="hidden md:flex items-center gap-6">
+            <a href="/dashboard" th:style="${paginaActiva == 'inicio'} ?
+               'font-size:0.8rem;color:var(--violeta-claro);' :
+               'font-size:0.8rem;color:#555;'">Inicio</a>
+            <a href="/barajas" th:style="${paginaActiva == 'barajas'} ?
+               'font-size:0.8rem;color:var(--violeta-claro);' :
+               'font-size:0.8rem;color:#555;'">Barajas</a>
+            <a href="/estadisticas" th:style="${paginaActiva == 'estadisticas'} ?
+               'font-size:0.8rem;color:var(--violeta-claro);' :
+               'font-size:0.8rem;color:#555;'">Estadísticas</a>
+        </div>
+
+        <div class="flex items-center gap-4">
+            <div style="width:auto;height:36px; padding:10px; background:linear-gradient(135deg,var(--violeta),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:white;"
+                th:text="${usuarioNombre}">C
+            </div>
+            <a href="/logout" style="font-size:0.75rem;color:#444;" class="hover:text-red-400 transition">Cerrar
+                sesión</a>
+        </div>
+    </div>
+</nav>

@@ -1,44 +1,13 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnDeck – Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+
+<head th:replace="fragments/head :: head('LearnDeck')"></head>
 <body>
 
 <!-- ==============================
      NAVBAR
 ============================== -->
-<nav style="background: rgba(10,10,20,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(124,58,237,0.15);"
-     class="sticky top-0 z-50 w-full">
-    <div class="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
-
-        <a href="/" class="flex items-center">
-            <img th:src="@{/imagenes/logo.png}" src="/imagenes/logo.png" alt="LearnDeck"
-                 style="height: 48px; width: auto;">
-        </a>
-
-        <div class="hidden md:flex items-center gap-6">
-            <a href="/dashboard"
-               style="font-size:0.8rem;color:var(--violeta-claro);font-family:'Courier New',monospace;letter-spacing:0.1em;">#dashboard</a>
-            <a href="/estadisticas"
-               style="font-size:0.8rem;color:#555;font-family:'Courier New',monospace;letter-spacing:0.1em;"
-               class="hover:text-gray-300 transition">#estadísticas</a>
-        </div>
-
-        <div class="flex items-center gap-4">
-            <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--violeta),var(--cyan));border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;color:white;"
-                 th:text="${#strings.substring(usuarioNombre,0,1)}">C
-            </div>
-            <span class="hidden md:block text-sm text-gray-400" th:text="${usuarioNombre}">Christian</span>
-            <a href="/logout" style="font-size:0.75rem;color:#444;font-family:'Courier New',monospace;"
-               class="hover:text-red-400 transition">exit()</a>
-        </div>
-    </div>
-</nav>
+<nav th:replace="fragments/nav :: navbar(${usuarioNombre}, 'inicio')"></nav>
 
 <!-- ==============================
      CONTENIDO
@@ -72,7 +41,7 @@
 
             <!-- Buscador -->
             <input type="text" id="buscadorBarajas"
-                   placeholder="buscar_baraja()"
+                   placeholder="Buscar baraja"
                    class="input-cp"
                    style="max-width:200px;">
 
@@ -98,19 +67,16 @@
                     <img th:src="@{/imagenes/baraja.png}" src="/imagenes/baraja.png">
 
                     <div class="baraja-info">
-                        <span class="baraja-nombre" th:text="${baraja.titulo}"></span>
-                        <span class="baraja-count"
-                              th:text="${baraja.tarjetas != null ? #lists.size(baraja.tarjetas) : 0} + ' tarjetas'">
-                        </span>
+                        <span class="baraja-nombre" th:text="${baraja.titulo}"></span><br>
                     </div>
                 </div>
 
 
                 <!-- Botón crear nueva baraja -->
-                <a href="/barajas/nueva" class="btn-crear">
+                <a href="/barajas" class="btn-crear">
                     <div class="icono-mas">+</div>
-                    <div style="font-size:0.72rem;font-family:'Courier New',monospace;text-align:center;line-height:1.4;">
-                        nueva_baraja()
+                    <div style="font-size:0.72rem;text-align:center;line-height:1.4;">
+                        Crear nueva<br>baraja
                     </div>
                 </a>
 
@@ -119,7 +85,7 @@
             <!-- Mensaje si no hay barajas -->
             <div th:if="${#lists.isEmpty(barajas)}" class="text-center py-8">
                 <div style="font-size:2rem;margin-bottom:0.75rem;"></div>
-                <p style="color:#444;font-family:'Courier New',monospace;font-size:0.82rem;">No hay barajas creadas</p>
+                <p style="color:#444;">No hay barajas creadas</p>
                 <a href="/barajas/nueva" class="btn-primario" style="margin-top:1rem;display:inline-flex;">Crear mi
                     primera baraja</a>
             </div>
@@ -135,7 +101,7 @@
             <div>
                 <h2 class="text-xl font-black text-white">Arrastra las barajas aquí</h2>
             </div>
-            <div id="contadorZona" style="font-size:0.75rem;color:#444;font-family:'Courier New',monospace;">0
+            <div id="contadorZona" style="font-size:0.75rem;color:#444;">0
                 seleccionadas
             </div>
         </div>
@@ -145,9 +111,7 @@
             <!-- Zona drop -->
             <div class="zona-drop" id="zonaDrop">
                 <div class="zona-vacia" id="mensajeZona">
-                    <div style="font-size:2rem;margin-bottom:0.75rem;opacity:0.3;">⬇️</div>
-                    <p style="color:#333;font-family:'Courier New',monospace;font-size:0.82rem;">//
-                        arrastrar_barajas_aquí()</p>
+                    <p style="color:#333;">Arrastra las barajas aquí</p>
                     <p style="color:#2a2a3a;font-size:0.75rem;margin-top:0.3rem;">Las barajas que añadas se estudiarán
                         en esta sesión</p>
                 </div>
@@ -162,26 +126,18 @@
                 <div class="flex items-center gap-6">
                     <!-- Modo de sesión -->
                     <div>
-                        <div class="etiqueta mb-1">// modo</div>
                         <div class="flex gap-2">
                             <button id="modoRepaso" onclick="seleccionarModo('repaso')"
-                                    style="font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.15);color:var(--violeta-claro);cursor:pointer;font-family:'Courier New',monospace;transition:all 0.2s;">
-                                repaso normal
+                                    style="font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.15);color:var(--violeta-claro);cursor:pointer;transition:all 0.2s;">
+                                Repaso normal
                             </button>
                             <button id="modoErrores" onclick="seleccionarModo('errores')"
-                                    style="font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#555;cursor:pointer;font-family:'Courier New',monospace;transition:all 0.2s;">
-                                solo errores
+                                    style="font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#555;cursor:pointer;transition:all 0.2s;">
+                                Solo errores
                             </button>
                         </div>
                     </div>
-
-                    <!-- Info tarjetas en sesión -->
-                    <div>
-                        <div class="etiqueta mb-1">// tarjetas en sesión</div>
-                        <div style="font-size:1.2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"
-                             id="totalTarjetas">0
-                        </div>
-                    </div>
+                    
                 </div>
 
                 <!-- Botón empezar -->
