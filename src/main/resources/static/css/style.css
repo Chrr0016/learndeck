@@ -431,14 +431,14 @@ body::after {
 .hover-3d > :first-child {
   overflow: hidden;
   grid-area: 1/1/4/4;
+  margin: auto;
+  z-index: 0;
+
+  width: auto;
+  height: auto;
+
   transform: rotate3d(var(--transform), 0, 8deg);
-  transition:
-    transform var(--ease) 500ms,
-    scale var(--ease) 500ms,
-    outline-color ease-out 500ms;
-  outline: 1px solid transparent;
-  outline-offset: -1px;
-  position: relative;
+  transition: transform var(--ease) 500ms, scale var(--ease) 500ms;
 }
 .hover-3d > :first-child::before {
   content: "";
@@ -473,8 +473,7 @@ body::after {
   );
 }
 .hover-3d:hover > :first-child {
-  outline-color: rgba(167, 139, 250, 0.2);
-  scale: 1.03;
+  scale: 1.05;
 }
 .hover-3d:hover > :first-child::before {
   opacity: 1;

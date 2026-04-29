@@ -1,12 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnDeck</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-</head>
+<head th:replace="fragments/head :: head('LearnDeck')"></head>
 <body>
 
 <!-- NAVBAR -->
@@ -33,14 +27,12 @@
 
         <div class="items-center hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
             <ul class="flex md:flex-row md:gap-8 mt-4 md:mt-0">
-                <li><a href="#funciones" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#funciones</a>
+                <li><a href="#funciones" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">Funciones</a>
                 </li>
-                <li><a href="#como-funciona" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#protocolo</a>
+                <li><a href="#como-funciona" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">Protocolo</a>
                 </li>
-                <li><a href="#beneficios" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#ventajas</a>
+                <li><a href="#beneficios" class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">Ventajas</a>
                 </li>
-                <li><a href="/login"
-                       class="block py-2 text-sm text-gray-400 hover:text-violet-300 transition">#login</a></li>
             </ul>
         </div>
     </div>
@@ -52,10 +44,6 @@
 
         <!-- Texto izquierda -->
         <div class="flex-1 text-center lg:text-left fade-izquierda">
-            <div class="badge mb-6">
-                <span class="pulso inline-block w-1.5 h-1.5 rounded-full" style="background: var(--cyan);"></span>
-                Sistema activo — repetición espaciada
-            </div>
 
             <h1 class="text-5xl md:text-6xl font-black leading-tight mb-4">
                 Aprende más rápido,<br>
@@ -74,23 +62,6 @@
             <div class="flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4 mb-12">
                 <a href="/registro" class="btn-primario">Crear cuenta gratis</a>
                 <a href="/login" class="btn-outline">Iniciar sesión</a>
-            </div>
-
-            <div class="flex items-center justify-center lg:justify-start gap-8">
-                <div class="text-center">
-                    <div class="stat-num">2x</div>
-                    <div class="etiqueta mt-1">velocidad</div>
-                </div>
-                <div style="width: 1px; height: 40px; background: rgba(124,58,237,0.25);"></div>
-                <div class="text-center">
-                    <div class="stat-num">90%</div>
-                    <div class="etiqueta mt-1">retención</div>
-                </div>
-                <div style="width: 1px; height: 40px; background: rgba(124,58,237,0.25);"></div>
-                <div class="text-center">
-                    <div class="stat-num">free</div>
-                    <div class="etiqueta mt-1">siempre</div>
-                </div>
             </div>
         </div>
 
@@ -113,7 +84,6 @@
 <!-- FUNCIONES -->
 <section id="funciones" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
     <div class="text-center mb-14 animado">
-        <div class="etiqueta mb-2">// módulos disponibles</div>
         <h2 class="text-4xl font-black text-white">Todo lo que necesitas</h2>
         <div class="linea mx-auto mt-3"></div>
     </div>
@@ -172,28 +142,24 @@
 <!-- CÓMO FUNCIONA -->
 <section id="como-funciona" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
     <div class="text-center mb-14 animado">
-        <div class="etiqueta mb-2">// protocolo de aprendizaje</div>
         <h2 class="text-4xl font-black text-white">Cómo funciona</h2>
         <div class="linea mx-auto mt-3"></div>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         <div class="card-cyan p-8 text-center animado delay-1">
             <div class="num-paso mb-2">01</div>
-            <div class="etiqueta mb-3">// paso</div>
             <h3 class="text-white font-bold text-lg mb-3">Crea tus tarjetas</h3>
             <p class="text-gray-500 text-sm leading-relaxed">Añade preguntas y respuestas sobre cualquier tema que
                 quieras aprender.</p>
         </div>
         <div class="card-cyan p-8 text-center animado delay-2">
             <div class="num-paso mb-2">02</div>
-            <div class="etiqueta mb-3">// paso</div>
             <h3 class="text-white font-bold text-lg mb-3">Estudia inteligente</h3>
             <p class="text-gray-500 text-sm leading-relaxed">El sistema te muestra las tarjetas en el momento óptimo
                 para tu memoria.</p>
         </div>
         <div class="card-cyan p-8 text-center animado delay-3">
             <div class="num-paso mb-2">03</div>
-            <div class="etiqueta mb-3">// paso</div>
             <h3 class="text-white font-bold text-lg mb-3">Mejora cada día</h3>
             <p class="text-gray-500 text-sm leading-relaxed">Consolida lo que sabes y refuerza lo que fallas con
                 repetición espaciada.</p>
@@ -206,13 +172,12 @@
 <!-- BENEFICIOS -->
 <section id="beneficios" class="py-24 px-6 max-w-6xl mx-auto relative z-10">
     <div class="text-center mb-14 animado">
-        <div class="etiqueta mb-2">// ventajas del sistema</div>
         <h2 class="text-4xl font-black text-white">Por qué LearnDeck</h2>
         <div class="linea mx-auto mt-3"></div>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
         <div class="card p-8 animado delay-1">
-            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            <div style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
                 01_
             </div>
             <h3 class="text-white font-bold text-lg mt-3 mb-2">Memoriza más rápido</h3>
@@ -220,7 +185,7 @@
                 necesitas repasar.</p>
         </div>
         <div class="card p-8 animado delay-2">
-            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            <div style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
                 02_
             </div>
             <h3 class="text-white font-bold text-lg mt-3 mb-2">Reduce el olvido</h3>
@@ -228,7 +193,7 @@
                 olvidarlo.</p>
         </div>
         <div class="card p-8 animado delay-3">
-            <div style="font-size:2rem;font-weight:900;font-family:'Courier New',monospace;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+            <div style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
                 03_
             </div>
             <h3 class="text-white font-bold text-lg mt-3 mb-2">Mejora constante</h3>
@@ -243,7 +208,6 @@
 <!-- FAQ -->
 <section id="faq" class="py-24 px-6 max-w-4xl mx-auto relative z-10">
     <div class="text-center mb-14 animado">
-        <div class="etiqueta mb-2">// preguntas frecuentes</div>
         <h2 class="text-4xl font-black text-white">FAQ</h2>
         <div class="linea mx-auto mt-3"></div>
     </div>
@@ -302,7 +266,6 @@
 <section class="py-24 px-6 relative z-10 animado">
     <div class="max-w-2xl mx-auto text-center card p-12"
          style="border-color: rgba(124,58,237,0.3); box-shadow: 0 0 40px rgba(124,58,237,0.08);">
-        <div class="etiqueta mb-4">// iniciar sesión</div>
         <h2 class="text-4xl font-black text-white mb-4">¿Listo para empezar?</h2>
         <p class="text-gray-500 mb-8 text-sm">Crea tu cuenta gratis y empieza a estudiar de forma más inteligente.</p>
         <a href="/registro" class="btn-primario">Crear cuenta gratis</a>
