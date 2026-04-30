@@ -2,21 +2,6 @@
 const barajasEnZona = new Map();
 let modoActual = "repaso";
 
-// ── Animaciones entrada ──
-const animados = document.querySelectorAll(".animado");
-const observador = new IntersectionObserver(
-  (entradas) => {
-    entradas.forEach((entrada) => {
-      if (entrada.isIntersecting) {
-        entrada.target.classList.add("visible");
-        observador.unobserve(entrada.target);
-      }
-    });
-  },
-  { threshold: 0.1 },
-);
-animados.forEach((el) => observador.observe(el));
-
 const buscador = document.getElementById("buscadorBarajas");
 const filtroCategoria = document.getElementById("filtroCategoria");
 
@@ -189,8 +174,6 @@ function actualizarUI() {
   const cantidad = barajasEnZona.size;
   document.getElementById("contadorZona").textContent =
     cantidad + " seleccionadas";
-  document.getElementById("totalTarjetas").textContent =
-    cantidad * 10 + " aprox.";
   const btn = document.getElementById("btnEmpezar");
   btn.disabled = cantidad === 0;
 }

@@ -27,6 +27,7 @@ body {
   color: #e2e2e2;
   overflow-x: hidden;
   font-family: var(--font-mono);
+  z-index: 2;
 }
 input, select, button, textarea {
     font-family: var(--font-mono);

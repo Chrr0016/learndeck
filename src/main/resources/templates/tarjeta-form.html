@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
+
+<body>
+
+    <!-- ==============================
+     NAVBAR
+============================== -->
+    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'barajas')}"></nav>
+
+    <!-- ==============================
+     CONTENIDO
+============================== -->
+    <main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
+
+        <div class="max-w-3xl mx-auto">
+
+            <!-- CABECERA -->
+            <div class="mb-8 animado">
+                <h1 class="text-3xl font-black text-white"
+                    th:text="${modoEdicion} ? 'Editar tarjeta' : 'Nueva tarjeta'">
+                    Nueva tarjeta
+                </h1>
+
+                <p class="text-gray-500 text-sm mt-1" th:text="${modoEdicion}
+               ? 'Modifica la información de tu tarjeta.'
+               : 'Añade una nueva tarjeta a tu baraja.'">
+                    Añade una nueva tarjeta a tu baraja.
+                </p>
+            </div>
+
+            <!-- ==========================
+             FORM CREAR
+        =========================== -->
+            <div th:unless="${modoEdicion}" class="card p-8 animado delay-2">
+
+                <div class="mb-8 animado delay-1">
+                    <div class="flex items-center gap-3">
+                        <div class="flex flex-col">
+                            <div class="text-xs uppercase tracking-widest text-gray-500">
+                                Baraja
+                            </div>
+                            <div class="text-2xl font-black text-white leading-tight" th:text="${baraja.titulo}">
+                                Nombre baraja
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div
+                        style="height:1px; margin-top:12px; background:linear-gradient(to right, rgba(124,58,237,0.2), transparent);">
+                    </div>
+
+                </div>
+
+                <form th:action="@{/barajas/{id}/tarjetas/nueva(id=${baraja.id})}" method="post">
+
+                    <!-- Pregunta -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-gray-400 mb-2">
+                            Pregunta
+                        </label>
+
+                        <textarea name="pregunta" rows="4" required autofocus placeholder="Ej: ¿Qué es una variable?"
+                            class="input-cp resize-none"></textarea>
+                    </div>
+
+                    <!-- Respuesta -->
+                    <div class="mb-8">
+                        <label class="block text-sm font-semibold text-gray-400 mb-2">
+                            Respuesta
+                        </label>
+
+                        <textarea name="respuesta" rows="6" required
+                            placeholder="Ej: Espacio en memoria que almacena datos."
+                            class="input-cp resize-none"></textarea>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex gap-3">
+                        <button type="submit" class="btn-primario">
+                            Crear tarjeta
+                        </button>
+
+                        <a href="/barajas" class="btn-outline">
+                            Cancelar
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- ==========================
+             FORM EDITAR
+        =========================== -->
+            <div th:if="${modoEdicion}" class="card p-8 animado delay-2">
+
+                <form th:action="@{/tarjetas/{id}/editar(id=${tarjeta.id})}" method="post">
+
+                    <!-- Pregunta -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-semibold text-gray-400 mb-2">
+                            Pregunta
+                        </label>
+
+                        <textarea name="pregunta" rows="4" required autofocus class="input-cp resize-none"
+                            th:text="${tarjeta.pregunta}"></textarea>
+                    </div>
+
+                    <!-- Respuesta -->
+                    <div class="mb-8">
+                        <label class="block text-sm font-semibold text-gray-400 mb-2">
+                            Respuesta
+                        </label>
+
+                        <textarea name="respuesta" rows="6" required class="input-cp resize-none"
+                            th:text="${tarjeta.respuesta}"></textarea>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="flex gap-3">
+                        <button type="submit" class="btn-primario">
+                            Guardar cambios
+                        </button>
+
+                        <a href="/barajas" class="btn-outline">
+                            Cancelar
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+    </main>
+    <script th:src="@{/js/animacion.js}"></script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('LearnDeck')"></head>
+<body>
+<nav th:replace="fragments/nav :: navbar(${usuarioNombre}, 'baraja')"></nav>
+
+<main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
+
+    <div class="max-w-xl mx-auto">
+
+        <!-- Cabecera -->
+        <div class="mb-8 animado" >
+            <h1 class="text-3xl font-black text-white" th:text="${modoEdicion} ? 'Editar baraja' : 'Nueva baraja'">Nueva baraja</h1>
+            <p class="text-gray-500 text-sm mt-1" th:text="${modoEdicion} ? 'Modifica los datos de tu baraja.' : 'Crea una nueva colección de tarjetas.'">...</p>
+        </div>
+
+        <!-- Formulario -->
+        <div class="card p-8 animado">
+            <form th:action="${modoEdicion} ? @{/barajas/{id}/editar(id=${baraja.id})} : @{/barajas/nueva}"
+                  method="post">
+
+                <!-- Título -->
+                <div class="mb-6">
+                    <label style="display:block;font-size:0.8rem;font-weight:600;color:#9ca3af;margin-bottom:0.5rem;">
+                        Nombre de la baraja
+                    </label>
+                    <input type="text"
+                           name="titulo"
+                           th:value="${baraja.titulo}"
+                           placeholder="Ej: Programación Java, Inglés B2..."
+                           required
+                           autofocus
+                           class="input-cp">
+                </div>
+
+                <!-- Categoría -->
+                <div class="mb-8">
+                    <label style="display:block;font-size:0.8rem;font-weight:600;color:#9ca3af;margin-bottom:0.5rem;">
+                        Categoría 
+                    </label>
+                    <input type="text"
+                           name="categoria"
+                           th:value="${baraja.categoria}"
+                           placeholder="Ej: Informática, Idiomas, Ciencias..."
+                           class="input-cp">
+                </div>
+
+                <!-- Botones -->
+                <div class="flex gap-3">
+                    <button type="submit" class="btn-primario">
+                        <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span th:text="${modoEdicion} ? 'Guardar cambios' : 'Crear baraja'">Crear baraja</span>
+                    </button>
+                    <a href="/barajas" class="btn-outline">Cancelar</a>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</main>
+<script th:src="@{/js/animacion.js}"></script>
+</body>
+</html>

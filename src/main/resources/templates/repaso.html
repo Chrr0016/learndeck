@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('Repaso - LearnDeck')"></head>
+
+<body>
+
+<main class="max-w-3xl mx-auto px-6 py-20 relative z-10">
+
+    <!-- PROGRESO -->
+    <div class="mb-8 animado">
+        <div class="flex justify-between text-xs text-gray-500 mb-2">
+            <span>Repaso</span>
+            <span th:text="${indice + 1} + ' / ' + ${tarjetas.size()}"></span>
+        </div>
+
+        <div class="xp-bar-bg">
+            <div class="xp-bar-fill"
+                 th:style="'width:' + (${indice + 1} * 100 / ${tarjetas.size()}) + '%'">
+            </div>
+        </div>
+    </div>
+
+    <!-- TARJETA 3D -->
+    <div class="perspective-[1000px]">
+
+        <div id="card"
+             class="hover-3d w-full h-[420px] cursor-pointer"
+             onclick="flipCard()">
+
+            <!-- FRONT -->
+            <div class="card flex items-center justify-center text-center p-10">
+
+                <div>
+                    <div class="etiqueta mb-3">Pregunta</div>
+
+                    <h2 class="text-2xl font-black text-white"
+                        th:text="${tarjetas[indice].pregunta}">
+                        Pregunta aquí
+                    </h2>
+
+                    <p class="text-gray-500 text-sm mt-4">
+                        Click para ver respuesta
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- BACK -->
+            <div class="card-cyan flex items-center justify-center text-center p-10">
+
+                <div>
+                    <div class="etiqueta mb-3">Respuesta</div>
+
+                    <h2 class="text-xl font-bold text-white"
+                        th:text="${tarjetas[indice].respuesta}">
+                        Respuesta aquí
+                    </h2>
+                </div>
+
+            </div>
+
+            <!-- capas hover-3d (necesarias) -->
+            <div></div><div></div><div></div><div></div>
+            <div></div><div></div><div></div><div></div>
+
+        </div>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="flex justify-between mt-10">
+
+        <button class="btn-outline" onclick="anterior()">
+            ← Anterior
+        </button>
+
+        <button class="btn-primario" onclick="siguiente()">
+            Siguiente →
+        </button>
+
+    </div>
+
+</main>
+
+<script>
+    function flipCard() {
+        document.getElementById("card").classList.toggle("girada");
+    }
+
+    function siguiente() {
+        window.location.href = "/repaso/siguiente";
+    }
+
+    function anterior() {
+        window.history.back();
+    }
+</script>
+
+</body>
+</html>

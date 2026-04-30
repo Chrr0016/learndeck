@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Controller
-public class DashboardController {
+public class MenuPrincipalController {
 
     @Autowired
     private BarajaService barajaService;
