@@ -15,6 +15,7 @@ public class AuthController {
 
     @Autowired
     private UsuarioService usuarioService;
+
     // Mostrar login
     @GetMapping("/login")
     public String mostrarLogin() {
@@ -24,15 +25,16 @@ public class AuthController {
     // Procesar login
     @PostMapping("/login")
     public String procesarLogin(@RequestParam String email,
-                                @RequestParam String contrasena,
-                                HttpSession session,
-                                Model model) {
+            @RequestParam String contrasena,
+            HttpSession session,
+            Model model) {
 
         Optional<Usuario> usuario = usuarioService.login(email, contrasena);
 
         if (usuario.isPresent()) {
             session.setAttribute("usuarioId", usuario.get().getId());
             session.setAttribute("usuarioNombre", usuario.get().getNombre());
+            session.setAttribute("usuarioRol", usuario.get().getRol()); // ← añadir esto
             return "redirect:/dashboard";
         }
 
@@ -49,9 +51,9 @@ public class AuthController {
     // Procesar registro
     @PostMapping("/registro")
     public String procesarRegistro(@RequestParam String nombre,
-                                   @RequestParam String email,
-                                   @RequestParam String contrasena,
-                                   Model model) {
+            @RequestParam String email,
+            @RequestParam String contrasena,
+            Model model) {
 
         boolean exito = usuarioService.registrar(nombre, email, contrasena);
 

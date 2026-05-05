@@ -30,6 +30,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HistorialEstudio> historial;
 
+    @Column(nullable = false)
+    private String rol = "USER";
+
     public Long getId() {
         return id;
     }
@@ -84,5 +87,13 @@ public class Usuario {
 
     public void setHistorial(List<HistorialEstudio> historial) {
         this.historial = historial;
+    }
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 }

@@ -167,6 +167,7 @@ public class EstadisticasController {
         model.addAttribute("totalSemana", totalSemana);
         model.addAttribute("estadisticasPorBaraja", estadisticasPorBaraja);
         model.addAttribute("tarjetasDificiles", tarjetasDificiles);
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
 
         return "estadisticas";
     }

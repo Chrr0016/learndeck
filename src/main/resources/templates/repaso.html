@@ -4,7 +4,7 @@
 <body>
 
 <!-- NAVBAR mínimo -->
-<nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio')}"></nav>
+<nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"></nav>
 
 <!-- ── PANTALLA REPASO ── -->
 <div class="pantalla-repaso" id="pantallaRepaso">

@@ -23,7 +23,8 @@ public class BarajaService {
     // elimina espacios y pone la primera letra en mayúscula
     // Así "idiomas", "IDIOMAS" e "Idiomas" se guardan siempre igual
     private String normalizarCategoria(String categoria) {
-        if (categoria == null || categoria.trim().isEmpty()) return null;
+        if (categoria == null || categoria.trim().isEmpty())
+            return null;
         String c = categoria.trim();
         return c.substring(0, 1).toUpperCase() + c.substring(1).toLowerCase();
     }
@@ -47,12 +48,14 @@ public class BarajaService {
 
     public boolean editar(Long id, String titulo, String categoria, Long usuarioId) {
         Optional<Baraja> optional = barajaRepository.findById(id);
-        if (optional.isEmpty()) return false;
+        if (optional.isEmpty())
+            return false;
 
         Baraja baraja = optional.get();
 
         // Comprobar que la baraja pertenece al usuario que hace la peticion
-        if (!baraja.getUsuario().getId().equals(usuarioId)) return false;
+        if (!baraja.getUsuario().getId().equals(usuarioId))
+            return false;
 
         baraja.setTitulo(titulo);
         baraja.setCategoria(normalizarCategoria(categoria));
@@ -62,9 +65,11 @@ public class BarajaService {
 
     public boolean eliminar(Long id, Long usuarioId) {
         Optional<Baraja> optional = barajaRepository.findById(id);
-        if (optional.isEmpty()) return false;
+        if (optional.isEmpty())
+            return false;
 
-        if (!optional.get().getUsuario().getId().equals(usuarioId)) return false;
+        if (!optional.get().getUsuario().getId().equals(usuarioId))
+            return false;
 
         barajaRepository.deleteById(id);
         return true;
@@ -86,5 +91,13 @@ public class BarajaService {
 
         Collections.sort(resultado);
         return resultado;
+    }
+
+    public List<Baraja> obtenerTodas() {
+        return barajaRepository.findAll();
+    }
+
+    public void eliminarComoAdmin(Long id) {
+        barajaRepository.deleteById(id);
     }
 }

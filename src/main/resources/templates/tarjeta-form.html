@@ -8,7 +8,8 @@
     <!-- ==============================
      NAVBAR
 ============================== -->
-    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'barajas')}"></nav>
+    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'baraja', ${usuarioRol})}"></nav>
+
 
     <!-- ==============================
      CONTENIDO

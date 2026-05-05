@@ -37,6 +37,7 @@ public class TarjetaController {
         model.addAttribute("tarjeta", tarjeta.get());
         model.addAttribute("baraja", tarjeta.get().getBaraja());
         model.addAttribute("modoEdicion", true);
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
         return "tarjeta-form";
     }
  

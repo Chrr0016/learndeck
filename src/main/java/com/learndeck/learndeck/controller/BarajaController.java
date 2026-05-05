@@ -47,6 +47,7 @@ public class BarajaController {
         model.addAttribute("barajas", barajas);
         model.addAttribute("categorias", categorias);
         model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
         return "barajas";
     }
 
@@ -57,6 +58,7 @@ public class BarajaController {
         if (usuarioId == null) return "redirect:/login";
 
         model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
         model.addAttribute("baraja", new Baraja());
         model.addAttribute("modoEdicion", false);
         return "baraja-form";
@@ -93,6 +95,7 @@ public class BarajaController {
         }
 
         model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
         model.addAttribute("baraja", baraja.get());
         model.addAttribute("modoEdicion", true);
         return "baraja-form";
@@ -173,6 +176,7 @@ public class BarajaController {
         model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
         model.addAttribute("baraja", baraja.get());
         model.addAttribute("tarjeta", new Tarjeta());
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
         model.addAttribute("modoEdicion", false);
         return "tarjeta-form";
     }

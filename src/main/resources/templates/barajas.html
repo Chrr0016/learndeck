@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="fragments/head :: head('LearnDeck')"></head>
+<head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
 
 <body>
 
     <!-- ==============================
      NAVBAR
 ============================== -->
-    <nav th:replace="fragments/nav :: navbar(${usuarioNombre}, 'barajas')"></nav>
+    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'baraja', ${usuarioRol})}"></nav>
+
     <!-- ==============================
      CONTENIDO
 ============================== -->

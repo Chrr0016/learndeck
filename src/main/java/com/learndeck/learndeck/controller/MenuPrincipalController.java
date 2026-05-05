@@ -42,6 +42,7 @@ public class MenuPrincipalController {
         model.addAttribute("totalEstudiadas", totalEstudiadas);
         model.addAttribute("totalAciertos", totalAciertos);
         model.addAttribute("totalFallos", totalFallos);
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
         model.addAttribute("porcentaje", String.format("%.0f", porcentaje));
         model.addAttribute("categorias", categorias);
 

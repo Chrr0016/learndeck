@@ -101,6 +101,7 @@ public class RepasoController {
         model.addAttribute("barajaIds", barajas);
         model.addAttribute("modo", modo);
         model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
 
         return "repaso";
     }
