@@ -1,92 +1,139 @@
 package com.learndeck.learndeck.controller;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import com.learndeck.learndeck.model.Baraja;
 import com.learndeck.learndeck.model.Tarjeta;
 import com.learndeck.learndeck.model.Usuario;
 import com.learndeck.learndeck.service.BarajaService;
 import com.learndeck.learndeck.service.HistorialEstudioService;
 import com.learndeck.learndeck.service.TarjetaService;
-
+import com.learndeck.learndeck.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 @Controller
-@RequestMapping("/repaso")
+@RequestMapping("/repasar")
 public class RepasoController {
-
-    @Autowired
-    private TarjetaService tarjetaService;
 
     @Autowired
     private BarajaService barajaService;
 
     @Autowired
+    private TarjetaService tarjetaService;
+
+    @Autowired
     private HistorialEstudioService historialService;
 
-    // ==========================
-    // INICIAR REPASO
-    // ==========================
+    @Autowired
+    private UsuarioService usuarioService;
+
     @GetMapping
-    public String iniciarRepaso(@RequestParam String barajas,
-            Model model,
-            HttpSession session) {
+    public String iniciarRepaso(@RequestParam(required = false) String barajas,
+                                @RequestParam(defaultValue = "repaso") String modo,
+                                HttpSession session,
+                                Model model) {
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null)
-            return "redirect:/login";
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId == null) return "redirect:/login";
 
-        List<Long> ids = Arrays.stream(barajas.split(","))
-                .map(Long::parseLong)
-                .toList();
+        if (barajas == null || barajas.isEmpty()) return "redirect:/dashboard";
+
+        // Convertimos el string "4,6,7" en una lista de números [4, 6, 7]
+        List<Long> barajaIds = new ArrayList<>();
+        for (String idStr : barajas.split(",")) {
+            try {
+                barajaIds.add(Long.parseLong(idStr.trim()));
+            } catch (NumberFormatException e) {
+                // Si el ID no es un número válido lo ignoramos
+            }
+        }
 
         List<Tarjeta> tarjetas = new ArrayList<>();
 
-        for (Long id : ids) {
-            tarjetas.addAll(tarjetaService.obtenerPorBaraja(id));
+        if ("errores".equals(modo)) {
+            // Modo errores: solo tarjetas cuyo último intento fue incorrecto
+            List<Long> idsFalladas = historialService.obtenerIdsTarjetasFalladasPorBarajas(usuarioId, barajaIds);
+
+            if (idsFalladas.isEmpty()) {
+                return "redirect:/dashboard?mensaje=no-hay-errores-en-esas-barajas";
+            }
+
+            tarjetas = new ArrayList<>(tarjetaService.obtenerPorIds(idsFalladas));
+
+        } else {
+            // Modo repaso: todas las tarjetas de las barajas seleccionadas
+            for (Long barajaId : barajaIds) {
+                Optional<Baraja> barajaOpt = barajaService.obtenerPorId(barajaId);
+                if (barajaOpt.isEmpty()) continue;
+
+                Baraja baraja = barajaOpt.get();
+
+                // Solo añadimos tarjetas de barajas que pertenecen al usuario
+                if (baraja.getUsuario().getId().equals(usuarioId)) {
+                    tarjetas.addAll(tarjetaService.obtenerPorBaraja(barajaId));
+                }
+            }
+        }
+
+        if (tarjetas.isEmpty()) return "redirect:/dashboard";
+
+        // Mezclamos las tarjetas aleatoriamente para cada sesión
+        Collections.shuffle(tarjetas);
+
+        // Convertimos las tarjetas a una lista de mapas para pasarlas al JS
+        // No podemos pasar objetos Java directamente al JavaScript
+        List<Map<String, Object>> tarjetasJson = new ArrayList<>();
+        for (Tarjeta t : tarjetas) {
+            Map<String, Object> map = new LinkedHashMap<>();
+            map.put("id", t.getId());
+            map.put("pregunta", t.getPregunta());
+            map.put("respuesta", t.getRespuesta());
+            tarjetasJson.add(map);
         }
 
         model.addAttribute("tarjetas", tarjetas);
+        model.addAttribute("tarjetasJson", tarjetasJson);
+        model.addAttribute("barajaIds", barajas);
+        model.addAttribute("modo", modo);
+        model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
 
         return "repaso";
     }
 
-    // ==========================
-    // GUARDAR RESPUESTA
-    // ==========================
-    @PostMapping("/resultado")
-    public String guardarResultado(@RequestParam Long tarjetaId,
-            @RequestParam boolean acierto,
+    // Este endpoint lo llama el JavaScript de la página de repaso con fetch()
+    // cada vez que el usuario responde una tarjeta
+    // @ResponseBody indica que el return es JSON, no una vista HTML
+    @PostMapping("/guardar")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> guardarResultado(
+            @RequestBody Map<String, Object> body,
             HttpSession session) {
 
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        if (usuario == null)
-            return "redirect:/login";
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId == null) return ResponseEntity.status(401).build();
 
-        Optional<Tarjeta> tarjeta = tarjetaService.obtenerPorId(tarjetaId);
+        try {
+            Long tarjetaId = ((Number) body.get("tarjetaId")).longValue();
+            boolean resultado = (Boolean) body.get("resultado");
 
-        if (tarjeta.isPresent()) {
-            historialService.guardarResultado(usuario, tarjeta.get(), acierto);
+            Optional<Usuario> usuario = usuarioService.findById(usuarioId);
+            if (usuario.isEmpty()) return ResponseEntity.status(401).build();
+
+            Optional<Tarjeta> tarjeta = tarjetaService.obtenerPorId(tarjetaId);
+            if (tarjeta.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Tarjeta no encontrada"));
+            }
+
+            historialService.guardarResultado(usuario.get(), tarjeta.get(), resultado);
+            return ResponseEntity.ok(Map.of("ok", true));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
-
-        return "redirect:/repaso/siguiente";
-    }
-
-    // ==========================
-    // SIGUIENTE (puedes mejorarlo luego con sesión o cola)
-    // ==========================
-    @GetMapping("/siguiente")
-    public String siguiente() {
-        return "redirect:/barajas";
     }
 }

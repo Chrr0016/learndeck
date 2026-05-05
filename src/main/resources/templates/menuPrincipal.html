@@ -4,9 +4,7 @@
 <head th:replace="fragments/head :: head('LearnDeck')"></head>
 <body>
 
-<!-- ==============================
-     NAVBAR
-============================== -->
+<!--NAVBAR-->
 <nav th:replace="fragments/nav :: navbar(${usuarioNombre}, 'inicio')"></nav>
 
 <!-- ==============================
@@ -73,7 +71,7 @@
 
 
                 <!-- Botón crear nueva baraja -->
-                <a href="/barajas" class="btn-crear">
+                <a href="/barajas/nueva" class="btn-crear">
                     <div class="icono-mas">+</div>
                     <div style="font-size:0.72rem;text-align:center;line-height:1.4;">
                         Crear nueva<br>baraja

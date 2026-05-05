@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('LearnDeck')"></head>
+<body>
+
+<!-- NAVBAR -->
+<nav th:replace="fragments/nav :: navbar(${usuarioNombre}, 'estadisticas')"></nav>
+
+<main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
+
+    <!-- Cabecera -->
+    <div class="mb-10 animado">
+        <h1 class="text-3xl font-black text-white">Estadísticas</h1>
+        <p class="text-gray-500 text-sm mt-1">Revisa tu progreso y mejora tu rendimiento de estudio.</p>
+    </div>
+
+    <!-- ── STATS PRINCIPALES ── -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+        <div class="stat-card s-violeta animado delay-1">
+            <div class="stat-grande" th:text="${totalEstudiadas}">0</div>
+            <div style="font-size:0.72rem;color:#555;margin-top:0.5rem;">tarjetas repasadas</div>
+        </div>
+
+        <div class="stat-card s-verde animado delay-2">
+            <div style="font-size:3rem;font-weight:900;color:#4ade80;line-height:1;"
+                 th:text="${totalAciertos}">0</div>
+            <div style="font-size:0.72rem;color:#555;margin-top:0.5rem;">respuestas correctas</div>
+        </div>
+
+        <div class="stat-card s-rosa animado delay-3">
+            <div style="font-size:3rem;font-weight:900;color:#f87171;line-height:1;"
+                 th:text="${totalFallos}">0</div>
+            <div style="font-size:0.72rem;color:#555;margin-top:0.5rem;">respuestas incorrectas</div>
+        </div>
+
+        <div class="stat-card s-cyan animado delay-4">
+            <div style="font-size:3rem;font-weight:900;background:linear-gradient(135deg,#4ade80,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;"
+                 th:text="${porcentaje + '%'}">0%</div>
+            <div style="font-size:0.72rem;color:#555;margin-top:0.5rem;">tasa de acierto</div>
+        </div>
+
+    </div>
+
+    <!-- ── GRID PRINCIPAL ── -->
+    <div class="grid lg:grid-cols-3 gap-6">
+
+        <!-- Columna izquierda (2/3) -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- Actividad semanal -->
+            <div class="card p-6 animado delay-2">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="text-lg font-black text-white">Últimos 7 días</h2>
+                    </div>
+                    <div style="font-size:0.75rem;color:#555;"
+                         th:text="${totalSemana} + ' tarjetas esta semana'">0 tarjetas esta semana</div>
+                </div>
+
+                <div class="grafico-barras" id="graficoDias">
+                    <!-- Generado por JS desde datos Thymeleaf -->
+                </div>
+
+                <div class="flex justify-between mt-2">
+                    <span th:each="dia : ${diasSemana}"
+                          style="font-size:0.62rem;color:#444;flex:1;text-align:center;"
+                          th:text="${dia}">L</span>
+                </div>
+            </div>
+
+            <!-- Rendimiento por baraja -->
+            <div class="card p-6 animado delay-3">
+                <h2 class="text-lg font-black text-white mb-5">Por baraja</h2>
+
+                <div th:if="${#lists.isEmpty(estadisticasPorBaraja)}"
+                     class="text-center py-6" style="color:#333;font-size:0.8rem;">
+                    No hay datos aun
+                </div>
+
+                <div th:each="est : ${estadisticasPorBaraja}" class="mb-5 last:mb-0">
+                    <div class="flex items-center justify-between mb-2">
+                        <span style="font-size:0.82rem;font-weight:600;color:white;" th:text="${est.titulo}">Baraja</span>
+                        <div class="flex items-center gap-3">
+                            <span style="font-size:0.72rem;color:#4ade80;"
+                                  th:text="${est.aciertos} + '✓'">0✓</span>
+                            <span style="font-size:0.72rem;color:#f87171;"
+                                  th:text="${est.fallos} + '✗'">0✗</span>
+                            <span style="font-size:0.72rem;font-weight:700;"
+                                  th:style="${est.porcentaje >= 70} ? 'color:#4ade80' : (${est.porcentaje >= 40} ? 'color:#fbbf24' : 'color:#f87171')"
+                                  th:text="${est.porcentaje} + '%'">0%</span>
+                        </div>
+                    </div>
+                    <div class="barra-wrap">
+                        <div class="barra-fill"
+                             th:classappend="${est.porcentaje >= 70} ? 'barra-verde' : (${est.porcentaje >= 40} ? 'barra-violeta' : 'barra-roja')"
+                             th:attr="data-width=${est.porcentaje}"
+                             style="width: 0%">
+                        </div>
+                    </div>
+                    <div style="font-size:0.65rem;color:#444;margin-top:4px;"
+                         th:text="${est.total} + ' tarjetas estudiadas'">0 tarjetas estudiadas</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Columna derecha (1/3) -->
+        <div class="space-y-6">
+
+            <!-- Resumen visual -->
+            <div class="card p-6 animado delay-2">
+                <h2 class="text-lg font-black text-white mb-5">Rendimiento</h2>
+
+                <!-- Círculo porcentaje -->
+                <div class="text-center mb-5">
+                    <div style="font-size:4rem;font-weight:900;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;"
+                         th:text="${porcentaje + '%'}">0%</div>
+                    <div style="font-size:0.72rem;color:#555;margin-top:4px;">tasa de acierto global</div>
+                </div>
+
+                <!-- Barra aciertos -->
+                <div class="mb-3">
+                    <div class="flex justify-between mb-1">
+                        <span style="font-size:0.72rem;color:#4ade80;">correctas</span>
+                        <span style="font-size:0.72rem;color:#4ade80;" th:text="${porcentaje + '%'}">0%</span>
+                    </div>
+                    <div class="barra-wrap">
+                        <div class="barra-fill barra-verde" th:attr="data-width=${porcentaje}" style="width:0%"></div>
+                    </div>
+                </div>
+
+                <!-- Barra fallos -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <span style="font-size:0.72rem;color:#f87171;">incorrectas</span>
+                        <span style="font-size:0.72rem;color:#f87171;" th:text="${100 - porcentaje} + '%'"  >0%</span>
+                    </div>
+                    <div class="barra-wrap">
+                        <div class="barra-fill barra-roja" th:attr="data-width=${100 - porcentaje}" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjetas más difíciles -->
+            <div class="card p-6 animado delay-3">
+                <h2 class="text-lg font-black text-white mb-4">Las más falladas</h2>
+
+                <div th:if="${#lists.isEmpty(tarjetasDificiles)}"
+                     class="text-center py-4" style="color:#333;font-size:0.78rem;">
+                    Sin errores registrados
+                </div>
+
+                <div th:each="td : ${tarjetasDificiles}" class="tarjeta-dificil mb-2 last:mb-0">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:0.78rem;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                             th:text="${td.pregunta}">Pregunta</div>
+                        <div style="font-size:0.65rem;color:#555;margin-top:2px;"
+                             th:text="${td.baraja}">Baraja</div>
+                    </div>
+                    <div style="flex-shrink:0;text-align:right;">
+                        <div style="font-size:0.8rem;font-weight:700;color:#f87171;" th:text="${td.fallos} + '✗'">0✗</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accesos rápidos -->
+            <div class="card p-5 animado delay-4">
+
+                <div class="flex flex-col gap-2">
+                    <a href="/repasar" class="btn-primario" style="font-size:0.8rem;padding:0.6rem 1rem;justify-content:center;">
+                        Repasar ahora
+                    </a>
+                    <a href="/repasar?modo=errores" class="btn-outline" style="font-size:0.8rem;padding:0.6rem 1rem;justify-content:center;">
+                        Repasar errores
+                    </a>
+                    <a href="/barajas" class="btn-ghost" style="font-size:0.8rem;padding:0.6rem 1rem;justify-content:center;">
+                        Gestionar barajas
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<script th:inline="javascript">
+    const DATOS_SEMANA = /*[[${datosSemana}]]*/ [];
+    const PORCENTAJE   = /*[[${porcentaje}]]*/ 0;
+</script>
+
+<script>
+    // ── Animaciones entrada ──
+    const animados = document.querySelectorAll('.animado');
+    const obs = new IntersectionObserver((entradas) => {
+        entradas.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+        });
+    }, { threshold: 0.1 });
+    animados.forEach(el => obs.observe(el));
+
+    // ── Animar barras al cargar ──
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            document.querySelectorAll('.barra-fill[data-width]').forEach(barra => {
+                barra.style.width = barra.dataset.width + '%';
+            });
+        }, 400);
+    });
+
+    // ── Gráfico semanal ──
+    const grafico = document.getElementById('graficoDias');
+    if (grafico && DATOS_SEMANA.length > 0) {
+        const maxVal = Math.max(...DATOS_SEMANA.map(d => d.cantidad), 1);
+        const hoy    = new Date().getDay(); // 0 = dom, 1 = lun...
+
+        DATOS_SEMANA.forEach((dia, i) => {
+            const pct      = Math.max((dia.cantidad / maxVal) * 100, 3);
+            const esHoy    = i === DATOS_SEMANA.length - 1;
+            const barraEl  = document.createElement('div');
+            barraEl.className = 'barra-dia' + (esHoy ? ' hoy' : '');
+            barraEl.style.height = '0%';
+            barraEl.innerHTML = `<div class="tooltip">${dia.cantidad} tarjetas</div>`;
+            grafico.appendChild(barraEl);
+
+            setTimeout(() => { barraEl.style.height = pct + '%'; }, 400 + i * 60);
+        });
+    }
+</script>
+
+</body>
+</html>

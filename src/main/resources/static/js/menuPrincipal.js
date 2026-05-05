@@ -10,20 +10,16 @@ filtroCategoria.addEventListener("change", filtrarBarajas);
 
 function filtrarBarajas() {
   const texto = buscador.value.toLowerCase();
-  const categoria = filtroCategoria.value;
+  const categoria = filtroCategoria.value.toLowerCase(); // ← toLowerCase
 
   document.querySelectorAll(".baraja-simple").forEach((baraja) => {
     const titulo = baraja.dataset.titulo.toLowerCase();
-    const cat = baraja.dataset.categoria;
+    const cat = (baraja.dataset.categoria || '').toLowerCase(); // ← toLowerCase
 
     const coincideTexto = titulo.includes(texto);
     const coincideCategoria = !categoria || cat === categoria;
 
-    if (coincideTexto && coincideCategoria) {
-      baraja.style.display = "";
-    } else {
-      baraja.style.display = "none";
-    }
+    baraja.style.display = coincideTexto && coincideCategoria ? "" : "none";
   });
 }
 

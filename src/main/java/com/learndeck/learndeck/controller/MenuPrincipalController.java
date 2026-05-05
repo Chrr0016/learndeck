@@ -10,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 public class MenuPrincipalController {
@@ -24,26 +23,19 @@ public class MenuPrincipalController {
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {
 
-        // Comprobamos que hay sesión activa
         Long usuarioId = (Long) session.getAttribute("usuarioId");
         String usuarioNombre = (String) session.getAttribute("usuarioNombre");
 
-        if (usuarioId == null) {
-            return "redirect:/login";
-        }
+        if (usuarioId == null) return "redirect:/login";
 
-        // Barajas del usuario
         List<Baraja> barajas = barajaService.obtenerBarajasPorUsuario(usuarioId);
-
         List<String> categorias = barajaService.obtenerCategorias(usuarioId);
 
-        // Estadísticas calculadas desde historial
         int totalEstudiadas = historialService.totalEstudiadas(usuarioId);
         long totalAciertos = historialService.totalAciertos(usuarioId);
         long totalFallos = historialService.totalFallos(usuarioId);
         double porcentaje = historialService.porcentajeAcierto(usuarioId);
 
-        // Pasamos datos a la vista
         model.addAttribute("usuarioNombre", usuarioNombre);
         model.addAttribute("barajas", barajas);
         model.addAttribute("totalBarajas", barajas.size());

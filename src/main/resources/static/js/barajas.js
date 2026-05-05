@@ -68,8 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Cargar datos de la baraja via fetch
         listaTarjetas.innerHTML = `
-            <div class="text-center py-10" style="color:#333;font-family:'Courier New',monospace;font-size:0.8rem;">
-                // cargando_tarjetas()...
+            <div class="text-center py-10" style="color:#333;font-size:0.8rem;">
+                Cargando...
             </div>
         `;
 
@@ -84,8 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(() => {
                 listaTarjetas.innerHTML = `
-                    <div class="text-center py-10" style="color:#f87171;font-family:'Courier New',monospace;font-size:0.8rem;">
-                        // error_cargando_tarjetas()
+                    <div class="text-center py-10" style="color:#f87171;font-size:0.8rem;">
+                        Error cargando tarjetas
                     </div>
                 `;
             });
@@ -113,8 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tarjetas.length === 0) {
             listaTarjetas.innerHTML = `
                 <div class="text-center py-10">
-                    <div style="font-size:2rem;margin-bottom:0.75rem;opacity:0.3;">🃏</div>
-                    <p style="color:#333;font-family:'Courier New',monospace;font-size:0.8rem;">// no_hay_tarjetas()</p>
+                    <p style="color:#333;font-size:0.8rem;">No hay tarjetas</p>
                     <p style="color:#2a2a3a;font-size:0.72rem;margin-top:0.3rem;">Crea la primera tarjeta de esta baraja</p>
                 </div>
             `;

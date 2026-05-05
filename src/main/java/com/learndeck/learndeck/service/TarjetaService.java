@@ -5,6 +5,7 @@ import com.learndeck.learndeck.model.Tarjeta;
 import com.learndeck.learndeck.repository.TarjetaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -15,17 +16,18 @@ public class TarjetaService {
     @Autowired
     private TarjetaRepository tarjetaRepository;
 
-    // Obtener tarjetas de una baraja
     public List<Tarjeta> obtenerPorBaraja(Long barajaId) {
         return tarjetaRepository.findByBarajaId(barajaId);
     }
 
-    // Obtener una tarjeta por id
     public Optional<Tarjeta> obtenerPorId(Long id) {
         return tarjetaRepository.findById(id);
     }
 
-    // Crear tarjeta
+    public List<Tarjeta> obtenerPorIds(List<Long> ids) {
+        return tarjetaRepository.findByIdIn(ids);
+    }
+
     public Tarjeta crear(String pregunta, String respuesta, Baraja baraja) {
         Tarjeta tarjeta = new Tarjeta();
         tarjeta.setPregunta(pregunta);
@@ -36,14 +38,13 @@ public class TarjetaService {
         return tarjetaRepository.save(tarjeta);
     }
 
-    // Editar tarjeta
     public boolean editar(Long id, String pregunta, String respuesta, Long usuarioId) {
         Optional<Tarjeta> optional = tarjetaRepository.findById(id);
         if (optional.isEmpty()) return false;
 
         Tarjeta tarjeta = optional.get();
 
-        // Comprobamos que la tarjeta pertenece al usuario
+        // Verificamos que la tarjeta pertenece al usuario a través de su baraja
         if (!tarjeta.getBaraja().getUsuario().getId().equals(usuarioId)) return false;
 
         tarjeta.setPregunta(pregunta);
@@ -52,12 +53,10 @@ public class TarjetaService {
         return true;
     }
 
-    // Eliminar tarjeta
     public boolean eliminar(Long id, Long usuarioId) {
         Optional<Tarjeta> optional = tarjetaRepository.findById(id);
         if (optional.isEmpty()) return false;
 
-        // Comprobamos que la tarjeta pertenece al usuario
         if (!optional.get().getBaraja().getUsuario().getId().equals(usuarioId)) return false;
 
         tarjetaRepository.deleteById(id);

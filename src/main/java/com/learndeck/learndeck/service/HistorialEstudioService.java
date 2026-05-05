@@ -6,6 +6,7 @@ import com.learndeck.learndeck.model.Usuario;
 import com.learndeck.learndeck.repository.HistorialEstudioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +16,6 @@ public class HistorialEstudioService {
     @Autowired
     private HistorialEstudioRepository historialRepository;
 
-    // Guardar resultado de una tarjeta estudiada
     public void guardarResultado(Usuario usuario, Tarjeta tarjeta, boolean resultado) {
         HistorialEstudio historial = new HistorialEstudio();
         historial.setUsuario(usuario);
@@ -25,27 +25,55 @@ public class HistorialEstudioService {
         historialRepository.save(historial);
     }
 
-    // Obtener tarjetas falladas (para revisión de errores)
-    public List<HistorialEstudio> obtenerFalladas(Long usuarioId) {
-        return historialRepository.findByUsuarioIdAndResultado(usuarioId, false);
+    public List<HistorialEstudio> obtenerTodo(Long usuarioId) {
+        return historialRepository.findByUsuarioId(usuarioId);
     }
 
-    // Calcular estadísticas dinámicamente desde el historial
+    // Los tres métodos siguientes hacen una sola consulta a BD cada uno.
+    // Se podría optimizar haciendo una sola consulta y calculando los tres valores,
+    // pero así es más claro de leer y para el volumen de datos de esta app no supone problema.
     public int totalEstudiadas(Long usuarioId) {
-        return historialRepository.findByUsuarioId(usuarioId).size();
+        List<HistorialEstudio> historial = historialRepository.findByUsuarioId(usuarioId);
+        return historial.size();
     }
 
     public long totalAciertos(Long usuarioId) {
-        return historialRepository.findByUsuarioIdAndResultado(usuarioId, true).size();
+        List<HistorialEstudio> historial = historialRepository.findByUsuarioId(usuarioId);
+        long aciertos = 0;
+        for (HistorialEstudio h : historial) {
+            if (h.getResultado()) {
+                aciertos++;
+            }
+        }
+        return aciertos;
     }
 
     public long totalFallos(Long usuarioId) {
-        return historialRepository.findByUsuarioIdAndResultado(usuarioId, false).size();
+        List<HistorialEstudio> historial = historialRepository.findByUsuarioId(usuarioId);
+        long fallos = 0;
+        for (HistorialEstudio h : historial) {
+            if (!h.getResultado()) {
+                fallos++;
+            }
+        }
+        return fallos;
     }
 
     public double porcentajeAcierto(Long usuarioId) {
-        int total = totalEstudiadas(usuarioId);
+        List<HistorialEstudio> historial = historialRepository.findByUsuarioId(usuarioId);
+        int total = historial.size();
         if (total == 0) return 0.0;
-        return (double) totalAciertos(usuarioId) / total * 100;
+
+        long aciertos = 0;
+        for (HistorialEstudio h : historial) {
+            if (h.getResultado()) {
+                aciertos++;
+            }
+        }
+        return (double) aciertos / total * 100;
+    }
+
+    public List<Long> obtenerIdsTarjetasFalladasPorBarajas(Long usuarioId, List<Long> barajaIds) {
+        return historialRepository.findIdsTarjetasFalladasPorUsuarioYBarajas(usuarioId, barajaIds);
     }
 }

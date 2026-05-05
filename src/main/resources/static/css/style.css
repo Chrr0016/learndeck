@@ -1422,6 +1422,285 @@ select.input-cp:focus {
 }
 
 
+/*REPASO*/
+.escena {
+  perspective: 1200px;
+  width: 100%;
+  max-width: 580px;
+  height: 340px;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.carta-interior {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.escena.girada .carta-interior {
+  transform: rotateY(180deg);
+}
+
+.cara {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+}
+
+.cara-frente {
+  background: var(--fondo2);
+  border: 1px solid rgba(124,58,237,0.3);
+  box-shadow: 0 0 40px rgba(124,58,237,0.1);
+}
+
+.cara-reverso {
+  background: var(--fondo3);
+  border: 1px solid rgba(34,211,238,0.3);
+  box-shadow: 0 0 40px rgba(34,211,238,0.08);
+  transform: rotateY(180deg);
+}
+
+/* Línea superior degradada */
+.cara::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 20px 20px 0 0;
+}
+.cara-frente::before {
+  background: linear-gradient(to right, var(--violeta), var(--cyan));
+}
+.cara-reverso::before {
+  background: linear-gradient(to right, var(--cyan), var(--violeta));
+}
+
+/* ── Barra de progreso ── */
+.barra-prog {
+  height: 6px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.barra-prog-fill {
+  height: 100%;
+  background: linear-gradient(to right, var(--violeta), var(--cyan));
+  border-radius: 100px;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 8px rgba(124,58,237,0.4);
+}
+
+/* ── Botones respuesta ── */
+.btn-correcto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(74,222,128,0.12);
+  color: #4ade80;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.85rem 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(74,222,128,0.3);
+  transition: all 0.2s;
+  cursor: pointer;
+  min-width: 150px;
+  justify-content: center;
+}
+.btn-correcto:hover {
+  background: rgba(74,222,128,0.25);
+  box-shadow: 0 0 20px rgba(74,222,128,0.2);
+  transform: translateY(-2px);
+}
+
+.btn-incorrecto {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(248,113,113,0.12);
+  color: #f87171;
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.85rem 2rem;
+  border-radius: 12px;
+  border: 1px solid rgba(248,113,113,0.3);
+  transition: all 0.2s;
+  cursor: pointer;
+  min-width: 150px;
+  justify-content: center;
+}
+.btn-incorrecto:hover {
+  background: rgba(248,113,113,0.25);
+  box-shadow: 0 0 20px rgba(248,113,113,0.2);
+  transform: translateY(-2px);
+}
+
+/* ── Pantalla resultado ── */
+.pantalla-resultado {
+  display: none;
+}
+.pantalla-resultado.visible {
+  display: block;
+}
+.pantalla-repaso {
+  display: block;
+}
+.pantalla-repaso.oculta {
+  display: none;
+}
+
+/* ── Círculo resultado ── */
+.circulo-resultado {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(124,58,237,0.1);
+  border: 2px solid rgba(124,58,237,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  font-size: 3rem;
+}
+
+/* ── Hint voltear ── */
+.hint-voltear {
+  font-size: 0.7rem;
+  color: #444;
+  letter-spacing: 0.1em;
+  text-align: center;
+  margin-top: 1rem;
+  transition: opacity 0.3s;
+}
+
+/* ── Animación entrada tarjeta ── */
+@keyframes entradaTarjeta {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.escena {
+  animation: entradaTarjeta 0.35s ease;
+}
+
+/* ── Teclado hint ── */
+.tecla {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 22px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 5px;
+  font-size: 0.65rem;
+  color: #555;
+}
+
+/*estadisticas*/
+/* ── Barras ── */
+.barra-wrap {
+  height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.barra-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 1.2s ease;
+}
+.barra-verde  { background: linear-gradient(to right, #4ade80, #22d3ee); box-shadow: 0 0 8px rgba(74,222,128,0.4); }
+.barra-roja   { background: linear-gradient(to right, #f87171, #fb923c); box-shadow: 0 0 8px rgba(248,113,113,0.3); }
+.barra-violeta { background: linear-gradient(to right, var(--violeta), var(--cyan)); box-shadow: 0 0 8px rgba(124,58,237,0.4); }
+
+/* ── Gráfico semanal ── */
+.grafico-barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 120px;
+}
+.barra-dia {
+  flex: 1;
+  border-radius: 6px 6px 0 0;
+  background: rgba(124,58,237,0.25);
+  min-height: 4px;
+  transition: height 0.8s ease, background 0.2s;
+  position: relative;
+  cursor: default;
+}
+.barra-dia:hover {
+  background: rgba(124,58,237,0.5);
+}
+.barra-dia.hoy {
+  background: linear-gradient(to top, var(--violeta), var(--cyan));
+  box-shadow: 0 0 10px rgba(124,58,237,0.4);
+}
+.barra-dia .tooltip {
+  display: none;
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  color: white;
+  background: rgba(20,20,40,0.9);
+  border: 1px solid rgba(124,58,237,0.3);
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+.barra-dia:hover .tooltip { display: block; }
+
+/* ── Stat grande ── */
+.stat-grande {
+  font-size: 3rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--violeta-claro), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1;
+}
+
+/* ── Tarjeta difícil ── */
+.tarjeta-dificil {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(248,113,113,0.15);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: border-color 0.2s;
+}
+.tarjeta-dificil:hover { border-color: rgba(248,113,113,0.3); }
+
+/* ── Tabla historial ── */
+.historial-fila {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.historial-fila:last-child { border-bottom: none; }
+
+
 html{
  zoom:1.25;
 }
+
+
+
