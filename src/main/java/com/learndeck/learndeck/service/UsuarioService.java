@@ -38,6 +38,31 @@ public class UsuarioService {
         return Optional.empty();
     }
 
+    // Actualizar perfil
+    public boolean actualizarPerfil(Long id, String nuevoNombre, String nuevoEmail, String nuevaContrasena) {
+        Optional<Usuario> optional = usuarioRepository.findById(id);
+        if (optional.isEmpty())
+            return false;
+
+        Usuario usuario = optional.get();
+
+        // Validar si el email ha cambiado y si el nuevo ya existe en otro usuario
+        if (!usuario.getEmail().equals(nuevoEmail) && usuarioRepository.existsByEmail(nuevoEmail)) {
+            return false; // Email ya ocupado por otra persona
+        }
+
+        usuario.setNombre(nuevoNombre);
+        usuario.setEmail(nuevoEmail);
+
+        // Solo actualizamos la contraseña si el usuario escribió algo en el campo
+        if (nuevaContrasena != null && !nuevaContrasena.trim().isEmpty()) {
+            usuario.setContrasena(nuevaContrasena);
+        }
+
+        usuarioRepository.save(usuario);
+        return true;
+    }
+
     public Optional<Usuario> findById(Long id) {
         return usuarioRepository.findById(id);
     }

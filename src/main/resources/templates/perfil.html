@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Mi Perfil - LearnDeck')}"></head>
+<body class="bg-[#0a0a14] text-white">
+
+    <!-- NAVBAR -->
+    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'perfil', ${usuarioRol})}"></nav>
+
+    <main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
+        
+        <!-- Cabecera -->
+        <div class="mb-10 animado">
+            <h1 class="text-3xl font-black text-white">
+                Mi <span style="color:var(--violeta-claro);">Perfil</span>
+            </h1>
+            <p class="text-gray-500 text-sm mt-1">Configura tu cuenta y opciones de seguridad.</p>
+        </div>
+
+        <div class="max-w-2xl mx-auto">
+            <!-- Alertas -->
+            <div th:if="${mensajeExito}" class="mb-6 p-4 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 text-sm animado">
+                <span th:text="${mensajeExito}"></span>
+            </div>
+            <div th:if="${mensajeError}" class="mb-6 p-4 rounded-xl border border-red-500/30 bg-red-500/10 text-red-400 text-sm animado">
+                <span th:text="${mensajeError}"></span>
+            </div>
+
+            <!-- Formulario de Edición -->
+            <section class="animado delay-1">
+                <div style="background: var(--fondo2); border: 1px solid rgba(124,58,237,0.15); border-radius: 20px; padding: 2.5rem;">
+                    
+                    <form th:action="@{/perfil/actualizar}" method="post" class="space-y-6">
+                        
+                        <!-- Nombre -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Nombre de Usuario</label>
+                            <input type="text" name="nombre" th:value="${usuarioNombre}" required
+                                   class="input-cp w-full" placeholder="Ej. Christian">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Correo Electrónico</label>
+                            <input type="email" name="email" th:value="${usuarioEmail}" required
+                                   class="input-cp w-full" placeholder="ejemplo@correo.com">
+                        </div>
+
+                        <!-- Contraseña -->
+                        <div>
+                            <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Nueva Contraseña</label>
+                            <input type="password" name="password"
+                                   class="input-cp w-full" placeholder="•••••••• (dejar en blanco para no cambiar)">
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="flex items-center justify-end gap-3 pt-4">
+                            <a href="/dashboard" class="btn-outline" style="padding: 0.7rem 1.5rem; font-size: 0.8rem;">
+                                Cancelar
+                            </a>
+                            <button type="submit" class="btn-primario" style="padding: 0.7rem 2rem;">
+                                Guardar cambios
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </section>
+
+            <!-- Sección Peligrosa -->
+            <section class="mt-10 animado delay-2 opacity-50 hover:opacity-100 transition-opacity">
+                <div class="p-6 rounded-2xl border border-red-900/20 bg-red-900/5 flex items-center justify-between">
+                    <div>
+                        <h4 class="text-red-500 text-sm font-bold">Zona de peligro</h4>
+                        <p class="text-gray-500 text-xs">Eliminar tu cuenta es una acción permanente.</p>
+                    </div>
+                    <button class="text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-lg text-xs transition-colors">
+                        Eliminar cuenta
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script th:src="@{/js/animacion.js}"></script>
+</body>
+</html>

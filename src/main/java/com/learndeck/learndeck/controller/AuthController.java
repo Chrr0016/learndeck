@@ -34,7 +34,7 @@ public class AuthController {
         if (usuario.isPresent()) {
             session.setAttribute("usuarioId", usuario.get().getId());
             session.setAttribute("usuarioNombre", usuario.get().getNombre());
-            session.setAttribute("usuarioRol", usuario.get().getRol()); // ← añadir esto
+            session.setAttribute("usuarioRol", usuario.get().getRol()); 
             return "redirect:/dashboard";
         }
 
