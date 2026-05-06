@@ -1,496 +1,286 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-
 <head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
-<style>
-    .escena {
-        perspective: 1200px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        padding: 20px;
-    }
-
-    .carta-interior {
-        --rx: 0deg;
-        --ry: 0deg;
-        position: relative;
-        width: 500px;
-        height: 340px;
-        transform-style: preserve-3d;
-        transform: rotateX(var(--rx)) rotateY(var(--ry));
-        transition: transform 0.08s ease-out;
-        border-radius: 14px;
-        box-shadow:
-            0 20px 60px rgba(0, 0, 0, 0.6),
-            0 0 0 1px rgba(255, 255, 255, 0.08),
-            inset 0 0 0 1px rgba(255, 255, 255, 0.06);
-        will-change: transform;
-    }
-
-    /* Cuando se voltea: mantiene el tilt + añade 180° */
-    .escena.girada .carta-interior {
-        transform: rotateX(var(--rx)) rotateY(calc(var(--ry) + 180deg));
-        transition: transform 0.65s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .cara {
-        position: absolute;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-       width: 100%;
-        height: 100%;
-        
-    }
-
-    /* FRENTE — imagen completa */
-    .cara-frente {
-        background: url('/imagenes/carta2.png') center/cover no-repeat;
-    }
-
-    /* Overlay oscuro para legibilidad del texto */
-    .cara-frente::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom,
-                rgba(0, 0, 0, 0.1) 0%,
-                rgba(0, 0, 0, 0.55) 60%,
-                rgba(0, 0, 0, 0.8) 100%);
-        border-radius: inherit;
-        z-index: 1;
-    }
-
-    .cara-frente>* {
-        position: relative;
-        z-index: 2;
-    }
-
-    /* REVERSO — fondo oscuro premium */
-    .cara-reverso {
-        transform: rotateY(180deg);
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        padding: 28px 24px;
-    }
-
-    /* Efecto holográfico arco-iris (se activa con JS) */
-    .holo-shine {
-        position: absolute;
-        inset: 0;
-        border-radius: 14px;
-        pointer-events: none;
-        z-index: 10;
-        opacity: 0;
-        transition: opacity 0.25s;
-        background:
-            radial-gradient(ellipse at var(--mx, 50%) var(--my, 50%),
-                rgba(255, 255, 255, 0.18) 0%,
-                transparent 55%),
-            repeating-linear-gradient(calc(var(--angle, 45deg)),
-                hsla(0, 100%, 65%, 0.12),
-                hsla(45, 100%, 65%, 0.12) 8%,
-                hsla(90, 100%, 65%, 0.12) 16%,
-                hsla(135, 100%, 65%, 0.12) 24%,
-                hsla(180, 100%, 65%, 0.12) 32%,
-                hsla(225, 100%, 65%, 0.12) 40%,
-                hsla(270, 100%, 65%, 0.12) 48%,
-                hsla(315, 100%, 65%, 0.12) 56%,
-                hsla(360, 100%, 65%, 0.12) 64%);
-        mix-blend-mode: color-dodge;
-    }
-
-    /* Reflejo especular (glare blanco) */
-    .holo-glare {
-        position: absolute;
-        inset: 0;
-        border-radius: 14px;
-        pointer-events: none;
-        z-index: 11;
-        opacity: 0;
-        transition: opacity 0.25s;
-        background: radial-gradient(ellipse 60% 40% at var(--mx, 50%) var(--my, 50%),
-                rgba(255, 255, 255, 0.12) 0%,
-                transparent 70%);
-    }
-
-    .escena:hover .holo-shine,
-    .escena:hover .holo-glare {
-        opacity: 1;
-    }
-
-    /* Borde brillante de carta Pokémon */
-    .carta-interior::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 14px;
-        border: 1.5px solid rgba(255, 255, 255, 0.15);
-        pointer-events: none;
-        z-index: 12;
-    }
-</style>
-
 <body>
 
-    <!-- NAVBAR mínimo -->
-    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"></nav>
+<!-- NAVBAR mínimo -->
+<nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"></nav>
 
-    <!-- ── PANTALLA REPASO ── -->
-    <div class="pantalla-repaso" id="pantallaRepaso">
-        <main class="max-w-screen-xl mx-auto px-6 py-8 relative z-10">
+<!-- ── PANTALLA REPASO ── -->
+<div class="pantalla-repaso" id="pantallaRepaso">
+    <main class="max-w-screen-xl mx-auto px-6 py-8 relative z-10">
 
-            <!-- Cabecera con progreso -->
-            <div class="max-w-2xl mx-auto mb-8">
+        <!-- Cabecera con progreso -->
+        <div class="max-w-2xl mx-auto mb-8">
 
-                <div class="flex items-center justify-between mb-3">
-                    <div>
-                        <div style="font-size:0.9rem;font-weight:700;color:white;">
-                            Tarjeta <span id="numActual">1</span> de <span id="numTotal"
-                                th:text="${tarjetas.size()}">0</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div style="text-align:right;">
-                            <div style="font-size:0.65rem;color:#4ade80;margin-bottom:2px;">correctas</div>
-                            <div style="font-size:1.2rem;font-weight:900;color:#4ade80;" id="contCorrect">0</div>
-                        </div>
-                        <div style="width:1px;height:30px;background:rgba(255,255,255,0.08);"></div>
-                        <div style="text-align:right;">
-                            <div style="font-size:0.65rem;color:#f87171;margin-bottom:2px;">incorrectas</div>
-                            <div style="font-size:1.2rem;font-weight:900;color:#f87171;" id="contIncorrect">0</div>
-                        </div>
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <div style="font-size:0.9rem;font-weight:700;color:white;">
+                        Tarjeta <span id="numActual">1</span> de <span id="numTotal" th:text="${tarjetas.size()}">0</span>
                     </div>
                 </div>
-
-                <!-- Barra progreso -->
-                <div class="barra-prog">
-                    <div class="barra-prog-fill" id="barraProgreso" style="width: 0%"></div>
-                </div>
-
-            </div>
-
-            <!-- Tarjeta flip -->
-            <!-- Tarjeta flip estilo Pokémon -->
-            <div class="escena" id="escena" onclick="voltearTarjeta()">
-                <div class="carta-interior" id="cartaInterior">
-
-                    <!-- Capas holográficas -->
-                    <div class="holo-shine" id="holoShine"></div>
-                    <div class="holo-glare" id="holoGlare"></div>
-
-                    <!-- Frente — Pregunta sobre imagen -->
-                    <div class="cara cara-frente">
-                        <p id="textoPregunta" class="text-white text-center leading-relaxed px-5"
-                            style="font-size:1.05rem;font-weight:700;text-shadow:0 2px 8px rgba(0,0,0,0.9);max-width:260px;">
-                            Cargando...
-                        </p>
-                        <div class="etiqueta mt-4" style="opacity:0.6;">
-                            <span class="tecla">↵</span> o click para ver respuesta
-                        </div>
+                <div class="flex items-center gap-4">
+                    <div style="text-align:right;">
+                        <div style="font-size:0.65rem;color:#4ade80;margin-bottom:2px;">correctas</div>
+                        <div style="font-size:1.2rem;font-weight:900;color:#4ade80;" id="contCorrect">0</div>
                     </div>
-
-                    <!-- Reverso — Respuesta -->
-                    <div class="cara cara-reverso">
-                        <div
-                            style="font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:12px;">
-                            Respuesta</div>
-                        <p id="textoRespuesta" class="text-gray-200 text-center leading-relaxed"
-                            style="font-size:1rem;max-width:260px;">
-                        </p>
+                    <div style="width:1px;height:30px;background:rgba(255,255,255,0.08);"></div>
+                    <div style="text-align:right;">
+                        <div style="font-size:0.65rem;color:#f87171;margin-bottom:2px;">incorrectas</div>
+                        <div style="font-size:1.2rem;font-weight:900;color:#f87171;" id="contIncorrect">0</div>
                     </div>
-
                 </div>
             </div>
 
-            <!-- Hint voltear -->
-            <p class="hint-voltear" id="hintVoltear">[ clic en la tarjeta para ver la respuesta ]</p>
+            <!-- Barra progreso -->
+            <div class="barra-prog">
+                <div class="barra-prog-fill" id="barraProgreso" style="width: 0%"></div>
+            </div>
 
-            <!-- Botones respuesta (ocultos hasta voltear) -->
-            <div id="botonesRespuesta" class="flex items-center justify-center gap-4 mt-8"
-                style="opacity:0;pointer-events:none;transition:opacity 0.3s;">
+        </div>
 
-                <button class="btn-incorrecto" onclick="responder(false)">
-                    <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
+        <!-- Tarjeta flip -->
+        <div class="escena" id="escena" onclick="voltearTarjeta()">
+            <div class="carta-interior">
+
+                <!-- Frente — Pregunta -->
+                <div class="cara cara-frente">
+                    <p id="textoPregunta"
+                       class="text-white text-center leading-relaxed"
+                       style="font-size:1.1rem;font-weight:600;max-width:440px;">
+                        Cargando...
+                    </p>
+                    <div class="etiqueta mt-6" style="opacity:0.4;">
+                        <span class="tecla">↵</span> o click para ver respuesta
+                    </div>
+                </div>
+
+                <!-- Reverso — Respuesta -->
+                <div class="cara cara-reverso">
+                    <div class="etiqueta mb-4" style="color:var(--cyan);"></div>
+                    <p id="textoRespuesta"
+                       class="text-gray-200 text-center leading-relaxed"
+                       style="font-size:1rem;max-width:440px;">
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Hint voltear -->
+        <p class="hint-voltear" id="hintVoltear">[ clic en la tarjeta para ver la respuesta ]</p>
+
+        <!-- Botones respuesta (ocultos hasta voltear) -->
+        <div id="botonesRespuesta"
+             class="flex items-center justify-center gap-4 mt-8"
+             style="opacity:0;pointer-events:none;transition:opacity 0.3s;">
+
+            <button class="btn-incorrecto" onclick="responder(false)">
+                <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                Incorrecto
+            </button>
+            <button class="btn-correcto" onclick="responder(true)">
+                <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                Correcto
+            </button>
+
+        </div>
+
+        <!-- Hint teclado -->
+        <div class="flex items-center justify-center gap-6 mt-6" style="opacity:0;" id="hintTeclado">
+            <div style="display:flex;align-items:center;gap:6px;font-size:0.68rem;color:#333;">
+                <span class="tecla">←</span> incorrecto
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:0.68rem;color:#333;">
+                correcto <span class="tecla">→</span>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ── PANTALLA RESULTADO ── -->
+<div class="pantalla-resultado" id="pantallaResultado">
+    <main class="max-w-screen-xl mx-auto px-6 py-16 relative z-10">
+        <div class="max-w-lg mx-auto text-center">
+            <h1 class="text-4xl font-black text-white mb-2">¡Sesión terminada!</h1>
+            <p class="text-gray-500 text-sm mb-8">Has repasado todas las tarjetas de esta sesión.</p>
+
+            <!-- Stats resultado -->
+            <div class="card p-6 mb-6" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
+                <div class="text-center">
+                    <div style="font-size:2rem;font-weight:900;color:#4ade80;" id="resCorrect">0</div>
+                    <div style="font-size:0.68rem;color:#555;">correctas</div>
+                </div>
+                <div class="text-center" style="border-left:1px solid rgba(255,255,255,0.05);border-right:1px solid rgba(255,255,255,0.05);">
+                    <div style="font-size:2rem;font-weight:900;color:#f87171;" id="resIncorrect">0</div>
+                    <div style="font-size:0.68rem;color:#555;">incorrectas</div>
+                </div>
+                <div class="text-center">
+                    <div style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="resPorcentaje">0%</div>
+                    <div style="font-size:0.68rem;color:#555;">acierto</div>
+                </div>
+            </div>
+
+            <!-- Acciones -->
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="/dashboard" class="btn-primario">
+                    <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
-                    Incorrecto
-                </button>
-                <button class="btn-correcto" onclick="responder(true)">
-                    <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    Ir al dashboard
+                </a>
+                <button onclick="reiniciarSesion()" class="btn-outline">
+                    <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                     </svg>
-                    Correcto
+                    Repetir sesión
                 </button>
-
             </div>
 
-            <!-- Hint teclado -->
-            <div class="flex items-center justify-center gap-6 mt-6" style="opacity:0;" id="hintTeclado">
-                <div style="display:flex;align-items:center;gap:6px;font-size:0.68rem;color:#333;">
-                    <span class="tecla">←</span> incorrecto
-                </div>
-                <div style="display:flex;align-items:center;gap:6px;font-size:0.68rem;color:#333;">
-                    correcto <span class="tecla">→</span>
-                </div>
-            </div>
+        </div>
+    </main>
+</div>
 
-        </main>
-    </div>
+<!-- Datos Thymeleaf → JS -->
+<script th:inline="javascript">
+    const TARJETAS = /*[[${tarjetasJson}]]*/ [];
+    const BARAJA_IDS = /*[[${barajaIds}]]*/ '';
+    const MODO = /*[[${modo}]]*/ 'repaso';
+</script>
 
-    <!-- ── PANTALLA RESULTADO ── -->
-    <div class="pantalla-resultado" id="pantallaResultado">
-        <main class="max-w-screen-xl mx-auto px-6 py-16 relative z-10">
-            <div class="max-w-lg mx-auto text-center">
-                <h1 class="text-4xl font-black text-white mb-2">¡Sesión terminada!</h1>
-                <p class="text-gray-500 text-sm mb-8">Has repasado todas las tarjetas de esta sesión.</p>
+<script>
+    // ── Estado ──
+    let indice = 0;
+    let correctas = 0;
+    let incorrectas = 0;
+    let girada = false;
+    let resultados = [];
 
-                <!-- Stats resultado -->
-                <div class="card p-6 mb-6" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-                    <div class="text-center">
-                        <div style="font-size:2rem;font-weight:900;color:#4ade80;" id="resCorrect">0</div>
-                        <div style="font-size:0.68rem;color:#555;">correctas</div>
-                    </div>
-                    <div class="text-center"
-                        style="border-left:1px solid rgba(255,255,255,0.05);border-right:1px solid rgba(255,255,255,0.05);">
-                        <div style="font-size:2rem;font-weight:900;color:#f87171;" id="resIncorrect">0</div>
-                        <div style="font-size:0.68rem;color:#555;">incorrectas</div>
-                    </div>
-                    <div class="text-center">
-                        <div style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"
-                            id="resPorcentaje">0%</div>
-                        <div style="font-size:0.68rem;color:#555;">acierto</div>
-                    </div>
-                </div>
+    const escena         = document.getElementById('escena');
+    const textoPregunta  = document.getElementById('textoPregunta');
+    const textoRespuesta = document.getElementById('textoRespuesta');
+    const numActual      = document.getElementById('numActual');
+    const barraProgreso  = document.getElementById('barraProgreso');
+    const botonesResp    = document.getElementById('botonesRespuesta');
+    const hintVoltear    = document.getElementById('hintVoltear');
+    const hintTeclado    = document.getElementById('hintTeclado');
+    const contCorrect    = document.getElementById('contCorrect');
+    const contIncorrect  = document.getElementById('contIncorrect');
 
-                <!-- Acciones -->
-                <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                    <a href="/dashboard" class="btn-primario">
-                        <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        Ir al dashboard
-                    </a>
-                    <button onclick="reiniciarSesion()" class="btn-outline">
-                        <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                        Repetir sesión
-                    </button>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
-    <!-- Datos Thymeleaf → JS -->
-    <script th:inline="javascript">
-        const TARJETAS = /*[[${tarjetasJson}]]*/[];
-        const BARAJA_IDS = /*[[${barajaIds}]]*/ '';
-        const MODO = /*[[${modo}]]*/ 'repaso';
-    </script>
-
-    <script>
-        // ── Estado ──
-        let indice = 0;
-        let correctas = 0;
-        let incorrectas = 0;
-        let girada = false;
-        let resultados = [];
-
-        const escena = document.getElementById('escena');
-        const textoPregunta = document.getElementById('textoPregunta');
-        const textoRespuesta = document.getElementById('textoRespuesta');
-        const numActual = document.getElementById('numActual');
-        const barraProgreso = document.getElementById('barraProgreso');
-        const botonesResp = document.getElementById('botonesRespuesta');
-        const hintVoltear = document.getElementById('hintVoltear');
-        const hintTeclado = document.getElementById('hintTeclado');
-        const contCorrect = document.getElementById('contCorrect');
-        const contIncorrect = document.getElementById('contIncorrect');
-
-        // ── Iniciar ──
-        function iniciar() {
-            if (TARJETAS.length === 0) {
-                mostrarResultado();
-                return;
-            }
-            mostrarTarjeta();
+    // ── Iniciar ──
+    function iniciar() {
+        if (TARJETAS.length === 0) {
+            mostrarResultado();
+            return;
         }
+        mostrarTarjeta();
+    }
 
-        function mostrarTarjeta() {
-            const t = TARJETAS[indice];
-            textoPregunta.textContent = t.pregunta;
-            textoRespuesta.textContent = t.respuesta;
-            numActual.textContent = indice + 1;
+    function mostrarTarjeta() {
+        const t = TARJETAS[indice];
+        textoPregunta.textContent  = t.pregunta;
+        textoRespuesta.textContent = t.respuesta;
+        numActual.textContent      = indice + 1;
 
-            // Resetear estado visual
-            girada = false;
-            escena.classList.remove('girada');
-            botonesResp.style.opacity = '0';
-            botonesResp.style.pointerEvents = 'none';
-            hintVoltear.style.opacity = '1';
-            hintTeclado.style.opacity = '0';
+        // Resetear estado visual
+        girada = false;
+        escena.classList.remove('girada');
+        botonesResp.style.opacity       = '0';
+        botonesResp.style.pointerEvents = 'none';
+        hintVoltear.style.opacity       = '1';
+        hintTeclado.style.opacity       = '0';
 
-            // Progreso
-            const pct = (indice / TARJETAS.length) * 100;
-            barraProgreso.style.width = pct + '%';
+        // Progreso
+        const pct = (indice / TARJETAS.length) * 100;
+        barraProgreso.style.width = pct + '%';
 
-            // Animación entrada
-            escena.style.animation = 'none';
-            escena.offsetHeight; // reflow
-            escena.style.animation = 'entradaTarjeta 0.35s ease';
-        }
+        // Animación entrada
+        escena.style.animation = 'none';
+        escena.offsetHeight; // reflow
+        escena.style.animation = 'entradaTarjeta 0.35s ease';
+    }
 
-        function voltearTarjeta() {
-            if (girada) return;
-            girada = true;
-            escena.classList.add('girada');
-            botonesResp.style.opacity = '1';
-            botonesResp.style.pointerEvents = 'all';
-            hintVoltear.style.opacity = '0';
-            hintTeclado.style.opacity = '1';
-        }
+    function voltearTarjeta() {
+        if (girada) return;
+        girada = true;
+        escena.classList.add('girada');
+        botonesResp.style.opacity       = '1';
+        botonesResp.style.pointerEvents = 'all';
+        hintVoltear.style.opacity       = '0';
+        hintTeclado.style.opacity       = '1';
+    }
 
-        async function responder(esCorrecta) {
-            if (!girada) return;
+    async function responder(esCorrecta) {
+        if (!girada) return;
 
-            try {
-                await fetch('/repasar/guardar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        tarjetaId: TARJETAS[indice].id,
-                        resultado: esCorrecta
-                    })
-                });
-            } catch (e) {
-                console.error('Error guardando resultado:', e);
-            }
-
-            if (esCorrecta) { correctas++; contCorrect.textContent = correctas; }
-            else { incorrectas++; contIncorrect.textContent = incorrectas; }
-
-            indice++;
-            if (indice < TARJETAS.length) {
-                mostrarTarjeta();
-            } else {
-                mostrarResultado();
-            }
-        }
-
-        function mostrarResultado() {
-            barraProgreso.style.width = '100%';
-
-            document.getElementById('pantallaRepaso').classList.add('oculta');
-            document.getElementById('pantallaResultado').classList.add('visible');
-
-            const total = correctas + incorrectas;
-            const pct = total > 0 ? Math.round((correctas / total) * 100) : 0;
-
-            document.getElementById('resCorrect').textContent = correctas;
-            document.getElementById('resIncorrect').textContent = incorrectas;
-            document.getElementById('resPorcentaje').textContent = pct + '%';
-        }
-
-        function reiniciarSesion() {
-            indice = correctas = incorrectas = 0;
-            resultados = [];
-            contCorrect.textContent = '0';
-            contIncorrect.textContent = '0';
-
-            document.getElementById('pantallaRepaso').classList.remove('oculta');
-            document.getElementById('pantallaResultado').classList.remove('visible');
-
-            mostrarTarjeta();
-        }
-
-        // ── Teclado ──
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                if (!girada) voltearTarjeta();
-            }
-            if (e.key === 'ArrowRight' && girada) responder(true);
-            if (e.key === 'ArrowLeft' && girada) responder(false);
-        });
-
-        // ── Efecto 3D Pokémon ──
-        (function () {
-            const escena = document.getElementById('escena');
-            const carta = document.getElementById('cartaInterior');
-            const shine = document.getElementById('holoShine');
-            const glare = document.getElementById('holoGlare');
-            let rafId = null;
-            let targetRX = 0, targetRY = 0;
-            let currentRX = 0, currentRY = 0;
-            let isHovered = false;
-
-            function lerp(a, b, t) { return a + (b - a) * t; }
-
-            function animate() {
-                currentRX = lerp(currentRX, targetRX, 0.12);
-                currentRY = lerp(currentRY, targetRY, 0.12);
-
-                carta.style.setProperty('--rx', currentRX.toFixed(3) + 'deg');
-                carta.style.setProperty('--ry', currentRY.toFixed(3) + 'deg');
-
-                const angle = 45 + currentRY * 2;
-                shine.style.setProperty('--angle', angle + 'deg');
-                glare.style.setProperty('--angle', angle + 'deg');
-
-                if (isHovered || Math.abs(currentRX) > 0.05 || Math.abs(currentRY) > 0.05) {
-                    rafId = requestAnimationFrame(animate);
-                } else {
-                    currentRX = currentRY = 0;
-                    carta.style.setProperty('--rx', '0deg');
-                    carta.style.setProperty('--ry', '0deg');
-                    rafId = null;
-                }
-            }
-
-            escena.addEventListener('mousemove', (e) => {
-                const rect = escena.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                const pctX = (x / rect.width) * 100;
-                const pctY = (y / rect.height) * 100;
-
-                targetRY = ((x / rect.width) - 0.5) * 28;   // ±14°
-                targetRX = -((y / rect.height) - 0.5) * 20;  // ±10°
-
-                shine.style.setProperty('--mx', pctX + '%');
-                shine.style.setProperty('--my', pctY + '%');
-                glare.style.setProperty('--mx', pctX + '%');
-                glare.style.setProperty('--my', pctY + '%');
-
-                if (!rafId) rafId = requestAnimationFrame(animate);
+        try {
+            await fetch('/repasar/guardar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tarjetaId: TARJETAS[indice].id,
+                    resultado: esCorrecta
+                })
             });
+        } catch (e) {
+            console.error('Error guardando resultado:', e);
+        }
 
-            escena.addEventListener('mouseenter', () => { isHovered = true; });
+        if (esCorrecta) { correctas++;   contCorrect.textContent   = correctas; }
+        else            { incorrectas++; contIncorrect.textContent = incorrectas; }
 
-            escena.addEventListener('mouseleave', () => {
-                isHovered = false;
-                targetRX = 0;
-                targetRY = 0;
-                if (!rafId) rafId = requestAnimationFrame(animate);
-            });
-        })();
+        indice++;
+        if (indice < TARJETAS.length) {
+            mostrarTarjeta();
+        } else {
+            mostrarResultado();
+        }
+    }
 
+    function mostrarResultado() {
+        barraProgreso.style.width = '100%';
 
+        document.getElementById('pantallaRepaso').classList.add('oculta');
+        document.getElementById('pantallaResultado').classList.add('visible');
 
-        // ── Arrancar ──
-        iniciar();
-    </script>
+        const total = correctas + incorrectas;
+        const pct   = total > 0 ? Math.round((correctas / total) * 100) : 0;
+
+        document.getElementById('resCorrect').textContent   = correctas;
+        document.getElementById('resIncorrect').textContent = incorrectas;
+        document.getElementById('resPorcentaje').textContent = pct + '%';
+    }
+
+    function reiniciarSesion() {
+        indice = correctas = incorrectas = 0;
+        resultados = [];
+        contCorrect.textContent   = '0';
+        contIncorrect.textContent = '0';
+
+        document.getElementById('pantallaRepaso').classList.remove('oculta');
+        document.getElementById('pantallaResultado').classList.remove('visible');
+
+        mostrarTarjeta();
+    }
+
+    // ── Teclado ──
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (!girada) voltearTarjeta();
+        }
+        if (e.key === 'ArrowRight' && girada) responder(true);
+        if (e.key === 'ArrowLeft'  && girada) responder(false);
+    });
+
+    // ── Arrancar ──
+    iniciar();
+</script>
 
 </body>
-
 </html>

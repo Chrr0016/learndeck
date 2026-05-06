@@ -34,25 +34,28 @@
                 </div>
 
                 <div>
-                    <label for="email"
-                        style="display: block; font-size: 0.8rem; font-weight: 600; color: #9ca3af; margin-bottom: 0.4rem;">
-                        correo electronico
-                    </label>
-                    <input type="email" id="email" name="email" placeholder="tucorreo@gmail.com" required
-                        class="input-cp">
+                    <label for="email" ...>correo electronico</label>
+                    <input type="email" id="email" name="email" placeholder="tucorreo@gmail.com" required class="input-cp">
+                    <p id="errorEmail" class="text-red-400 text-xs mt-1 hidden">El formato del correo no es válido.</p>
                 </div>
 
                 <div>
-                    <label for="contrasena"
-                        style="display: block; font-size: 0.8rem; font-weight: 600; color: #9ca3af; margin-bottom: 0.4rem;">
-                        contraseña
-                    </label>
-                    <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required
-                        class="input-cp">
+                    <label for="contrasena" ...>contraseña</label>
+                    <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required class="input-cp">
+                    <p id="errorContrasena" class="text-red-400 text-xs mt-1 hidden">Mínimo 8 caracteres, una mayúscula y un número.</p>
                 </div>
+                <div>
+                    <label for="confirmar"
+                           style="display: block; font-size: 0.8rem; font-weight: 600; color: #9ca3af; margin-bottom: 0.4rem;">
+                        confirmar contraseña
+                    </label>
+                    <input type="password" id="confirmar" name="confirmar" placeholder="••••••••" required
+                           class="input-cp">
+                    <p id="errorConfirmar" class="text-red-400 text-xs mt-1 hidden">Las contraseñas no coinciden.</p>
 
+                </div>
                 <div class="flex justify-center pt-2">
-                    <button type="submit" class="btn-primario">
+                    <button type="button" onclick="validarRegistro()" class="btn-primario">
                         Crear cuenta
                     </button>
                 </div>
@@ -73,5 +76,7 @@
         </div>
     </div>
 </body>
+
+<script th:src="@{/js/registro.js}"></script>
 
 </html>

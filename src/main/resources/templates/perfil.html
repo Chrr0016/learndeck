@@ -7,11 +7,11 @@
     <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'perfil', ${usuarioRol})}"></nav>
 
     <main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
-        
+
         <!-- Cabecera -->
         <div class="mb-10 animado">
             <h1 class="text-3xl font-black text-white">
-                Mi <span style="color:var(--violeta-claro);">Perfil</span>
+                Mi perfil
             </h1>
             <p class="text-gray-500 text-sm mt-1">Configura tu cuenta y opciones de seguridad.</p>
         </div>
@@ -28,9 +28,9 @@
             <!-- Formulario de Edición -->
             <section class="animado delay-1">
                 <div style="background: var(--fondo2); border: 1px solid rgba(124,58,237,0.15); border-radius: 20px; padding: 2.5rem;">
-                    
+
                     <form th:action="@{/perfil/actualizar}" method="post" class="space-y-6">
-                        
+
                         <!-- Nombre -->
                         <div>
                             <label class="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Nombre de Usuario</label>
@@ -69,10 +69,10 @@
             <!-- Sección Peligrosa -->
             <section class="mt-10 animado delay-2 opacity-50 hover:opacity-100 transition-opacity">
                 <div class="p-6 rounded-2xl border border-red-900/20 bg-red-900/5 flex items-center justify-between">
-                    <div>
-                        <h4 class="text-red-500 text-sm font-bold">Zona de peligro</h4>
-                        <p class="text-gray-500 text-xs">Eliminar tu cuenta es una acción permanente.</p>
-                    </div>
+
+                    <h4 class="text-red-500 text-sm font-bold">Cuidado, si eliminas tu cuenta pierdes todo y no lo
+                        puedes recuperar</h4>
+
                     <button class="text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-lg text-xs transition-colors">
                         Eliminar cuenta
                     </button>

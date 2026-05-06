@@ -16,29 +16,39 @@ public class AuthController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // Mostrar login
+
     @GetMapping("/login")
     public String mostrarLogin() {
         return "login";
     }
 
-    // Procesar login
+
     @PostMapping("/login")
     public String procesarLogin(@RequestParam String email,
-            @RequestParam String contrasena,
-            HttpSession session,
-            Model model) {
+                                @RequestParam String contrasena,
+                                HttpSession session,
+                                Model model) {
+
+        /*if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            model.addAttribute("error", "El formato del correo no es válido.");
+            return "login";
+        }
+
+        if (contrasena.length() < 8) {
+            model.addAttribute("error", "La contraseña debe tener al menos 8 caracteres.");
+            return "login";
+        }*/
 
         Optional<Usuario> usuario = usuarioService.login(email, contrasena);
 
         if (usuario.isPresent()) {
             session.setAttribute("usuarioId", usuario.get().getId());
             session.setAttribute("usuarioNombre", usuario.get().getNombre());
-            session.setAttribute("usuarioRol", usuario.get().getRol()); 
+            session.setAttribute("usuarioRol", usuario.get().getRol());
             return "redirect:/dashboard";
         }
 
-        model.addAttribute("error", "Email o contraseña incorrectos");
+        model.addAttribute("error", "Email o contraseña incorrectos.");
         return "login";
     }
 
@@ -51,9 +61,28 @@ public class AuthController {
     // Procesar registro
     @PostMapping("/registro")
     public String procesarRegistro(@RequestParam String nombre,
-            @RequestParam String email,
-            @RequestParam String contrasena,
-            Model model) {
+                                   @RequestParam String email,
+                                   @RequestParam String contrasena,
+                                   @RequestParam(required = false) String confirmar,
+                                   Model model) {
+
+        // Formato email
+        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+            model.addAttribute("error", "El formato del correo no es válido.");
+            return "registro";
+        }
+
+        // Contraseña: mínimo 8 chars, 1 mayúscula, 1 número
+        if (!contrasena.matches("^(?=.*[A-Z])(?=.*\\d).{8,}$")) {
+            model.addAttribute("error", "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número.");
+            return "registro";
+        }
+
+        // Confirmar contraseña
+        if (confirmar == null || !contrasena.equals(confirmar)) {
+            model.addAttribute("error", "Las contraseñas no coinciden.");
+            return "registro";
+        }
 
         boolean exito = usuarioService.registrar(nombre, email, contrasena);
 
@@ -61,7 +90,7 @@ public class AuthController {
             return "redirect:/login?mensaje=Cuenta creada correctamente";
         }
 
-        model.addAttribute("error", "El correo ya está en uso");
+        model.addAttribute("error", "El correo ya está en uso.");
         return "registro";
     }
 

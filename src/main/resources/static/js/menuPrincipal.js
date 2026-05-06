@@ -81,12 +81,12 @@ function añadirBarajaAZona(id, titulo, categoria) {
   elemento.className = "baraja-en-zona";
   elemento.dataset.id = id;
   elemento.innerHTML = `
-                                <button class="btn-quitar" onclick="quitarDeZona('${id}')">✕</button>
-                                <img src="/imagenes/baraja.png">
-                                <div class="overlay-mini">
-                                    <div>${titulo}</div>
-                                </div>
-                            `;
+    <button class="btn-quitar" onclick="quitarDeZona('${id}')">✕</button>
+    <img class="zona-img" src="/imagenes/baraja.png">
+    <div class="zona-footer">
+        <div class="zona-nombre">${titulo}</div>
+    </div>
+`;
 
   zonaDrop.appendChild(elemento);
   barajasEnZona.set(id, { titulo, categoria });
