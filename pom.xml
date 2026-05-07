@@ -12,6 +12,7 @@
 	<artifactId>learndeck</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
+	<packaging>jar</packaging>
 	<description/>
 	<url/>
 	<licenses>
