@@ -29,7 +29,8 @@ public class EstadisticasController {
     public String estadisticas(HttpSession session, Model model) {
 
         Long usuarioId = (Long) session.getAttribute("usuarioId");
-        if (usuarioId == null) return "redirect:/login";
+        if (usuarioId == null)
+            return "redirect:/login";
 
         List<HistorialEstudio> historial = historialService.obtenerTodo(usuarioId);
 
@@ -37,15 +38,15 @@ public class EstadisticasController {
         long totalEstudiadas = historial.size();
         long totalAciertos = 0;
         for (HistorialEstudio h : historial) {
-            if (h.getResultado()) totalAciertos++;
+            if (h.getResultado())
+                totalAciertos++;
         }
         long totalFallos = totalEstudiadas - totalAciertos;
-        int porcentaje = totalEstudiadas > 0
-                ? (int) Math.round((double) totalAciertos / totalEstudiadas * 100)
+        int porcentaje = totalEstudiadas > 0 ? (int) Math.round((double) totalAciertos / totalEstudiadas * 100)
                 : 0;
 
         // ── Actividad últimos 7 días ──
-        String[] nombresDias = {"L", "M", "X", "J", "V", "S", "D"};
+        String[] nombresDias = { "L", "M", "X", "J", "V", "S", "D" };
         List<Map<String, Object>> datosSemana = new ArrayList<>();
         List<String> diasSemana = new ArrayList<>();
         LocalDate hoy = LocalDate.now();
@@ -92,11 +93,13 @@ public class EstadisticasController {
                 }
             }
 
-            if (historialBaraja.isEmpty()) continue;
+            if (historialBaraja.isEmpty())
+                continue;
 
             long aciertosBaraja = 0;
             for (HistorialEstudio h : historialBaraja) {
-                if (h.getResultado()) aciertosBaraja++;
+                if (h.getResultado())
+                    aciertosBaraja++;
             }
             long fallosBaraja = historialBaraja.size() - aciertosBaraja;
             int pctBaraja = (int) Math.round((double) aciertosBaraja / historialBaraja.size() * 100);
@@ -116,7 +119,7 @@ public class EstadisticasController {
             public int compare(Map<String, Object> a, Map<String, Object> b) {
                 Integer totalA = (Integer) a.get("total");
                 Integer totalB = (Integer) b.get("total");
-                // Orden descendente: comparamos b contra a
+                // Orden descendente
                 return totalB.compareTo(totalA);
             }
         });
@@ -127,7 +130,8 @@ public class EstadisticasController {
         Map<Long, Tarjeta> tarjetasPorId = new HashMap<>();
 
         for (HistorialEstudio h : historial) {
-            if (h.getResultado() || h.getTarjeta() == null) continue;
+            if (h.getResultado() || h.getTarjeta() == null)
+                continue;
             Long tarjetaId = h.getTarjeta().getId();
             fallosPorTarjeta.put(tarjetaId, fallosPorTarjeta.getOrDefault(tarjetaId, 0L) + 1);
             tarjetasPorId.put(tarjetaId, h.getTarjeta());
@@ -144,9 +148,11 @@ public class EstadisticasController {
         });
 
         List<Map<String, Object>> tarjetasDificiles = new ArrayList<>();
-        int limite = Math.min(5, entradasOrdenadas.size());
+        int totalTarjetasFalladas = entradasOrdenadas.size();
+        int maximoAMostrar = 5;
+        int limite = Math.min(maximoAMostrar, totalTarjetasFalladas);
 
-        for (int i = 0; i<limite; i++) {
+        for (int i = 0; i < limite; i++) {
             Map.Entry<Long, Long> entrada = entradasOrdenadas.get(i);
             Tarjeta tarjeta = tarjetasPorId.get(entrada.getKey());
 

@@ -17,7 +17,7 @@ public class UsuarioService {
     // Registro
     public boolean registrar(String nombre, String email, String contrasena) {
         if (usuarioRepository.existsByEmail(email)) {
-            return false; // Email ya en uso
+            return false;
         }
         Usuario usuario = new Usuario();
         usuario.setNombre(nombre);

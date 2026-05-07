@@ -190,17 +190,8 @@
     const DATOS_SEMANA = /*[[${datosSemana}]]*/ [];
     const PORCENTAJE   = /*[[${porcentaje}]]*/ 0;
 </script>
-
+<script th:src="@{/js/animacion.js}"></script>
 <script>
-    // ── Animaciones entrada ──
-    const animados = document.querySelectorAll('.animado');
-    const obs = new IntersectionObserver((entradas) => {
-        entradas.forEach(e => {
-            if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-        });
-    }, { threshold: 0.1 });
-    animados.forEach(el => obs.observe(el));
-
     // ── Animar barras al cargar ──
     window.addEventListener('load', () => {
         setTimeout(() => {
