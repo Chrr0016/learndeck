@@ -22,9 +22,7 @@
             </div>
 
             <!-- Éxito tras registro -->
-            <div th:if="${param.mensaje}" class="alerta-exito">
-                Cuenta creada correctamente. Inicia sesión.
-            </div>
+            <div th:replace="~{fragments/toast :: toast}"></div>
 
             <!-- Formulario -->
             <form th:action="@{/login}" method="post" class="space-y-5">

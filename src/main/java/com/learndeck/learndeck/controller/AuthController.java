@@ -6,7 +6,10 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Optional;
 
@@ -64,7 +67,7 @@ public class AuthController {
                                    @RequestParam String email,
                                    @RequestParam String contrasena,
                                    @RequestParam(required = false) String confirmar,
-                                   Model model) {
+                                   Model model, RedirectAttributes redirectAttributes) {
 
         // Formato email
         if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
@@ -87,7 +90,8 @@ public class AuthController {
         boolean exito = usuarioService.registrar(nombre, email, contrasena);
 
         if (exito) {
-            return "redirect:/login?mensaje=Cuenta creada correctamente";
+            redirectAttributes.addFlashAttribute("mensajeExito", "Cuenta creada correctamente.");
+            return "redirect:/login";
         }
 
         model.addAttribute("error", "El correo ya está en uso.");

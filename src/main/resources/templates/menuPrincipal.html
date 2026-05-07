@@ -6,7 +6,7 @@
 
 <!--NAVBAR-->
 <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"></nav>
-
+<div th:replace="~{fragments/toast :: toast}"></div>
 <!-- ==============================
      CONTENIDO
 ============================== -->
@@ -71,7 +71,7 @@
 
 
                 <!-- Botón crear nueva baraja -->
-                <a href="/barajas/nueva" class="btn-crear">
+                <a href="/barajas" class="btn-crear">
                     <div class="icono-mas">+</div>
                     <div style="font-size:0.72rem;text-align:center;line-height:1.4;">
                         Crear nueva<br>baraja
@@ -84,7 +84,7 @@
             <div th:if="${#lists.isEmpty(barajas)}" class="text-center py-8">
                 <div style="font-size:2rem;margin-bottom:0.75rem;"></div>
                 <p style="color:#444;">No hay barajas creadas</p>
-                <a href="/barajas/nueva" class="btn-primario" style="margin-top:1rem;display:inline-flex;">Crear mi
+                <a href="/barajas" class="btn-primario" style="margin-top:1rem;display:inline-flex;">Crear mi
                     primera baraja</a>
             </div>
         </div>

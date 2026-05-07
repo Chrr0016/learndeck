@@ -135,10 +135,12 @@
                 <div>
                     <div class="flex justify-between mb-1">
                         <span style="font-size:0.72rem;color:#f87171;">incorrectas</span>
-                        <span style="font-size:0.72rem;color:#f87171;" th:text="${100 - porcentaje} + '%'"  >0%</span>
+                        <span style="font-size:0.72rem;color:#f87171;"  th:text="${porcentajeFallos} + '%'">0%</span>
                     </div>
                     <div class="barra-wrap">
-                        <div class="barra-fill barra-roja" th:attr="data-width=${100 - porcentaje}" style="width:0%"></div>
+                        <div class="barra-fill barra-roja"
+                             th:attr="data-width=${porcentajeFallos}" style="width:0%">
+                        </div>
                     </div>
                 </div>
             </div>

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 
@@ -36,7 +37,7 @@ public class RepasoController {
     public String iniciarRepaso(@RequestParam(required = false) String barajas,
                                 @RequestParam(defaultValue = "repaso") String modo,
                                 HttpSession session,
-                                Model model) {
+                                Model model, RedirectAttributes redirectAttributes) {
 
         Long usuarioId = (Long) session.getAttribute("usuarioId");
         if (usuarioId == null) return "redirect:/login";
@@ -60,7 +61,8 @@ public class RepasoController {
             List<Long> idsFalladas = historialService.obtenerIdsTarjetasFalladasPorBarajas(usuarioId, barajaIds);
 
             if (idsFalladas.isEmpty()) {
-                return "redirect:/dashboard?mensaje=no-hay-errores-en-esas-barajas";
+                redirectAttributes.addFlashAttribute("mensajeInfo", "No hay tarjetas con errores en las barajas seleccionadas.");
+                return "redirect:/dashboard";
             }
 
             tarjetas = new ArrayList<>(tarjetaService.obtenerPorIds(idsFalladas));

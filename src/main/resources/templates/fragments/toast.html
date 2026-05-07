@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!--
+    Fragmento de notificaciones toast.
+    Se incluye en cualquier página con:
+    <div th:replace="~{fragments/toast :: toast}"></div>
+-->
+<div th:fragment="toast">
+
+    <!-- Toast -->
+    <div id="toast"
+         th:if="${mensajeExito != null or mensajeInfo != null or error != null}"
+         th:attr="
+            data-mensaje=${mensajeExito != null ? mensajeExito : (mensajeInfo != null ? mensajeInfo : error)},
+            data-tipo=${mensajeExito != null ? 'exito' : (mensajeInfo != null ? 'info' : 'error')}"
+         style="display:none;">
+    </div>
+
+    <!-- Contenedor visual del toast -->
+    <div id="toastContenedor"
+         style="
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            font-weight: 600;
+            max-width: 380px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 0;
+            transform: translateY(16px);
+         ">
+        <span id="toastIcono" style="font-size: 1.1rem;"></span>
+        <span id="toastTexto"></span>
+    </div>
+
+    <script>
+        // Buscamos si hay algún toast que mostrar
+        const toastDatos = document.getElementById('toast');
+
+        if (toastDatos) {
+            const mensaje = toastDatos.dataset.mensaje;
+            const tipo    = toastDatos.dataset.tipo;
+
+            const contenedor = document.getElementById('toastContenedor');
+            const texto      = document.getElementById('toastTexto');
+
+            // Estilos según el tipo de mensaje
+            if (tipo === 'exito') {
+                contenedor.style.background = 'rgba(22, 163, 74, 0.15)';
+                contenedor.style.border     = '1px solid rgba(74, 222, 128, 0.4)';
+                contenedor.style.color      = '#4ade80';
+            } else if (tipo === 'info') {
+                contenedor.style.background = 'rgba(124, 58, 237, 0.15)';
+                contenedor.style.border     = '1px solid rgba(167, 139, 250, 0.4)';
+                contenedor.style.color      = 'var(--violeta-claro)';
+            }
+
+            texto.textContent = mensaje;
+
+            // Mostramos el toast con animación
+            contenedor.style.display = 'flex';
+            // El setTimeout da tiempo al navegador a aplicar el display:flex
+            // antes de iniciar la transición de opacidad
+            setTimeout(() => {
+                contenedor.style.opacity   = '1';
+                contenedor.style.transform = 'translateY(0)';
+            }, 50);
+
+            // Lo ocultamos automáticamente a los 4 segundos
+            setTimeout(() => {
+                contenedor.style.opacity   = '0';
+                contenedor.style.transform = 'translateY(16px)';
+                setTimeout(() => {
+                    contenedor.style.display = 'none';
+                }, 400);
+            }, 4000);
+        }
+    </script>
+
+</div>
+</html>

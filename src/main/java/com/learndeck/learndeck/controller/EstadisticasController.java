@@ -44,6 +44,8 @@ public class EstadisticasController {
                 ? (int) Math.round((double) totalAciertos / totalEstudiadas * 100)
                 : 0;
 
+        int porcentajeFallos = totalEstudiadas > 0 ? 100 - porcentaje : 0;
+
         // ── Actividad últimos 7 días ──
         String[] nombresDias = {"L", "M", "X", "J", "V", "S", "D"};
         List<Map<String, Object>> datosSemana = new ArrayList<>();
@@ -107,6 +109,7 @@ public class EstadisticasController {
             est.put("aciertos", aciertosBaraja);
             est.put("fallos", fallosBaraja);
             est.put("porcentaje", pctBaraja);
+            model.addAttribute("porcentajeFallos", porcentajeFallos);
             estadisticasPorBaraja.add(est);
         }
 
@@ -168,6 +171,7 @@ public class EstadisticasController {
         model.addAttribute("estadisticasPorBaraja", estadisticasPorBaraja);
         model.addAttribute("tarjetasDificiles", tarjetasDificiles);
         model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
+        model.addAttribute("porcentajeFallos", porcentajeFallos);
 
         return "estadisticas";
     }

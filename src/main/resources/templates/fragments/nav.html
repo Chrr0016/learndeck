@@ -21,7 +21,8 @@
                th:style="${paginaActiva == 'estadisticas'} ? 'color:var(--violeta-claro);' : 'color:#a1a1aa;'"
                class="text-sm font-medium hover:text-white transition-colors">Estadísticas</a>
             <a th:if="${usuarioRol == 'ADMIN'}" href="/admin"
-               class="text-sm font-medium px-3 py-1 rounded-full border border-red-500/30 text-red-400 hover:bg-red-500/10 transition-all">
+               th:style="${paginaActiva == 'admin'} ? 'color:var(--violeta-claro);' : 'color:#a1a1aa;'"
+               class="text-sm font-medium hover:text-white transition-colors">
                 Admin
             </a>
         </div>
