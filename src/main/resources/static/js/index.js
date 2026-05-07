@@ -1,3 +1,14 @@
+const elementosAnimados = document.querySelectorAll('.animado, .fade-izquierda, .fade-derecha');
+const observador = new IntersectionObserver((entradas) => {
+    entradas.forEach(entrada => {
+        if (entrada.isIntersecting) {
+            entrada.target.classList.add('visible');
+            observador.unobserve(entrada.target);
+        }
+    });
+}, { threshold: 0.15 });
+elementosAnimados.forEach(el => observador.observe(el));
+
 // ── FAQ acordeón ──
 document.querySelectorAll('.faq-boton').forEach(boton => {
     boton.addEventListener('click', () => {
