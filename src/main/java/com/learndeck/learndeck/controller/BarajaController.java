@@ -261,4 +261,48 @@ public class BarajaController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/{id}/compartir")
+    public ResponseEntity<?> compartir(@PathVariable Long id, HttpSession session) {
+        Long usuarioId = getUsuarioId(session);
+        if (usuarioId == null)
+            return ResponseEntity.status(401).build();
+
+        // El service verifica que la baraja es del usuario y cambia el estado
+        barajaService.toggleCompartida(id, usuarioId);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/comunidad")
+    public String comunidad(HttpSession session, Model model) {
+        Long usuarioId = getUsuarioId(session);
+        if (usuarioId == null)
+            return "redirect:/login";
+
+        List<Baraja> barajasCompartidas = barajaService.obtenerCompartidas(usuarioId);
+        List<String> categorias = barajaService.obtenerCategoriasComunidad(usuarioId);
+
+        model.addAttribute("barajasCompartidas", barajasCompartidas);
+        model.addAttribute("categorias", categorias);
+        model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
+        model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
+        return "comunidad";
+    }
+
+    @PostMapping("/{id}/guardar-copia")
+    @ResponseBody
+    public ResponseEntity<?> guardarCopia(@PathVariable Long id, HttpSession session) {
+        Long usuarioId = getUsuarioId(session);
+        if (usuarioId == null)
+            return ResponseEntity.status(401).build();
+
+        boolean guardada = barajaService.guardarCopia(id, usuarioId);
+
+        if (!guardada) {
+            return ResponseEntity.status(409).build();
+        }
+
+        return ResponseEntity.ok().build();
+    }
+
 }

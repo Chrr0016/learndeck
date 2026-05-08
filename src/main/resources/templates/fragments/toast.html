@@ -1,14 +1,6 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
-<!--
-    Fragmento de notificaciones toast.
-    Se incluye en cualquier página con:
-    <div th:replace="~{fragments/toast :: toast}"></div>
--->
 <div th:fragment="toast">
 
-    <!-- Toast -->
+    <!-- Elemento con datos del servidor (si los hay) -->
     <div id="toast"
          th:if="${mensajeExito != null or mensajeInfo != null or error != null}"
          th:attr="
@@ -17,7 +9,7 @@
          style="display:none;">
     </div>
 
-    <!-- Contenedor visual del toast -->
+    <!-- Contenedor visual -->
     <div id="toastContenedor"
          style="
             position: fixed;
@@ -36,55 +28,59 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.4);
             transition: opacity 0.4s ease, transform 0.4s ease;
             opacity: 0;
-            transform: translateY(16px);
-         ">
-        <span id="toastIcono" style="font-size: 1.1rem;"></span>
+            transform: translateY(16px);">
+        <span id="toastIcono" style="font-size:1.1rem;"></span>
         <span id="toastTexto"></span>
     </div>
 
     <script>
-        // Buscamos si hay algún toast que mostrar
-        const toastDatos = document.getElementById('toast');
-
-        if (toastDatos) {
-            const mensaje = toastDatos.dataset.mensaje;
-            const tipo    = toastDatos.dataset.tipo;
-
+        // ── Función global — cualquier JS de la página puede llamarla ──
+        function mostrarToast(mensaje, tipo) {
             const contenedor = document.getElementById('toastContenedor');
+            const icono      = document.getElementById('toastIcono');
             const texto      = document.getElementById('toastTexto');
 
-            // Estilos según el tipo de mensaje
+            // Estilos según el tipo
             if (tipo === 'exito') {
                 contenedor.style.background = 'rgba(22, 163, 74, 0.15)';
                 contenedor.style.border     = '1px solid rgba(74, 222, 128, 0.4)';
                 contenedor.style.color      = '#4ade80';
+                icono.textContent           = '✓';
             } else if (tipo === 'info') {
                 contenedor.style.background = 'rgba(124, 58, 237, 0.15)';
                 contenedor.style.border     = '1px solid rgba(167, 139, 250, 0.4)';
                 contenedor.style.color      = 'var(--violeta-claro)';
+                icono.textContent           = 'i';
+            } else if (tipo === 'error') {
+                contenedor.style.background = 'rgba(239, 68, 68, 0.15)';
+                contenedor.style.border     = '1px solid rgba(248, 113, 113, 0.4)';
+                contenedor.style.color      = '#f87171';
+                icono.textContent           = '✕';
             }
 
             texto.textContent = mensaje;
 
-            // Mostramos el toast con animación
-            contenedor.style.display = 'flex';
-            // El setTimeout da tiempo al navegador a aplicar el display:flex
-            // antes de iniciar la transición de opacidad
+            // Reiniciamos por si ya había un toast visible
+            contenedor.style.opacity   = '0';
+            contenedor.style.transform = 'translateY(16px)';
+            contenedor.style.display   = 'flex';
+
             setTimeout(() => {
                 contenedor.style.opacity   = '1';
                 contenedor.style.transform = 'translateY(0)';
             }, 50);
 
-            // Lo ocultamos automáticamente a los 4 segundos
             setTimeout(() => {
                 contenedor.style.opacity   = '0';
                 contenedor.style.transform = 'translateY(16px)';
-                setTimeout(() => {
-                    contenedor.style.display = 'none';
-                }, 400);
+                setTimeout(() => { contenedor.style.display = 'none'; }, 400);
             }, 4000);
         }
-    </script>
 
+        // ── Al cargar la página, mostramos el toast del servidor si existe ──
+        const toastDatos = document.getElementById('toast');
+        if (toastDatos) {
+            mostrarToast(toastDatos.dataset.mensaje, toastDatos.dataset.tipo);
+        }
+    </script>
 </div>
-</html>

@@ -101,10 +101,21 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: new URLSearchParams({ id, titulo, categoria }),
         });
-        if (res.ok) window.location.reload();
-        else throw new Error();
+        if (res.ok) {
+          const esEdicion = document.getElementById("gbId").value !== "";
+          mostrarToast(
+            esEdicion
+              ? "Baraja actualizada correctamente."
+              : "Baraja creada correctamente.",
+            "exito",
+          );
+          setTimeout(() => window.location.reload(), 1200);
+        } else {
+          throw new Error();
+        }
       } catch (err) {
         gbError.classList.remove("hidden");
+        mostrarToast("Error al guardar la baraja.", "error");
       }
     });
   }
@@ -282,11 +293,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         ntBtnSubmit.textContent = "Crear tarjeta";
         ntBtnSubmit.disabled = false;
-        
+        mostrarToast("Tarjeta creada correctamente.", "exito");
       }
     } catch (err) {
       ntBtnSubmit.disabled = false;
       ntBtnSubmit.textContent = "Crear tarjeta";
+      mostrarToast("Error al crear la tarjeta.", "error");
     }
   };
 
@@ -316,6 +328,9 @@ document.addEventListener("DOMContentLoaded", () => {
       tarjetasActuales[index].respuesta = respuesta;
       renderizarTarjetas(tarjetasActuales);
       cerrarModalNuevaTarjeta();
+      mostrarToast("Tarjeta actualizada correctamente.", "exito");
+    } else {
+      mostrarToast("Error al actualizar la tarjeta.", "error");
     }
   };
 
@@ -326,8 +341,35 @@ document.addEventListener("DOMContentLoaded", () => {
         tarjetasActuales = tarjetasActuales.filter((t) => t.id !== id);
         renderizarTarjetas(tarjetasActuales);
         modalContador.textContent = `${tarjetasActuales.length} tarjetas`;
+        mostrarToast("Tarjeta eliminada.", "info");
+      } else {
+        mostrarToast("Error al eliminar la tarjeta.", "error");
       }
     });
+  };
+
+  window.toggleCompartir = async function (id, boton) {
+    const res = await fetch(`/barajas/${id}/compartir`, { method: "POST" });
+    if (res.ok) {
+      const estabaCompartida = boton.dataset.compartida === "true";
+      boton.dataset.compartida = estabaCompartida ? "false" : "true";
+      mostrarToast(
+        estabaCompartida
+          ? "Baraja retirada de la comunidad."
+          : "Baraja compartida en la comunidad.",
+        "info",
+      );
+      // Actualizamos el estilo del botón visualmente
+      if (!estabaCompartida) {
+        boton.style.cssText =
+          "background:rgba(34,211,238,0.2);border:1px solid rgba(34,211,238,0.4);color:var(--cyan);";
+      } else {
+        boton.style.cssText =
+          "background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#555;";
+      }
+    } else {
+      mostrarToast("Error al cambiar el estado de la baraja.", "error");
+    }
   };
 
   window.cerrarModalNuevaTarjeta = () =>

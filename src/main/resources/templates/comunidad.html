@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Comunidad - LearnDeck')}"></head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'comunidad', ${usuarioRol})}"></nav>
+    <div th:replace="~{fragments/toast :: toast}"></div>
+
+    <!-- ==============================
+         CONTENIDO
+    ============================== -->
+    <main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
+
+        <!-- Cabecera -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 animado">
+            <div>
+                <h1 class="text-3xl font-black text-white">Barajas de la comunidad</h1>
+                <p class="text-gray-500 text-sm mt-1">Descubre barajas creadas por otros usuarios y añádelas a tu colección.</p>
+            </div>
+            <!-- Contador de barajas visibles -->
+            <div class="badge-zona">
+                <span class="pulso inline-block w-1.5 h-1.5 rounded-full" style="background:var(--cyan);"></span>
+                <span id="contadorComunidad">0</span> barajas disponibles
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="flex flex-wrap gap-3 mb-6 animado delay-1">
+            <input type="text" id="filtraNombre"
+                   placeholder="Buscar por nombre..."
+                   class="filtro-input">
+            <select id="filtroCategoria" class="filtro-select">
+                <option value="">Todas las categorías</option>
+                <option th:each="cat : ${categorias}"
+                        th:value="${cat}"
+                        th:text="${cat}">Cat</option>
+            </select>
+        </div>
+
+        <!-- Sin barajas -->
+        <div th:if="${#lists.isEmpty(barajasCompartidas)}"
+             class="text-center py-24 animado delay-2">
+            <div style="font-size:3rem;margin-bottom:1rem;opacity:0.2;">⬡</div>
+            <p style="color:#444;font-size:0.85rem;">Todavía no hay barajas compartidas por la comunidad.</p>
+            <p style="color:#333;font-size:0.75rem;margin-top:0.5rem;">
+                Ve a
+                <a href="/barajas" style="color:var(--violeta-claro);">Mis barajas</a>
+                y comparte las tuyas.
+            </p>
+        </div>
+
+        <!-- Grid de barajas de la comunidad -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 animado delay-2"
+             id="gridComunidad">
+
+            <div th:each="baraja : ${barajasCompartidas}"
+                 class="baraja-comunidad"
+                 th:attr="data-titulo=${baraja.titulo}, data-categoria=${baraja.categoria}, data-id=${baraja.id}">
+
+                <!-- Imagen con overlay -->
+                <div class="baraja-gestion-img">
+                    <img th:src="@{/imagenes/baraja.png}" src="/imagenes/baraja.png" th:alt="${baraja.titulo}">
+
+                    <!-- Overlay: botón guardar -->
+                    <div class="baraja-gestion-acciones">
+                        <button class="accion-btn accion-editar"
+                                title="Guardar en mi colección"
+                                th:attr="data-id=${baraja.id}, data-titulo=${baraja.titulo}"
+                                onclick="guardarCopia(this.dataset.id, this.dataset.titulo); event.stopPropagation();">
+                            <!-- Icono de guardar / descargar -->
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="baraja-gestion-footer">
+                    <div class="baraja-gestion-nombre" th:text="${baraja.titulo}">Nombre</div>
+                    <div class="baraja-gestion-meta">
+                        <!-- Número de tarjetas -->
+                        <span th:text="${baraja.tarjetas != null ? #lists.size(baraja.tarjetas) : 0} + ' tarjetas'">
+                            0 tarjetas
+                        </span>
+                        <!-- Categoría si existe -->
+                        <span th:if="${baraja.categoria != null}"
+                              class="baraja-gestion-cat"
+                              th:text="${baraja.categoria}">cat</span>
+                    </div>
+                    <!-- Autor -->
+                    <div style="font-size:0.6rem;color:#444;margin-top:3px;font-family:var(--font-mono);"
+                         th:text="'por ' + ${baraja.usuario.nombre}">por usuario</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <script th:src="@{/js/animacion.js}"></script>
+    <script th:src="@{/js/comunidad.js}"></script>
+
+</body>
+</html>

@@ -1,8 +1,12 @@
 package com.learndeck.learndeck.service;
 
 import com.learndeck.learndeck.model.Baraja;
+import com.learndeck.learndeck.model.Tarjeta;
 import com.learndeck.learndeck.model.Usuario;
 import com.learndeck.learndeck.repository.BarajaRepository;
+import com.learndeck.learndeck.repository.TarjetaRepository;
+import com.learndeck.learndeck.repository.UsuarioRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +23,10 @@ public class BarajaService {
 
     @Autowired
     private BarajaRepository barajaRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    @Autowired
+    private TarjetaRepository tarjetaRepository;
 
     // elimina espacios y pone la primera letra en mayúscula
     // Así "idiomas", "IDIOMAS" e "Idiomas" se guardan siempre igual
@@ -100,4 +108,59 @@ public class BarajaService {
     public void eliminarComoAdmin(Long id) {
         barajaRepository.deleteById(id);
     }
+
+    public List<Baraja> obtenerCompartidas(Long usuarioId) {
+        return barajaRepository.findByCompartidaTrueAndUsuarioIdNot(usuarioId);
+    }
+
+    public List<String> obtenerCategoriasComunidad(Long usuarioId) {
+        return barajaRepository.findCategoriasComunidad(usuarioId);
+    }
+
+    public void toggleCompartida(Long id, Long usuarioId) {
+        Optional<Baraja> optional = barajaRepository.findById(id);
+        if (optional.isEmpty())
+            return;
+
+        Baraja baraja = optional.get();
+        if (!baraja.getUsuario().getId().equals(usuarioId))
+            return;
+
+        baraja.setCompartida(!baraja.isCompartida());
+        barajaRepository.save(baraja);
+    }
+
+    public boolean guardarCopia(Long barajaOriginalId, Long usuarioIdDestino) {
+    
+    if (barajaRepository.existsByUsuarioIdAndBarajaOriginalId(usuarioIdDestino, barajaOriginalId)) {
+        return false; 
+    }
+
+    Optional<Baraja> original = barajaRepository.findById(barajaOriginalId);
+    if (original.isEmpty()) return false;
+
+    Optional<Usuario> usuario = usuarioRepository.findById(usuarioIdDestino);
+    if (usuario.isEmpty()) return false;
+
+    Baraja copia = new Baraja();
+    copia.setTitulo(original.get().getTitulo());
+    copia.setCategoria(original.get().getCategoria());
+    copia.setUsuario(usuario.get());
+    copia.setFechaCreacion(LocalDateTime.now());
+    copia.setCompartida(false);
+    copia.setBarajaOriginalId(barajaOriginalId);
+    Baraja copiaGuardada = barajaRepository.save(copia);
+
+    for (Tarjeta tarjeta : original.get().getTarjetas()) {
+        Tarjeta nuevaTarjeta = new Tarjeta();
+        nuevaTarjeta.setPregunta(tarjeta.getPregunta());
+        nuevaTarjeta.setRespuesta(tarjeta.getRespuesta());
+        nuevaTarjeta.setBaraja(copiaGuardada);
+        nuevaTarjeta.setNivelDificultad(0);
+        nuevaTarjeta.setFechaCreacion(LocalDateTime.now());
+        tarjetaRepository.save(nuevaTarjeta);
+    }
+
+    return true; 
+}
 }

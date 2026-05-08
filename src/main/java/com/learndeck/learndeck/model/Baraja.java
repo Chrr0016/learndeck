@@ -27,6 +27,12 @@ public class Baraja {
     @OneToMany(mappedBy = "baraja", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tarjeta> tarjetas;
 
+    @Column(nullable = false)
+    private boolean compartida = false;
+
+    @Column(name = "baraja_original_id")
+    private Long barajaOriginalId;
+
     public Long getId() {
         return id;
     }
@@ -73,5 +79,21 @@ public class Baraja {
 
     public void setTarjetas(List<Tarjeta> tarjetas) {
         this.tarjetas = tarjetas;
+    }
+
+    public boolean isCompartida() {
+        return compartida;
+    }
+
+    public void setCompartida(boolean compartida) {
+        this.compartida = compartida;
+    }
+
+    public Long getBarajaOriginalId() {
+        return barajaOriginalId;
+    }
+
+    public void setBarajaOriginalId(Long barajaOriginalId) {
+        this.barajaOriginalId = barajaOriginalId;
     }
 }
