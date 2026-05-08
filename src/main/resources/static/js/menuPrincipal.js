@@ -1,49 +1,60 @@
 // ── Datos de barajas ──
-const barajasEnZona = new Map();
+let barajasEnZona = [];
 let modoActual = "repaso";
 
-const buscador = document.getElementById("buscadorBarajas");
-const filtroCategoria = document.getElementById("filtroCategoria");
+// ── Referencias ──
+const buscador        = document.querySelector("#buscadorBarajas");
+const filtroCategoria = document.querySelector("#filtroCategoria");
+const zonaDrop        = document.querySelector("#zonaDrop");
+const listaBarajas    = document.querySelector("#listaBarajas");
+const main            = document.querySelector("main");
 
-buscador.addEventListener("input", filtrarBarajas);
+// ── Filtros (elemento único → listener directo está bien) ──
+buscador.addEventListener("input",  filtrarBarajas);
 filtroCategoria.addEventListener("change", filtrarBarajas);
 
 function filtrarBarajas() {
-  const texto = buscador.value.toLowerCase();
-  const categoria = filtroCategoria.value.toLowerCase(); // ← toLowerCase
+  const texto     = buscador.value.toLowerCase();
+  const categoria = filtroCategoria.value.toLowerCase();
 
   document.querySelectorAll(".baraja-simple").forEach((baraja) => {
     const titulo = baraja.dataset.titulo.toLowerCase();
-    const cat = (baraja.dataset.categoria || '').toLowerCase(); // ← toLowerCase
+    const cat    = (baraja.dataset.categoria || "").toLowerCase();
 
-    const coincideTexto = titulo.includes(texto);
-    const coincideCategoria = !categoria || cat === categoria;
-
-    baraja.style.display = coincideTexto && coincideCategoria ? "" : "none";
+    baraja.style.display =
+      titulo.includes(texto) && (!categoria || cat === categoria) ? "" : "none";
   });
 }
 
 // ── Contador barajas ──
 const todasBarajas = document.querySelectorAll(".baraja-simple");
-document.getElementById("contadorBarajas").textContent = todasBarajas.length;
+document.querySelector("#contadorBarajas").textContent = todasBarajas.length;
 
-// ── Drag & Drop ──
-const zonaDrop = document.getElementById("zonaDrop");
+// ────────────────────────────────────────────
+// DELEGACIÓN 1 — Drag sobre #listaBarajas
+// Cubre dragstart/dragend de cualquier .baraja-simple
+// (incluye las que se añadan dinámicamente)
+// ────────────────────────────────────────────
 let barajaArrastrada = null;
 
-todasBarajas.forEach((baraja) => {
-  baraja.addEventListener("dragstart", (e) => {
-    barajaArrastrada = baraja;
-    setTimeout(() => baraja.classList.add("arrastrando"), 0);
-    e.dataTransfer.effectAllowed = "copy";
-  });
+listaBarajas.addEventListener("dragstart", (e) => {
+  const baraja = e.target.closest(".baraja-simple");
+  if (!baraja) return;
 
-  baraja.addEventListener("dragend", () => {
-    baraja.classList.remove("arrastrando");
-    barajaArrastrada = null;
-  });
+  barajaArrastrada = baraja;
+  setTimeout(() => baraja.classList.add("arrastrando"), 0);
+  e.dataTransfer.effectAllowed = "copy";
 });
 
+listaBarajas.addEventListener("dragend", (e) => {
+  const baraja = e.target.closest(".baraja-simple");
+  if (!baraja) return;
+
+  baraja.classList.remove("arrastrando");
+  barajaArrastrada = null;
+});
+
+// ── Drop zone (elemento único → listeners directos) ──
 zonaDrop.addEventListener("dragover", (e) => {
   e.preventDefault();
   zonaDrop.classList.add("drag-over");
@@ -58,137 +69,136 @@ zonaDrop.addEventListener("dragleave", (e) => {
 zonaDrop.addEventListener("drop", (e) => {
   e.preventDefault();
   zonaDrop.classList.remove("drag-over");
-
   if (!barajaArrastrada) return;
 
-  const id = barajaArrastrada.dataset.id;
-  if (barajasEnZona.has(id)) return;
-
-  const titulo = barajaArrastrada.dataset.titulo;
-  const categoria = barajaArrastrada.dataset.categoria;
+  const { id, titulo, categoria } = barajaArrastrada.dataset;
+  if (barajasEnZona.includes(id)) return;
 
   añadirBarajaAZona(id, titulo, categoria);
   barajaArrastrada.classList.add("en-zona");
 });
 
-function añadirBarajaAZona(id, titulo, categoria) {
-  if (barajasEnZona.has(id)) return;
+// ────────────────────────────────────────────
+// DELEGACIÓN 2 — Doble click sobre #listaBarajas
+// ────────────────────────────────────────────
+listaBarajas.addEventListener("dblclick", (e) => {
+  const baraja = e.target.closest(".baraja-simple");
+  if (!baraja) return;
 
-  const mensajeZona = document.getElementById("mensajeZona");
-  if (mensajeZona) mensajeZona.remove();
+  const { id, titulo, categoria } = baraja.dataset;
+
+  if (barajasEnZona.includes(id)) {
+    quitarDeZona(id);
+  } else {
+    añadirBarajaAZona(id, titulo, categoria);
+    baraja.classList.add("en-zona");
+  }
+});
+
+// ────────────────────────────────────────────
+// DELEGACIÓN 3 — Clicks en <main>
+// Cubre: modos, limpiar, empezar y .btn-quitar dinámicos
+// ────────────────────────────────────────────
+main.addEventListener("click", (e) => {
+  // Botones de modo
+  if (e.target.closest("#modoRepaso")) { seleccionarModo("repaso"); return; }
+  if (e.target.closest("#modoErrores")) { seleccionarModo("errores"); return; }
+
+  // Limpiar
+  if (e.target.closest("#btnLimpiar")) { limpiarZona(); return; }
+
+  // Empezar sesión
+  if (e.target.closest("#btnEmpezar")) { empezarSesion(); return; }
+
+  // Quitar baraja de la zona (botón creado dinámicamente)
+  const btnQuitar = e.target.closest(".btn-quitar");
+  if (btnQuitar) {
+    const id = btnQuitar.closest(".baraja-en-zona")?.dataset.id;
+    if (id) quitarDeZona(id);
+  }
+});
+
+// ── Helpers ──────────────────────────────────
+
+function añadirBarajaAZona(id, titulo, categoria) {
+  if (barajasEnZona.includes(id)) return;
+
+  document.querySelector("#mensajeZona")?.remove();
 
   const elemento = document.createElement("div");
   elemento.className = "baraja-en-zona";
   elemento.dataset.id = id;
+  // El botón ya NO necesita onclick; lo maneja la delegación en main
   elemento.innerHTML = `
-    <button class="btn-quitar" onclick="quitarDeZona('${id}')">✕</button>
+    <button class="btn-quitar">✕</button>
     <img class="zona-img" src="/imagenes/baraja.png">
     <div class="zona-footer">
-        <div class="zona-nombre">${titulo}</div>
+      <div class="zona-nombre">${titulo}</div>
     </div>
-`;
+  `;
 
   zonaDrop.appendChild(elemento);
-  barajasEnZona.set(id, { titulo, categoria });
+  barajasEnZona.push(id);
   zonaDrop.classList.add("tiene-barajas");
-
   actualizarUI();
 }
 
 function quitarDeZona(id) {
-  const elemento = zonaDrop.querySelector(`[data-id="${id}"]`);
-  if (elemento) elemento.remove();
-  barajasEnZona.delete(id);
+  zonaDrop.querySelector(`[data-id="${id}"]`)?.remove();
+  barajasEnZona = barajasEnZona.filter((b) => b !== id);
 
-  const baraja = document.querySelector(`.baraja-simple[data-id="${id}"]`);
-  if (baraja) baraja.classList.remove("en-zona");
+  document.querySelector(`.baraja-simple[data-id="${id}"]`)
+    ?.classList.remove("en-zona");
 
-  if (barajasEnZona.size === 0) {
+  if (barajasEnZona.length === 0) {
     zonaDrop.classList.remove("tiene-barajas");
-    if (!document.getElementById("mensajeZona")) {
-      const msg = document.createElement("div");
-      msg.className = "zona-vacia";
-      msg.id = "mensajeZona";
-      msg.innerHTML = `
-        <p style="color:#333;">Arrastra las barajas aquí</p>
-        <p style="color:#2a2a3a;font-size:0.75rem;margin-top:0.3rem;">
-            Las barajas que añadas se estudiarán en esta sesión
-        </p>
-    `;
-      zonaDrop.appendChild(msg);
-    }
+    mostrarMensajeZonaVacia();
   }
 
   actualizarUI();
 }
 
 function limpiarZona() {
-  const elementos = zonaDrop.querySelectorAll(".baraja-en-zona");
-  elementos.forEach((el) => el.remove());
-
-  barajasEnZona.clear();
-
-  document
-    .querySelectorAll(".baraja-simple.en-zona")
+  zonaDrop.querySelectorAll(".baraja-en-zona").forEach((el) => el.remove());
+  barajasEnZona = [];
+  document.querySelectorAll(".baraja-simple.en-zona")
     .forEach((b) => b.classList.remove("en-zona"));
 
   zonaDrop.classList.remove("tiene-barajas");
+  document.querySelector("#mensajeZona")?.remove();
+  mostrarMensajeZonaVacia();
+  actualizarUI();
+}
 
-  // eliminar mensaje anterior si existe
-  const anterior = document.getElementById("mensajeZona");
-  if (anterior) anterior.remove();
-
-  // crear uno nuevo
+function mostrarMensajeZonaVacia() {
+  if (document.querySelector("#mensajeZona")) return;
   const msg = document.createElement("div");
   msg.className = "zona-vacia";
   msg.id = "mensajeZona";
   msg.innerHTML = `
-        <p style="color:#333;">Arrastra las barajas aquí</p>
-        <p style="color:#2a2a3a;font-size:0.75rem;margin-top:0.3rem;">
-            Las barajas que añadas se estudiarán en esta sesión
-        </p>
-    `;
-
+    <p style="color:#333;">Arrastra las barajas aquí</p>
+    <p style="color:#2a2a3a;font-size:0.75rem;margin-top:0.3rem;">
+      Las barajas que añadas se estudiarán en esta sesión
+    </p>
+  `;
   zonaDrop.appendChild(msg);
-
-  actualizarUI();
 }
 
 function seleccionarModo(modo) {
+  document.querySelector("#modoRepaso").classList.remove("modo-activo");
+  document.querySelector("#modoErrores").classList.remove("modo-activo");
+  document.querySelector(modo === "repaso" ? "#modoRepaso" : "#modoErrores")
+    .classList.add("modo-activo");
   modoActual = modo;
-  document.getElementById("modoRepaso").style.cssText =
-    modo === "repaso"
-      ? "font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.15);color:var(--violeta-claro);cursor:pointer;transition:all 0.2s;"
-      : "font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#555;cursor:pointer;transition:all 0.2s;";
-  document.getElementById("modoErrores").style.cssText =
-    modo === "errores"
-      ? "font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.15);color:var(--violeta-claro);cursor:pointer;transition:all 0.2s;"
-      : "font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#555;cursor:pointer;transition:all 0.2s;";
 }
 
 function actualizarUI() {
-  const cantidad = barajasEnZona.size;
-  document.getElementById("contadorZona").textContent =
-    cantidad + " seleccionadas";
-  const btn = document.getElementById("btnEmpezar");
-  btn.disabled = cantidad === 0;
+  const cantidad = barajasEnZona.length;
+  document.querySelector("#contadorZona").textContent = `${cantidad} seleccionadas`;
+  document.querySelector("#btnEmpezar").disabled = cantidad === 0;
 }
 
 function empezarSesion() {
-  if (barajasEnZona.size === 0) return;
-  const ids = Array.from(barajasEnZona.keys()).join(",");
-  window.location.href = `/repasar?barajas=${ids}&modo=${modoActual}`;
+  if (barajasEnZona.length === 0) return;
+  window.location.href = `/repasar?barajas=${barajasEnZona.join(",")}&modo=${modoActual}`;
 }
-
-// ── Click en baraja (además de drag) para añadir ──
-todasBarajas.forEach((baraja) => {
-  baraja.addEventListener("dblclick", () => {
-    const id = baraja.dataset.id;
-    if (barajasEnZona.has(id)) {
-      quitarDeZona(id);
-    } else {
-      añadirBarajaAZona(id, baraja.dataset.titulo, baraja.dataset.categoria);
-      baraja.classList.add("en-zona");
-    }
-  });
-});

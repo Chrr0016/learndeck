@@ -2,166 +2,162 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
 
 <head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
+
 <body>
 
-<!--NAVBAR-->
-<nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"></nav>
-<div th:replace="~{fragments/toast :: toast}"></div>
-<!-- ==============================
+    <!--NAVBAR-->
+    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"></nav>
+    <div th:replace="~{fragments/toast :: toast}"></div>
+    <!-- ==============================
      CONTENIDO
 ============================== -->
-<main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
+    <main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
 
-    <!-- Cabecera -->
-    <div class="mb-10 animado">
-        <h1 class="text-3xl font-black text-white">
-            Hola, <span style="color:var(--violeta-claro);" th:text="${usuarioNombre}">Christian</span>
-        </h1>
-        <p class="text-gray-500 text-sm mt-1">Selecciona tus barajas y empieza a estudiar.</p>
-    </div>
+        <!-- Cabecera -->
+        <div class="mb-10 animado">
+            <h1 class="text-3xl font-black text-white">
+                Hola, <span style="color:var(--violeta-claro);" th:text="${usuarioNombre}">Christian</span>
+            </h1>
+            <p class="text-gray-500 text-sm mt-1">Selecciona tus barajas y empieza a estudiar.</p>
+        </div>
 
-    <!-- ──────────────────────────────
+        <!-- ──────────────────────────────
          BLOQUE 1 — MIS BARAJAS
     ────────────────────────────── -->
-    <section class="mb-8 animado delay-1">
+        <section class="mb-8 animado delay-1">
 
-        <div class="flex items-center justify-between mb-5">
-            <div>
-                <h2 class="text-xl font-black text-white">Mis barajas</h2>
-            </div>
-            <div class="badge-zona">
-                <span class="pulso inline-block w-1.5 h-1.5 rounded-full" style="background:var(--cyan);"></span>
-                <span id="contadorBarajas">0</span> barajas
-            </div>
-        </div>
-
-        <div class="flex gap-3 mb-4">
-
-            <!-- Buscador -->
-            <input type="text" id="buscadorBarajas"
-                   placeholder="Buscar baraja"
-                   class="input-cp"
-                   style="max-width:200px;">
-
-            <!-- Filtro categoría -->
-            <select id="filtroCategoria" class="input-cp">
-                <option value="">Todas</option>
-
-                <option th:each="cat : ${categorias}"
-                        th:value="${cat}"
-                        th:text="${cat}">
-                </option>
-            </select>
-
-        </div>
-        <div style="background: var(--fondo2); border: 1px solid rgba(124,58,237,0.15); border-radius: 20px; padding: 2.5rem 1.5rem; min-height: 320px;">
-            <div class="barajas-scroll" id="listaBarajas">
-
-                <!-- Barajas generadas por Thymeleaf -->
-                <div th:each="baraja : ${barajas}" class="baraja-simple"
-                     th:attr="data-id=${baraja.id}, data-titulo=${baraja.titulo}, data-categoria=${baraja.categoria}"
-                     draggable="true">
-
-                    <img th:src="@{/imagenes/baraja.png}" src="/imagenes/baraja.png">
-
-                    <div class="baraja-info">
-                        <span class="baraja-nombre" th:text="${baraja.titulo}"></span><br>
-                    </div>
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-xl font-black text-white">Mis barajas</h2>
                 </div>
-
-
-                <!-- Botón crear nueva baraja -->
-                <a href="/barajas" class="btn-crear">
-                    <div class="icono-mas">+</div>
-                    <div style="font-size:0.72rem;text-align:center;line-height:1.4;">
-                        Crear nueva<br>baraja
-                    </div>
-                </a>
-
-            </div>
-
-            <!-- Mensaje si no hay barajas -->
-            <div th:if="${#lists.isEmpty(barajas)}" class="text-center py-8">
-                <div style="font-size:2rem;margin-bottom:0.75rem;"></div>
-                <p style="color:#444;">No hay barajas creadas</p>
-                <a href="/barajas" class="btn-primario" style="margin-top:1rem;display:inline-flex;">Crear mi
-                    primera baraja</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ──────────────────────────────
-         BLOQUE 2 — ZONA DE ESTUDIO
-    ────────────────────────────── -->
-    <section class="animado delay-2">
-
-        <div class="flex items-center justify-between mb-5">
-            <div>
-                <h2 class="text-xl font-black text-white">Arrastra las barajas aquí</h2>
-            </div>
-            <div id="contadorZona" style="font-size:0.75rem;color:#444;">0
-                seleccionadas
-            </div>
-        </div>
-
-        <div style="background: var(--fondo2); border: 1px solid rgba(124,58,237,0.15); border-radius: 20px; padding: 1.5rem;">
-
-            <!-- Zona drop -->
-            <div class="zona-drop" id="zonaDrop">
-                <div class="zona-vacia" id="mensajeZona">
-                    <p style="color:#333;">Arrastra las barajas aquí</p>
-                    <p style="color:#2a2a3a;font-size:0.75rem;margin-top:0.3rem;">Las barajas que añadas se estudiarán
-                        en esta sesión</p>
+                <div class="badge-zona">
+                    <span class="pulso inline-block w-1.5 h-1.5 rounded-full" style="background:var(--cyan);"></span>
+                    <span id="contadorBarajas">0</span> barajas
                 </div>
             </div>
 
-            <!-- Separador -->
-            <div style="height:1px;background:linear-gradient(to right,transparent,rgba(124,58,237,0.2),transparent);margin:1.5rem 0;"></div>
+            <div class="flex gap-3 mb-4">
 
-            <!-- Opciones de sesión + botón empezar -->
-            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <!-- Buscador -->
+                <input type="text" id="buscadorBarajas" placeholder="Buscar baraja" class="input-cp"
+                    style="max-width:200px;">
 
-                <div class="flex items-center gap-6">
-                    <!-- Modo de sesión -->
-                    <div>
-                        <div class="flex gap-2">
-                            <button id="modoRepaso" onclick="seleccionarModo('repaso')"
-                                    style="font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(124,58,237,0.4);background:rgba(124,58,237,0.15);color:var(--violeta-claro);cursor:pointer;transition:all 0.2s;">
-                                Repaso normal
-                            </button>
-                            <button id="modoErrores" onclick="seleccionarModo('errores')"
-                                    style="font-size:0.75rem;padding:0.4rem 0.9rem;border-radius:8px;border:1px solid rgba(255,255,255,0.07);background:transparent;color:#555;cursor:pointer;transition:all 0.2s;">
-                                Solo errores
-                            </button>
+                <!-- Filtro categoría -->
+                <select id="filtroCategoria" class="input-cp">
+                    <option value="">Todas</option>
+
+                    <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}">
+                    </option>
+                </select>
+
+            </div>
+            <div
+                style="background: var(--fondo2); border: 1px solid rgba(124,58,237,0.15); border-radius: 20px; padding: 2.5rem 1.5rem; min-height: 320px;">
+                <div class="barajas-scroll" id="listaBarajas">
+
+                    <!-- Barajas generadas por Thymeleaf -->
+                    <div th:each="baraja : ${barajas}" class="baraja-simple"
+                        th:attr="data-id=${baraja.id}, data-titulo=${baraja.titulo}, data-categoria=${baraja.categoria}"
+                        draggable="true">
+
+                        <img th:src="@{/imagenes/baraja.png}" src="/imagenes/baraja.png">
+
+                        <div class="baraja-info">
+                            <span class="baraja-nombre" th:text="${baraja.titulo}"></span><br>
                         </div>
                     </div>
-                    
+
+
+                    <!-- Botón crear nueva baraja -->
+                    <a href="/barajas" class="btn-crear">
+                        <div class="icono-mas">+</div>
+                        <div style="font-size:0.72rem;text-align:center;line-height:1.4;">
+                            Crear nueva<br>baraja
+                        </div>
+                    </a>
+
                 </div>
 
-                <!-- Botón empezar -->
-                <div class="flex items-center gap-3">
-                    <button onclick="limpiarZona()" class="btn-outline"
-                            style="padding:0.65rem 1.2rem;font-size:0.8rem;">
-                        Limpiar
-                    </button>
-                    <button id="btnEmpezar" onclick="empezarSesion()" class="btn-primario" disabled>
-                        <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        Empezar sesión
-                    </button>
+                <!-- Mensaje si no hay barajas -->
+                <div th:if="${#lists.isEmpty(barajas)}" class="text-center py-8">
+                    <div style="font-size:2rem;margin-bottom:0.75rem;"></div>
+                    <p style="color:#444;">No hay barajas creadas</p>
+                    <a href="/barajas" class="btn-primario" style="margin-top:1rem;display:inline-flex;">Crear mi
+                        primera baraja</a>
                 </div>
-
             </div>
-        </div>
-    </section>
+        </section>
 
-</main>
-<script th:src="@{/js/animacion.js}"></script>
-<script th:src="@{/js/menuPrincipal.js}"></script>
+        <!-- ──────────────────────────────
+         BLOQUE 2 — ZONA DE ESTUDIO
+    ────────────────────────────── -->
+        <section class="animado delay-2">
+
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-xl font-black text-white">Arrastra las barajas aquí</h2>
+                </div>
+                <div id="contadorZona" style="font-size:0.75rem;color:#444;">0
+                    seleccionadas
+                </div>
+            </div>
+
+            <div
+                style="background: var(--fondo2); border: 1px solid rgba(124,58,237,0.15); border-radius: 20px; padding: 1.5rem;">
+
+                <!-- Zona drop -->
+                <div class="zona-drop" id="zonaDrop">
+                    <div class="zona-vacia" id="mensajeZona">
+                        <p style="color:#333;">Arrastra las barajas aquí</p>
+                        <p style="color:#2a2a3a;font-size:0.75rem;margin-top:0.3rem;">Las barajas que añadas se
+                            estudiarán
+                            en esta sesión</p>
+                    </div>
+                </div>
+
+                <!-- Separador -->
+                <div
+                    style="height:1px;background:linear-gradient(to right,transparent,rgba(124,58,237,0.2),transparent);margin:1.5rem 0;">
+                </div>
+
+                <!-- Opciones de sesión + botón empezar -->
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+
+                    <div class="flex items-center gap-6">
+                        <!-- Modo de sesión -->
+                        <div>
+                            <div class="flex gap-2">
+                                <button id="modoRepaso" class="btn-modo modo-activo">Repaso normal</button>
+                                <button id="modoErrores" class="btn-modo">Solo errores</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Botón empezar -->
+                    <div class="flex items-center gap-3">
+                        <button id="btnLimpiar" class="btn-outline" style="padding:0.65rem 1.2rem;font-size:0.8rem;">
+                            Limpiar
+                        </button>
+                        <button id="btnEmpezar" class="btn-primario" disabled>
+                            <svg style="width:16px;height:16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Empezar sesión
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <script th:src="@{/js/animacion.js}" defer></script>
+    <script th:src="@{/js/menuPrincipal.js}" defer></script>
 
 </body>
+
 </html>

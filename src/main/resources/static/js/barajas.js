@@ -1,30 +1,13 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // ==========================================
-  // 1. CONFIGURACIÓN INICIAL Y ANIMACIONES
-  // ==========================================
-  const animados = document.querySelectorAll(".animado");
-  const observador = new IntersectionObserver(
-    (entradas) => {
-      entradas.forEach((entrada) => {
-        if (entrada.isIntersecting) {
-          entrada.target.classList.add("visible");
-          observador.unobserve(entrada.target);
-        }
-      });
-    },
-    { threshold: 0.1 },
-  );
-  animados.forEach((el) => observador.observe(el));
 
   const todasBarajas = document.querySelectorAll(".baraja-gestion");
-  const contadorVisible = document.getElementById("contadorVisible");
+  const contadorVisible = document.querySelector("#contadorVisible");
   if (contadorVisible) contadorVisible.textContent = todasBarajas.length;
 
   // ==========================================
   // 2. FILTROS Y BÚSQUEDA DE BARAJAS
   // ==========================================
-  const filtraNombre = document.getElementById("filtraNombre");
-  const filtroCategoria = document.getElementById("filtroCategoria");
+  const filtraNombre = document.querySelector("#filtraNombre");
+  const filtroCategoria = document.querySelector("#filtroCategoria");
 
   function filtrar() {
     const nombre = filtraNombre ? filtraNombre.value.toLowerCase() : "";
@@ -35,8 +18,14 @@ document.addEventListener("DOMContentLoaded", () => {
     todasBarajas.forEach((baraja) => {
       const titulo = (baraja.dataset.titulo || "").toLowerCase();
       const cat = (baraja.dataset.categoria || "").toLowerCase();
-      const visible =
-        titulo.includes(nombre) && (!categoria || cat === categoria);
+      let visible = false;
+
+      if (titulo.includes(nombre)) {
+        if (!categoria || cat === categoria) {
+          visible = true;
+        }
+      }
+
       baraja.style.display = visible ? "" : "none";
       if (visible) visibles++;
     });
@@ -49,21 +38,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   // 3. GESTIÓN DE BARAJAS (CREAR / EDITAR)
   // ==========================================
-  const modalGestionBaraja = document.getElementById("modalGestionBaraja");
-  const formGestionBaraja = document.getElementById("formGestionBaraja");
-  const gbError = document.getElementById("gbError");
+  const modalGestionBaraja = document.querySelector("#modalGestionBaraja");
+  const formGestionBaraja = document.querySelector("#formGestionBaraja");
+  const gbError = document.querySelector("#gbError");
 
-  window.abrirModalNuevaBaraja = function () {
+  const abrirModalNuevaBaraja = function () {
     gbError.classList.add("hidden");
-    document.getElementById("gbId").value = "";
-    document.getElementById("gbTitulo").value = "";
-    document.getElementById("gbCategoria").value = "";
-    document.getElementById("gbTituloModal").textContent = "Nueva baraja";
+    document.querySelector("#gbId").value = "";
+    document.querySelector("#gbTitulo").value = "";
+    document.querySelector("#gbCategoria").value = "";
+    document.querySelector("#gbTituloModal").textContent = "Nueva baraja";
     modalGestionBaraja.classList.remove("hidden");
     document.body.style.overflow = "hidden";
   };
 
-  window.prepararEdicionBaraja = function (elemento) {
+  const prepararEdicionBaraja = function (elemento) {
     // Leemos los datos del botón que fue clickeado
     const id = elemento.getAttribute("data-id");
     const titulo = elemento.getAttribute("data-titulo");
@@ -72,18 +61,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // Llamamos a la función original que ya tienes en el JS
     abrirModalEditarBaraja(id, titulo, categoria);
   };
-  window.abrirModalEditarBaraja = function (id, titulo, categoria) {
+  const abrirModalEditarBaraja = function (id, titulo, categoria) {
     gbError.classList.add("hidden");
-    document.getElementById("gbId").value = id;
-    document.getElementById("gbTitulo").value = titulo;
-    document.getElementById("gbCategoria").value =
+    document.querySelector("#gbId").value = id;
+    document.querySelector("#gbTitulo").value = titulo;
+    document.querySelector("#gbCategoria").value =
       categoria === "null" ? "" : categoria;
-    document.getElementById("gbTituloModal").textContent = "Editar baraja";
+    document.querySelector("#gbTituloModal").textContent = "Editar baraja";
     modalGestionBaraja.classList.remove("hidden");
     document.body.style.overflow = "hidden";
   };
 
-  window.cerrarModalGestionBaraja = function () {
+  const cerrarModalGestionBaraja = function () {
     modalGestionBaraja.classList.add("hidden");
     document.body.style.overflow = "";
   };
@@ -91,9 +80,9 @@ document.addEventListener("DOMContentLoaded", () => {
   if (formGestionBaraja) {
     formGestionBaraja.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const id = document.getElementById("gbId").value;
-      const titulo = document.getElementById("gbTitulo").value.trim();
-      const categoria = document.getElementById("gbCategoria").value.trim();
+      const id = document.querySelector("#gbId").value;
+      const titulo = document.querySelector("#gbTitulo").value.trim();
+      const categoria = document.querySelector("#gbCategoria").value.trim();
 
       try {
         const res = await fetch("/barajas/guardar/ajax", {
@@ -102,14 +91,16 @@ document.addEventListener("DOMContentLoaded", () => {
           body: new URLSearchParams({ id, titulo, categoria }),
         });
         if (res.ok) {
-          const esEdicion = document.getElementById("gbId").value !== "";
-          mostrarToast(
-            esEdicion
-              ? "Baraja actualizada correctamente."
-              : "Baraja creada correctamente.",
-            "exito",
-          );
-          setTimeout(() => window.location.reload(), 1200);
+          const esEdicion = document.querySelector("#gbId").value !== "";
+          let mensaje;
+
+          if (esEdicion) {
+            mensaje = "Baraja actualizada correctamente.";
+          } else {
+            mensaje = "Baraja creada correctamente.";
+          }
+          mostrarToast(mensaje, "exito");
+          setTimeout(() =>  window.location.reload(), 1200);
         } else {
           throw new Error();
         }
@@ -123,18 +114,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   // 4. ELIMINAR BARAJA
   // ==========================================
-  const modalEliminar = document.getElementById("modalEliminar");
-  const formEliminar = document.getElementById("formEliminar");
-  const nombreBarajaEliminar = document.getElementById("nombreBarajaEliminar");
+  const modalEliminar = document.querySelector("#modalEliminar");
+  const formEliminar = document.querySelector("#formEliminar");
+  const nombreBarajaEliminar = document.querySelector("#nombreBarajaEliminar");
 
-  window.confirmarEliminar = function (id, titulo) {
+  const confirmarEliminar = function (id, titulo) {
     nombreBarajaEliminar.textContent = titulo;
     formEliminar.action = `/barajas/${id}/eliminar`;
     modalEliminar.classList.remove("hidden");
     document.body.style.overflow = "hidden";
   };
 
-  window.cancelarEliminar = function () {
+  const cancelarEliminar = function () {
     modalEliminar.classList.add("hidden");
     document.body.style.overflow = "";
   };
@@ -142,18 +133,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // ==========================================
   // 5. DETALLE DE BARAJA Y LISTADO DE TARJETAS
   // ==========================================
-  const modalBaraja = document.getElementById("modalBaraja");
-  const modalTitulo = document.getElementById("modalTitulo");
-  const modalMeta = document.getElementById("modalMeta");
-  const modalContador = document.getElementById("modalContador");
-  const listaTarjetas = document.getElementById("listaTarjetas");
-  const buscarTarjeta = document.getElementById("buscarTarjeta");
-  const modalBtnEditar = document.getElementById("modalBtnEditar");
+  const modalBaraja = document.querySelector("#modalBaraja");
+  const modalTitulo = document.querySelector("#modalTitulo");
+  const modalMeta = document.querySelector("#modalMeta");
+  const modalContador = document.querySelector("#modalContador");
+  const listaTarjetas = document.querySelector("#listaTarjetas");
+  const buscarTarjeta = document.querySelector("#buscarTarjeta");
+  const modalBtnEditar = document.querySelector("#modalBtnEditar");
 
   let tarjetasActuales = [];
   let barajaActualId = null;
 
-  window.abrirBaraja = function (id) {
+  const abrirBaraja = function (id) {
     barajaActualId = id;
     modalBaraja.classList.remove("hidden");
     document.body.style.overflow = "hidden";
@@ -188,17 +179,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (buscarTarjeta) buscarTarjeta.value = "";
   }
 
-  if (document.getElementById("modalBtnCerrar")) {
-    document
-      .getElementById("modalBtnCerrar")
-      .addEventListener("click", cerrarModal);
+  if (document.querySelector("#modalBtnCerrar")) {
+    document.querySelector("#modalBtnCerrar").addEventListener("click", cerrarModal);
   }
 
   // ==========================================
   // 6. GESTIÓN DE TARJETAS (CREAR / EDITAR / ELIMINAR)
   // ==========================================
-  const modalNuevaTarjeta = document.getElementById("modalNuevaTarjeta");
-  const ntBtnSubmit = document.getElementById("ntBtnSubmit");
+  const modalNuevaTarjeta = document.querySelector("#modalNuevaTarjeta");
+  const ntBtnSubmit = document.querySelector("#ntBtnSubmit");
 
   // --- BUSCADOR DE TARJETAS (Dentro del modal) ---
   if (buscarTarjeta) {
@@ -241,27 +230,27 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
   }
 
-  window.abrirModalNuevaTarjeta = function () {
-    document.getElementById("ntTitulo").textContent = "Nueva tarjeta";
-    document.getElementById("ntBarajaNombre").textContent =
+  const abrirModalNuevaTarjeta = function () {
+    document.querySelector("#ntTitulo").textContent = "Nueva tarjeta";
+    document.querySelector("#ntBarajaNombre").textContent =
       modalTitulo.textContent;
-    document.getElementById("ntPregunta").value = "";
-    document.getElementById("ntRespuesta").value = "";
-    document.getElementById("ntError").classList.add("hidden");
+    document.querySelector("#ntPregunta").value = "";
+    document.querySelector("#ntRespuesta").value = "";
+    document.querySelector("#ntError").classList.add("hidden");
     ntBtnSubmit.textContent = "Crear tarjeta";
     ntBtnSubmit.onclick = submitNuevaTarjeta;
     modalNuevaTarjeta.classList.remove("hidden");
-    document.getElementById("ntPregunta").focus();
+    document.querySelector("#ntPregunta").focus();
   };
 
-  window.submitNuevaTarjeta = async function () {
-    const preguntaInput = document.getElementById("ntPregunta");
-    const respuestaInput = document.getElementById("ntRespuesta");
+  const submitNuevaTarjeta = async function () {
+    const preguntaInput = document.querySelector("#ntPregunta");
+    const respuestaInput = document.querySelector("#ntRespuesta");
     const pregunta = preguntaInput.value.trim();
     const respuesta = respuestaInput.value.trim();
 
     if (!pregunta || !respuesta) {
-      document.getElementById("ntError").classList.remove("hidden");
+      document.querySelector("#ntError").classList.remove("hidden");
       return;
     }
 
@@ -302,20 +291,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  window.abrirEditarTarjeta = async function (id) {
+  const abrirEditarTarjeta = async function (id) {
     const res = await fetch(`/tarjetas/${id}/json`);
     const t = await res.json();
-    document.getElementById("ntTitulo").textContent = "Editar tarjeta";
-    document.getElementById("ntPregunta").value = t.pregunta;
-    document.getElementById("ntRespuesta").value = t.respuesta;
+    document.querySelector("#ntTitulo").textContent = "Editar tarjeta";
+    document.querySelector("#ntPregunta").value = t.pregunta;
+    document.querySelector("#ntRespuesta").value = t.respuesta;
     ntBtnSubmit.textContent = "Guardar cambios";
     ntBtnSubmit.onclick = () => submitEditarTarjeta(id);
     modalNuevaTarjeta.classList.remove("hidden");
   };
 
-  window.submitEditarTarjeta = async function (id) {
-    const pregunta = document.getElementById("ntPregunta").value.trim();
-    const respuesta = document.getElementById("ntRespuesta").value.trim();
+  const submitEditarTarjeta = async function (id) {
+    const pregunta = document.querySelector("#ntPregunta").value.trim();
+    const respuesta = document.querySelector("#ntRespuesta").value.trim();
 
     const res = await fetch(`/tarjetas/${id}/editar/ajax`, {
       method: "POST",
@@ -334,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  window.eliminarTarjeta = function (id) {
+  const eliminarTarjeta = function (id) {
     if (!confirm("¿Eliminar esta tarjeta?")) return;
     fetch(`/tarjetas/${id}`, { method: "DELETE" }).then((res) => {
       if (res.ok) {
@@ -348,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  window.toggleCompartir = async function (id, boton) {
+  const toggleCompartir = async function (id, boton) {
     const res = await fetch(`/barajas/${id}/compartir`, { method: "POST" });
     if (res.ok) {
       const estabaCompartida = boton.dataset.compartida === "true";
@@ -372,14 +361,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  window.cerrarModalNuevaTarjeta = () =>
+  const cerrarModalNuevaTarjeta = () =>
     modalNuevaTarjeta.classList.add("hidden");
 
   // Cerrar modales con fondo o ESC
-  window.onclick = function (event) {
+  const onclick = function (event) {
     if (event.target == modalBaraja) cerrarModal();
     if (event.target == modalNuevaTarjeta) cerrarModalNuevaTarjeta();
     if (event.target == modalGestionBaraja) cerrarModalGestionBaraja();
     if (event.target == modalEliminar) cancelarEliminar();
   };
-});
+

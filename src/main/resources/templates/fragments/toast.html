@@ -1,17 +1,14 @@
 <div th:fragment="toast">
 
     <!-- Elemento con datos del servidor (si los hay) -->
-    <div id="toast"
-         th:if="${mensajeExito != null or mensajeInfo != null or error != null}"
-         th:attr="
+    <div id="toast" th:if="${mensajeExito != null or mensajeInfo != null or error != null}" th:attr="
             data-mensaje=${mensajeExito != null ? mensajeExito : (mensajeInfo != null ? mensajeInfo : error)},
             data-tipo=${mensajeExito != null ? 'exito' : (mensajeInfo != null ? 'info' : 'error')}"
-         style="display:none;">
+        style="display:none;">
     </div>
 
     <!-- Contenedor visual -->
-    <div id="toastContenedor"
-         style="
+    <div id="toastContenedor" style="
             position: fixed;
             bottom: 2rem;
             right: 2rem;
@@ -37,41 +34,41 @@
         // ── Función global — cualquier JS de la página puede llamarla ──
         function mostrarToast(mensaje, tipo) {
             const contenedor = document.getElementById('toastContenedor');
-            const icono      = document.getElementById('toastIcono');
-            const texto      = document.getElementById('toastTexto');
+            const icono = document.getElementById('toastIcono');
+            const texto = document.getElementById('toastTexto');
 
             // Estilos según el tipo
             if (tipo === 'exito') {
                 contenedor.style.background = 'rgba(22, 163, 74, 0.15)';
-                contenedor.style.border     = '1px solid rgba(74, 222, 128, 0.4)';
-                contenedor.style.color      = '#4ade80';
-                icono.textContent           = '✓';
+                contenedor.style.border = '1px solid rgba(74, 222, 128, 0.4)';
+                contenedor.style.color = '#4ade80';
+                icono.textContent = '✓';
             } else if (tipo === 'info') {
                 contenedor.style.background = 'rgba(124, 58, 237, 0.15)';
-                contenedor.style.border     = '1px solid rgba(167, 139, 250, 0.4)';
-                contenedor.style.color      = 'var(--violeta-claro)';
-                icono.textContent           = 'i';
+                contenedor.style.border = '1px solid rgba(167, 139, 250, 0.4)';
+                contenedor.style.color = 'var(--violeta-claro)';
+                icono.textContent = 'i';
             } else if (tipo === 'error') {
                 contenedor.style.background = 'rgba(239, 68, 68, 0.15)';
-                contenedor.style.border     = '1px solid rgba(248, 113, 113, 0.4)';
-                contenedor.style.color      = '#f87171';
-                icono.textContent           = '✕';
+                contenedor.style.border = '1px solid rgba(248, 113, 113, 0.4)';
+                contenedor.style.color = '#f87171';
+                icono.textContent = '✕';
             }
 
             texto.textContent = mensaje;
 
             // Reiniciamos por si ya había un toast visible
-            contenedor.style.opacity   = '0';
+            contenedor.style.opacity = '0';
             contenedor.style.transform = 'translateY(16px)';
-            contenedor.style.display   = 'flex';
+            contenedor.style.display = 'flex';
 
             setTimeout(() => {
-                contenedor.style.opacity   = '1';
+                contenedor.style.opacity = '1';
                 contenedor.style.transform = 'translateY(0)';
             }, 50);
 
             setTimeout(() => {
-                contenedor.style.opacity   = '0';
+                contenedor.style.opacity = '0';
                 contenedor.style.transform = 'translateY(16px)';
                 setTimeout(() => { contenedor.style.display = 'none'; }, 400);
             }, 4000);
@@ -82,5 +79,68 @@
         if (toastDatos) {
             mostrarToast(toastDatos.dataset.mensaje, toastDatos.dataset.tipo);
         }
+
+
+
+        /* 
+                "use strict";
+        
+        class Toast {
+            constructor(mensaje, tipo, tiempo) {
+        
+                let divToast = document.querySelector("[data-div-toast]");
+                if (!divToast) {
+                    divToast = document.createElement("div");
+                    divToast.style.position = "fixed";
+                    divToast.style.top = "4rem";
+                    divToast.style.right = "1.5rem";
+                    divToast.style.zIndex = "9999";
+                    divToast.style.display = "flex";
+                    divToast.style.flexDirection = "column";
+                    divToast.style.gap = "0.5rem";
+                    divToast.dataset.divToast = "yeah";
+                    document.body.append(divToast);
+                }
+        
+                const divMensaje = document.createElement("div");
+                divMensaje.style.backgroundColor = tipo === Toast.ERROR
+                    ? "var(--color-accent)"
+                    : "var(--color-second)";
+                divMensaje.style.color = "white";
+                divMensaje.style.border = "1px solid rgba(255,255,255,0.15)";
+                divMensaje.style.borderRadius = "50px";
+                divMensaje.style.padding = "0.65rem 1.25rem";
+                divMensaje.style.minWidth = "280px";
+                divMensaje.style.maxWidth = "360px";
+                divMensaje.style.display = "flex";
+                divMensaje.style.alignItems = "center";
+                divMensaje.style.gap = "0.75rem";
+                divMensaje.style.fontSize = "0.9rem";
+                divMensaje.style.fontWeight = "500";
+                divMensaje.style.boxShadow = "0 4px 16px rgba(13,27,42,0.18)";
+        
+                const icono = document.createElement("i");
+                icono.className = tipo === Toast.ERROR ? "fas fa-circle-exclamation" : "fas fa-circle-check";
+                icono.style.fontSize = "1.1rem";
+                icono.style.flexShrink = "0";
+        
+                const texto = document.createElement("span");
+                texto.textContent = mensaje;
+        
+                divMensaje.append(icono, texto);
+                divToast.prepend(divMensaje);
+        
+                setTimeout(() => {
+                    if (document.startViewTransition) {
+                        document.startViewTransition(() => divMensaje.remove());
+                    } else {
+                        divMensaje.remove();
+                    }
+                }, tiempo);
+            }
+        
+            static INFO = 0;
+            static ERROR = 1;
+        } */
     </script>
 </div>
