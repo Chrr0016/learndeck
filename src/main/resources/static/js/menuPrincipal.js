@@ -1,25 +1,25 @@
 "use strict";
 
-let barajasEnZona = [];
-let modoActual = "repaso";
+let barajasEnZona=[];
+let modoActual="repaso";
 
-const buscador = document.querySelector("#buscadorBarajas");
-const filtroCategoria = document.querySelector("#filtroCategoria");
-const zonaDrop = document.querySelector("#zonaDrop");
-const listaBarajas = document.querySelector("#listaBarajas");
-const main = document.querySelector("main");
-const todasBarajas = document.querySelectorAll(".baraja-simple");
+const buscador=document.querySelector("#buscadorBarajas");
+const filtroCategoria=document.querySelector("#filtroCategoria");
+const zonaDrop=document.querySelector("#zonaDrop");
+const listaBarajas=document.querySelector("#listaBarajas");
+const main=document.querySelector("main");
+const todasBarajas=document.querySelectorAll(".baraja-simple");
 
-document.querySelector("#contadorBarajas").textContent = todasBarajas.length;
+document.querySelector("#contadorBarajas").textContent=todasBarajas.length;
 
 // ── Filtros ──
 function filtrarBarajas() {
-  const texto = buscador.value.toLowerCase();
-  const categoria = filtroCategoria.value.toLowerCase();
+  const texto=buscador.value.toLowerCase();
+  const categoria=filtroCategoria.value.toLowerCase();
 
   todasBarajas.forEach((baraja) => {
-    const titulo = baraja.dataset.titulo.toLowerCase();
-    const cat = (baraja.dataset.categoria || "").toLowerCase();
+    const titulo=baraja.dataset.titulo.toLowerCase();
+    const cat=(baraja.dataset.categoria || "").toLowerCase();
     baraja.style.display =
       titulo.includes(texto) && (!categoria || cat === categoria) ? "" : "none";
   });
@@ -29,21 +29,21 @@ buscador.addEventListener("input", filtrarBarajas);
 filtroCategoria.addEventListener("change", filtrarBarajas);
 
 // ── Drag desde lista ──
-let barajaArrastrada = null;
+let barajaArrastrada=null;
 
 listaBarajas.addEventListener("dragstart", (e) => {
-  const baraja = e.target.closest(".baraja-simple");
+  const baraja=e.target.closest(".baraja-simple");
   if (!baraja) return;
-  barajaArrastrada = baraja;
+  barajaArrastrada=baraja;
   setTimeout(() => baraja.classList.add("arrastrando"), 0);
-  e.dataTransfer.effectAllowed = "copy";
+  e.dataTransfer.effectAllowed="copy";
 });
 
 listaBarajas.addEventListener("dragend", (e) => {
-  const baraja = e.target.closest(".baraja-simple");
+  const baraja=e.target.closest(".baraja-simple");
   if (!baraja) return;
   baraja.classList.remove("arrastrando");
-  barajaArrastrada = null;
+  barajaArrastrada=null;
 });
 
 // ── Drop zone ──
@@ -63,7 +63,7 @@ zonaDrop.addEventListener("drop", (e) => {
   zonaDrop.classList.remove("drag-over");
   if (!barajaArrastrada) return;
 
-  const { id, titulo, categoria } = barajaArrastrada.dataset;
+  const { id, titulo, categoria }=barajaArrastrada.dataset;
   if (barajasEnZona.includes(id)) {
     mostrarToast(`"${titulo}" ya está en la zona de estudio.`, "info");
     return;
@@ -75,10 +75,10 @@ zonaDrop.addEventListener("drop", (e) => {
 
 // ── Doble click para añadir/quitar ──
 listaBarajas.addEventListener("dblclick", (e) => {
-  const baraja = e.target.closest(".baraja-simple");
+  const baraja=e.target.closest(".baraja-simple");
   if (!baraja) return;
 
-  const { id, titulo, categoria } = baraja.dataset;
+  const { id, titulo, categoria }=baraja.dataset;
 
   if (barajasEnZona.includes(id)) {
     quitarDeZona(id);
@@ -108,9 +108,9 @@ main.addEventListener("click", (e) => {
   }
 
   // Botón × de cada baraja en la zona (creado dinámicamente)
-  const btnQuitar = e.target.closest(".btn-quitar");
+  const btnQuitar=e.target.closest(".btn-quitar");
   if (btnQuitar) {
-    const id = btnQuitar.closest(".baraja-en-zona")?.dataset.id;
+    const id=btnQuitar.closest(".baraja-en-zona")?.dataset.id;
     if (id) quitarDeZona(id);
   }
 });
@@ -121,10 +121,10 @@ function añadirBarajaAZona(id, titulo, categoria) {
 
   document.querySelector("#mensajeZona")?.remove();
 
-  const elemento = document.createElement("div");
-  elemento.className = "baraja-en-zona";
-  elemento.dataset.id = id;
-  elemento.innerHTML = `
+  const elemento=document.createElement("div");
+  elemento.className="baraja-en-zona";
+  elemento.dataset.id=id;
+  elemento.innerHTML=`
     <button class="btn-quitar">✕</button>
     <img class="zona-img" src="/imagenes/baraja.png">
     <div class="zona-footer">
@@ -140,12 +140,12 @@ function añadirBarajaAZona(id, titulo, categoria) {
 }
 
 function quitarDeZona(id) {
-  const elemento = zonaDrop.querySelector(`[data-id="${id}"]`);
+  const elemento=zonaDrop.querySelector(`[data-id="${id}"]`);
   const nombre =
     elemento?.querySelector(".zona-nombre")?.textContent || "Baraja";
   elemento?.remove();
 
-  barajasEnZona = barajasEnZona.filter((b) => b !== id);
+  barajasEnZona=barajasEnZona.filter((b) => b !== id);
   document
     .querySelector(`.baraja-simple[data-id="${id}"]`)
     ?.classList.remove("en-zona");
@@ -163,7 +163,7 @@ function limpiarZona() {
   if (barajasEnZona.length === 0) return;
 
   zonaDrop.querySelectorAll(".baraja-en-zona").forEach((el) => el.remove());
-  barajasEnZona = [];
+  barajasEnZona=[];
   document
     .querySelectorAll(".baraja-simple.en-zona")
     .forEach((b) => b.classList.remove("en-zona"));
@@ -175,10 +175,10 @@ function limpiarZona() {
 
 function mostrarMensajeZonaVacia() {
   if (document.querySelector("#mensajeZona")) return;
-  const msg = document.createElement("div");
-  msg.className = "zona-vacia";
-  msg.id = "mensajeZona";
-  msg.innerHTML = `
+  const msg=document.createElement("div");
+  msg.className="zona-vacia";
+  msg.id="mensajeZona";
+  msg.innerHTML=`
     <p class="zona-texto-principal">Arrastra las barajas aquí</p>
     <p class="zona-texto-secundario">Las barajas que añadas se estudiarán en esta sesión</p>
   `;
@@ -191,7 +191,7 @@ function seleccionarModo(modo) {
   document
     .querySelector(modo === "repaso" ? "#modoRepaso" : "#modoErrores")
     .classList.add("modo-activo");
-  modoActual = modo;
+  modoActual=modo;
   mostrarToast(
     `Modo: ${modo === "repaso" ? "Repaso normal" : "Solo errores"}.`,
     "info",
@@ -199,26 +199,26 @@ function seleccionarModo(modo) {
 }
 
 function actualizarUI() {
-  const cantidad = barajasEnZona.length;
+  const cantidad=barajasEnZona.length;
   document.querySelector("#contadorZona").textContent =
     `${cantidad} seleccionadas`;
-  document.querySelector("#btnEmpezar").disabled = cantidad === 0;
+  document.querySelector("#btnEmpezar").disabled=cantidad === 0;
 }
 
 function empezarSesion() {
   if (barajasEnZona.length === 0) return;
 
   // Comprobamos que ninguna baraja de la zona esté vacía
-  const barajaVacia = barajasEnZona.find((id) => {
-    const el = document.querySelector(`.baraja-simple[data-id="${id}"]`);
+  const barajaVacia=barajasEnZona.find((id) => {
+    const el=document.querySelector(`.baraja-simple[data-id="${id}"]`);
     return !el || parseInt(el.dataset.count || "0") === 0;
   });
 
   if (barajaVacia) {
-    const el = document.querySelector(
+    const el=document.querySelector(
       `.baraja-simple[data-id="${barajaVacia}"]`,
     );
-    const nombre = el?.dataset.titulo || "Una baraja";
+    const nombre=el?.dataset.titulo || "Una baraja";
     mostrarToast(
       `"${nombre}" no tiene tarjetas. Añade tarjetas antes de estudiar.`,
       "error",
@@ -226,5 +226,5 @@ function empezarSesion() {
     return;
   }
 
-  window.location.href = `/repasar?barajas=${barajasEnZona.join(",")}&modo=${modoActual}`;
+  window.location.href=`/repasar?barajas=${barajasEnZona.join(",")}&modo=${modoActual}`;
 }

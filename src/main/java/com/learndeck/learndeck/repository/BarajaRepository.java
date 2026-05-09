@@ -23,4 +23,8 @@ public interface BarajaRepository extends JpaRepository<Baraja, Long> {
 
     // Comprueba si el usuario ya tiene una copia de esa baraja original
     boolean existsByUsuarioIdAndBarajaOriginalId(Long usuarioId, Long barajaOriginalId);
+
+    // Comprueba si el usuario ya tiene una baraja con ese título (ignorando mayúsculas)
+// El idExcluir sirve para que al editar no se compare consigo misma
+boolean existsByTituloIgnoreCaseAndUsuarioIdAndIdNot(String titulo, Long usuarioId, Long id); 
 }

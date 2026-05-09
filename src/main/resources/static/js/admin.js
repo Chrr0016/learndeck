@@ -1,46 +1,46 @@
 "use strict";
 
-const filtroUsuario   = document.querySelector("#filtroUsuario");
-const filasBarajas    = document.querySelectorAll(".baraja-admin-item");
-const contadorBarajas = document.querySelector("#contadorBarajasAdmin");
-const modalEliminar   = document.querySelector("#modalEliminarAdmin");
-const textoConfirmar  = document.querySelector("#textoConfirmarEliminar");
-const formEliminar    = document.querySelector("#formEliminarAdmin");
+const filtroUsuario  =document.querySelector("#filtroUsuario");
+const filasBarajas   =document.querySelectorAll(".baraja-admin-item");
+const contadorBarajas=document.querySelector("#contadorBarajasAdmin");
+const modalEliminar  =document.querySelector("#modalEliminarAdmin");
+const textoConfirmar =document.querySelector("#textoConfirmarEliminar");
+const formEliminar   =document.querySelector("#formEliminarAdmin");
 
-contadorBarajas.textContent = filasBarajas.length;
+contadorBarajas.textContent=filasBarajas.length;
 
 // ── Filtro por usuario ──
 filtroUsuario.addEventListener("change", () => {
-  const usuarioId = filtroUsuario.value;
-  let visibles = 0;
+  const usuarioId=filtroUsuario.value;
+  let visibles=0;
 
   filasBarajas.forEach((fila) => {
-    const coincide = !usuarioId || fila.dataset.usuarioId === usuarioId;
-    fila.style.display = coincide ? "" : "none";
+    const coincide=!usuarioId || fila.dataset.usuarioId === usuarioId;
+    fila.style.display=coincide ? "" : "none";
     if (coincide) visibles++;
   });
 
-  contadorBarajas.textContent = visibles;
+  contadorBarajas.textContent=visibles;
 });
 
 // ── Modal de confirmación ──
 function abrirModalEliminar(formAction, texto) {
-  formEliminar.action    = formAction;
-  textoConfirmar.textContent = texto;
+  formEliminar.action   =formAction;
+  textoConfirmar.textContent=texto;
   modalEliminar.classList.remove("hidden");
-  document.body.style.overflow = "hidden";
+  document.body.style.overflow="hidden";
 }
 
 function cerrarModalEliminar() {
   modalEliminar.classList.add("hidden");
-  document.body.style.overflow = "";
-  formEliminar.action = "";
+  document.body.style.overflow="";
+  formEliminar.action="";
 }
 
 // ── Evento delegado ──
 document.addEventListener("click", (e) => {
 
-  const btnEliminar = e.target.closest("[data-action='eliminar-admin']");
+  const btnEliminar=e.target.closest("[data-action='eliminar-admin']");
   if (btnEliminar) {
     abrirModalEliminar(btnEliminar.dataset.formAction, btnEliminar.dataset.texto);
     return;

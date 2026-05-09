@@ -251,14 +251,32 @@ public class BarajaController {
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 
+        String tituloLimpio=titulo != null ? titulo.trim() : "";
+        String categoriaLimpia=categoria != null ? categoria.trim() : "";
+
+        // Validaciones
+        if (tituloLimpio.isEmpty())
+            return ResponseEntity.badRequest().body("El nombre de la baraja no puede estar vacío.");
+
+        if (tituloLimpio.length() > 50)
+            return ResponseEntity.badRequest().body("El nombre no puede superar 50 caracteres.");
+
+        if (categoriaLimpia.isEmpty())
+            return ResponseEntity.badRequest().body("La categoría no puede estar vacía.");
+
+        if (categoriaLimpia.length() > 30)
+            return ResponseEntity.badRequest().body("La categoría no puede superar 30 caracteres.");
+
+        if (barajaService.existeNombreDuplicado(tituloLimpio, usuarioId, id))
+            return ResponseEntity.badRequest().body("Ya tienes una baraja con ese nombre.");
+
         if (id == null) {
-            // Crear
             Optional<Usuario> usuario=usuarioService.findById(usuarioId);
-            barajaService.crear(titulo, categoria, usuario.get());
+            barajaService.crear(tituloLimpio, categoriaLimpia, usuario.get());
         } else {
-            // Editar
-            barajaService.editar(id, titulo, categoria, usuarioId);
+            barajaService.editar(id, tituloLimpio, categoriaLimpia, usuarioId);
         }
+
         return ResponseEntity.ok().build();
     }
 

@@ -131,36 +131,45 @@ public class BarajaService {
     }
 
     public boolean guardarCopia(Long barajaOriginalId, Long usuarioIdDestino) {
-    
-    if (barajaRepository.existsByUsuarioIdAndBarajaOriginalId(usuarioIdDestino, barajaOriginalId)) {
-        return false; 
+
+        if (barajaRepository.existsByUsuarioIdAndBarajaOriginalId(usuarioIdDestino, barajaOriginalId)) {
+            return false;
+        }
+
+        Optional<Baraja> original=barajaRepository.findById(barajaOriginalId);
+        if (original.isEmpty())
+            return false;
+
+        Optional<Usuario> usuario=usuarioRepository.findById(usuarioIdDestino);
+        if (usuario.isEmpty())
+            return false;
+
+        Baraja copia=new Baraja();
+        copia.setTitulo(original.get().getTitulo());
+        copia.setCategoria(original.get().getCategoria());
+        copia.setUsuario(usuario.get());
+        copia.setFechaCreacion(LocalDateTime.now());
+        copia.setCompartida(false);
+        copia.setBarajaOriginalId(barajaOriginalId);
+        Baraja copiaGuardada=barajaRepository.save(copia);
+
+        for (Tarjeta tarjeta : original.get().getTarjetas()) {
+            Tarjeta nuevaTarjeta=new Tarjeta();
+            nuevaTarjeta.setPregunta(tarjeta.getPregunta());
+            nuevaTarjeta.setRespuesta(tarjeta.getRespuesta());
+            nuevaTarjeta.setBaraja(copiaGuardada);
+            nuevaTarjeta.setNivelDificultad(0);
+            nuevaTarjeta.setFechaCreacion(LocalDateTime.now());
+            tarjetaRepository.save(nuevaTarjeta);
+        }
+
+        return true;
     }
 
-    Optional<Baraja> original=barajaRepository.findById(barajaOriginalId);
-    if (original.isEmpty()) return false;
-
-    Optional<Usuario> usuario=usuarioRepository.findById(usuarioIdDestino);
-    if (usuario.isEmpty()) return false;
-
-    Baraja copia=new Baraja();
-    copia.setTitulo(original.get().getTitulo());
-    copia.setCategoria(original.get().getCategoria());
-    copia.setUsuario(usuario.get());
-    copia.setFechaCreacion(LocalDateTime.now());
-    copia.setCompartida(false);
-    copia.setBarajaOriginalId(barajaOriginalId);
-    Baraja copiaGuardada=barajaRepository.save(copia);
-
-    for (Tarjeta tarjeta : original.get().getTarjetas()) {
-        Tarjeta nuevaTarjeta=new Tarjeta();
-        nuevaTarjeta.setPregunta(tarjeta.getPregunta());
-        nuevaTarjeta.setRespuesta(tarjeta.getRespuesta());
-        nuevaTarjeta.setBaraja(copiaGuardada);
-        nuevaTarjeta.setNivelDificultad(0);
-        nuevaTarjeta.setFechaCreacion(LocalDateTime.now());
-        tarjetaRepository.save(nuevaTarjeta);
+    public boolean existeNombreDuplicado(String titulo, Long usuarioId, Long idExcluir) {
+        // Si es creación nueva, idExcluir es -1 (ninguna baraja tiene ese id)
+        return barajaRepository.existsByTituloIgnoreCaseAndUsuarioIdAndIdNot(
+                titulo.trim(), usuarioId, idExcluir != null ? idExcluir : -1L);
     }
 
-    return true; 
-}
 }
