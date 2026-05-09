@@ -13,12 +13,12 @@ public interface BarajaRepository extends JpaRepository<Baraja, Long> {
 
     List<Baraja> findByUsuarioId(Long usuarioId);
 
-    @Query("SELECT DISTINCT b.categoria FROM Baraja b WHERE b.usuario.id = :userId")
+    @Query("SELECT DISTINCT b.categoria FROM Baraja b WHERE b.usuario.id=:userId")
     List<String> findCategoriasByUsuario(Long userId);
 
     List<Baraja> findByCompartidaTrueAndUsuarioIdNot(Long usuarioId);
 
-    @Query("SELECT DISTINCT b.categoria FROM Baraja b WHERE b.compartida = true AND b.usuario.id != :userId AND b.categoria IS NOT NULL")
+    @Query("SELECT DISTINCT b.categoria FROM Baraja b WHERE b.compartida=true AND b.usuario.id != :userId AND b.categoria IS NOT NULL")
     List<String> findCategoriasComunidad(@Param("userId") Long userId);
 
     // Comprueba si el usuario ya tiene una copia de esa baraja original

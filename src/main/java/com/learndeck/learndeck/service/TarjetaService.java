@@ -29,7 +29,7 @@ public class TarjetaService {
     }
 
     public Tarjeta crear(String pregunta, String respuesta, Baraja baraja) {
-        Tarjeta tarjeta = new Tarjeta();
+        Tarjeta tarjeta=new Tarjeta();
         tarjeta.setPregunta(pregunta);
         tarjeta.setRespuesta(respuesta);
         tarjeta.setBaraja(baraja);
@@ -39,10 +39,10 @@ public class TarjetaService {
     }
 
     public boolean editar(Long id, String pregunta, String respuesta, Long usuarioId) {
-        Optional<Tarjeta> optional = tarjetaRepository.findById(id);
+        Optional<Tarjeta> optional=tarjetaRepository.findById(id);
         if (optional.isEmpty()) return false;
 
-        Tarjeta tarjeta = optional.get();
+        Tarjeta tarjeta=optional.get();
 
         // Verificamos que la tarjeta pertenece al usuario a través de su baraja
         if (!tarjeta.getBaraja().getUsuario().getId().equals(usuarioId)) return false;
@@ -54,7 +54,7 @@ public class TarjetaService {
     }
 
     public boolean eliminar(Long id, Long usuarioId) {
-        Optional<Tarjeta> optional = tarjetaRepository.findById(id);
+        Optional<Tarjeta> optional=tarjetaRepository.findById(id);
         if (optional.isEmpty()) return false;
 
         if (!optional.get().getBaraja().getUsuario().getId().equals(usuarioId)) return false;

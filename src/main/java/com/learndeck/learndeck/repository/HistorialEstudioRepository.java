@@ -16,19 +16,19 @@ public interface HistorialEstudioRepository extends JpaRepository<HistorialEstud
 
     // Esta query devuelve los IDs de tarjetas cuyo ÚLTIMO intento del usuario fue fallado.
     // La subconsulta (SELECT MAX...) obtiene la fecha del intento más reciente de cada tarjeta,
-    // y la condición exterior comprueba que ese último intento fue incorrecto (resultado = false).
+    // y la condición exterior comprueba que ese último intento fue incorrecto (resultado=false).
     // Sin la subconsulta, devolvería tarjetas que alguna vez se fallaron aunque luego se acertaran.
     @Query("""
         SELECT h.tarjeta.id
         FROM HistorialEstudio h
-        WHERE h.usuario.id = :usuarioId
+        WHERE h.usuario.id=:usuarioId
           AND h.tarjeta.baraja.id IN :barajaIds
-          AND h.resultado = false
-          AND h.fechaEstudio = (
+          AND h.resultado=false
+          AND h.fechaEstudio=(
               SELECT MAX(h2.fechaEstudio)
               FROM HistorialEstudio h2
-              WHERE h2.tarjeta.id = h.tarjeta.id
-                AND h2.usuario.id = :usuarioId
+              WHERE h2.tarjeta.id=h.tarjeta.id
+                AND h2.usuario.id=:usuarioId
           )
     """)
     List<Long> findIdsTarjetasFalladasPorUsuarioYBarajas(
@@ -39,7 +39,7 @@ public interface HistorialEstudioRepository extends JpaRepository<HistorialEstud
     // Devuelve todo el historial de un usuario
     List<HistorialEstudio> findByUsuarioId(Long usuarioId);
 
-    // Devuelve el historial filtrado por resultado (true = correctas, false = falladas)
+    // Devuelve el historial filtrado por resultado (true=correctas, false=falladas)
     List<HistorialEstudio> findByUsuarioIdAndResultado(Long usuarioId, Boolean resultado);
 
     // Devuelve el historial de una tarjeta concreta

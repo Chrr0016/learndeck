@@ -1,26 +1,29 @@
+"use strict";
+
 function validarLogin() {
-    const email = document.getElementById('email');
-    const contrasena = document.getElementById('contrasena');
-    let valido = true;
+  const emailInput    =document.querySelector("#email");
+  const contrasenaInput=document.querySelector("#contrasena");
+  let valido=true;
 
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regexEmail.test(email.value)) {
-        email.style.borderColor = '#ef4444';
-        document.getElementById('errorEmail').classList.remove('hidden');
-        valido = false;
-    } else {
-        email.style.borderColor = '';
-        document.getElementById('errorEmail').classList.add('hidden');
-    }
+  // Validar formato de email
+  const regexEmail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  const emailOk=regexEmail.test(emailInput.value);
+  
+  emailInput.style.borderColor=emailOk ? "" : "#ef4444";
+  
+  document.querySelector("#errorEmail").classList.toggle("hidden", emailOk);
+  
+  if (!emailOk) valido=false;
 
-    if (contrasena.value.length < 8) {
-        contrasena.style.borderColor = '#ef4444';
-        document.getElementById('errorContrasena').classList.remove('hidden');
-        valido = false;
-    } else {
-        contrasena.style.borderColor = '';
-        document.getElementById('errorContrasena').classList.add('hidden');
-    }
+  // Validar longitud mínima de contraseña
+  const contrasenaOk=contrasenaInput.value.length >= 8;
 
-    if (valido) document.querySelector('form').submit();
+  contrasenaInput.style.borderColor=contrasenaOk ? "" : "#ef4444";
+
+  document.querySelector("#errorContrasena").classList.toggle("hidden", contrasenaOk);
+  
+  if (!contrasenaOk) valido=false;
+
+  if (valido) document.querySelector("form").submit();
 }

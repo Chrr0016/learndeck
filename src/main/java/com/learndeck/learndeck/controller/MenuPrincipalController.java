@@ -20,21 +20,21 @@ public class MenuPrincipalController {
     @Autowired
     private HistorialEstudioService historialService;
 
-    @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
+    @GetMapping("/inicio")
+    public String inicio(HttpSession session, Model model) {
 
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
-        String usuarioNombre = (String) session.getAttribute("usuarioNombre");
+        Long usuarioId=(Long) session.getAttribute("usuarioId");
+        String usuarioNombre=(String) session.getAttribute("usuarioNombre");
 
         if (usuarioId == null) return "redirect:/login";
 
-        List<Baraja> barajas = barajaService.obtenerBarajasPorUsuario(usuarioId);
-        List<String> categorias = barajaService.obtenerCategorias(usuarioId);
+        List<Baraja> barajas=barajaService.obtenerBarajasPorUsuario(usuarioId);
+        List<String> categorias=barajaService.obtenerCategorias(usuarioId);
 
-        int totalEstudiadas = historialService.totalEstudiadas(usuarioId);
-        long totalAciertos = historialService.totalAciertos(usuarioId);
-        long totalFallos = historialService.totalFallos(usuarioId);
-        double porcentaje = historialService.porcentajeAcierto(usuarioId);
+        int totalEstudiadas=historialService.totalEstudiadas(usuarioId);
+        long totalAciertos=historialService.totalAciertos(usuarioId);
+        long totalFallos=historialService.totalFallos(usuarioId);
+        double porcentaje=historialService.porcentajeAcierto(usuarioId);
 
         model.addAttribute("usuarioNombre", usuarioNombre);
         model.addAttribute("barajas", barajas);

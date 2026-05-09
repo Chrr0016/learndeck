@@ -1,159 +1,241 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
-<body>
+  <head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
 
-<!-- NAVBAR mínimo -->
-<nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"></nav>
+  <body>
+    <!-- NAVBAR mínimo -->
+    <nav
+      th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"
+    ></nav>
 
-<!-- ── PANTALLA REPASO ── -->
-<div class="pantalla-repaso" id="pantallaRepaso">
-    <main class="max-w-screen-xl mx-auto px-6 py-8 relative z-10">
-
+    <!-- ── PANTALLA REPASO ── -->
+    <div class="pantalla-repaso" id="pantallaRepaso">
+      <main class="max-w-screen-xl mx-auto px-6 py-8 relative z-10">
         <!-- Cabecera con progreso -->
         <div class="max-w-2xl mx-auto mb-8">
-
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <div style="font-size:0.9rem;font-weight:700;color:white;">
-                        Tarjeta <span id="numActual">1</span> de <span id="numTotal" th:text="${tarjetas.size()}">0</span>
-                    </div>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div style="text-align:right;">
-                        <div style="font-size:0.65rem;color:#4ade80;margin-bottom:2px;">correctas</div>
-                        <div style="font-size:1.2rem;font-weight:900;color:#4ade80;" id="contCorrect">0</div>
-                    </div>
-                    <div style="width:1px;height:30px;background:rgba(255,255,255,0.08);"></div>
-                    <div style="text-align:right;">
-                        <div style="font-size:0.65rem;color:#f87171;margin-bottom:2px;">incorrectas</div>
-                        <div style="font-size:1.2rem;font-weight:900;color:#f87171;" id="contIncorrect">0</div>
-                    </div>
-                </div>
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <!-- contador tarjeta -->
+              <div class="repaso-contador">
+                Tarjeta <span id="numActual">1</span> de
+                <span id="numTotal" th:text="${tarjetas.size()}">0</span>
+              </div>
             </div>
 
-            <!-- Barra progreso -->
-            <div class="barra-prog">
-                <div class="barra-prog-fill" id="barraProgreso" style="width: 0%"></div>
-            </div>
+            <!-- stats correctas/incorrectas -->
+            <div class="flex items-center gap-4">
+              <div style="text-align: right">
+                <div class="etiqueta-stat etiqueta-verde">correctas</div>
+                <div
+                  class="num-stat etiqueta-verde"
+                  id="contCorrect"
+                >
+                  0
+                </div>
+              </div>
 
+              <div class="divisor-v"></div>
+
+              <div style="text-align: right">
+                <div class="etiqueta-stat etiqueta-roja">incorrectas</div>
+                <div
+                  class="num-stat etiqueta-roja"
+                  id="contIncorrect"
+                >
+                  0
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra progreso -->
+          <div class="barra-prog">
+            <div
+              class="barra-prog-fill"
+              id="barraProgreso"
+              style="width: 0%"
+            ></div>
+          </div>
         </div>
 
         <!-- Tarjeta flip -->
-        <div class="escena" id="escena" onclick="voltearTarjeta()">
-            <div class="carta-interior">
-
-                <!-- Frente — Pregunta -->
-                <div class="cara cara-frente">
-                    <p id="textoPregunta"
-                       class="text-white text-center leading-relaxed"
-                       style="font-size:1.1rem;font-weight:600;max-width:440px;">
-                        Cargando...
-                    </p>
-                    <div class="etiqueta mt-6" style="opacity:0.4;">
-                        <span class="tecla">↵</span> o click para ver respuesta
-                    </div>
-                </div>
-
-                <!-- Reverso — Respuesta -->
-                <div class="cara cara-reverso">
-                    <div class="etiqueta mb-4" style="color:var(--cyan);"></div>
-                    <p id="textoRespuesta"
-                       class="text-gray-200 text-center leading-relaxed"
-                       style="font-size:1rem;max-width:440px;">
-                    </p>
-                </div>
-
+        <div class="escena" id="escena" data-action="voltear">
+          <div class="carta-interior">
+            <!-- Frente — Pregunta -->
+            <div class="cara cara-frente">
+              <p
+                id="textoPregunta"
+                class="text-white text-center leading-relaxed"
+                style="font-size: 1.1rem; font-weight: 600; max-width: 440px"
+              >
+                Cargando...
+              </p>
+              <div class="etiqueta mt-6" style="opacity: 0.4">
+                <span class="tecla">↵</span> o click para ver respuesta
+              </div>
             </div>
+
+            <!-- Reverso — Respuesta -->
+            <div class="cara cara-reverso">
+              <div class="etiqueta mb-4" style="color: var(--cyan)"></div>
+              <p
+                id="textoRespuesta"
+                class="text-gray-200 text-center leading-relaxed"
+                style="font-size: 1rem; max-width: 440px"
+              ></p>
+            </div>
+          </div>
         </div>
 
         <!-- Hint voltear -->
-        <p class="hint-voltear" id="hintVoltear">[ clic en la tarjeta para ver la respuesta ]</p>
+        <p class="hint-voltear" id="hintVoltear">
+          [ clic en la tarjeta para ver la respuesta ]
+        </p>
 
         <!-- Botones respuesta (ocultos hasta voltear) -->
-        <div id="botonesRespuesta"
-             class="flex items-center justify-center gap-4 mt-8"
-             style="opacity:0;pointer-events:none;transition:opacity 0.3s;">
+        <div
+          id="botonesRespuesta"
+          class="flex items-center justify-center gap-4 mt-8"
+          style="opacity: 0; pointer-events: none; transition: opacity 0.3s"
+        >
+          <button class="btn-incorrecto" data-action="incorrecto">
+            <svg
+              class="icono-svg-sm"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+            Incorrecto
+          </button>
 
-            <button class="btn-incorrecto" onclick="responder(false)">
-                <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                </svg>
-                Incorrecto
-            </button>
-            <button class="btn-correcto" onclick="responder(true)">
-                <svg style="width:18px;height:18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                Correcto
-            </button>
-
+          <button class="btn-correcto" data-action="correcto">
+            <svg
+              class="icono-svg-sm"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            Correcto
+          </button>
         </div>
 
         <!-- Hint teclado -->
-        <div class="flex items-center justify-center gap-6 mt-6" style="opacity:0;" id="hintTeclado">
-            <div style="display:flex;align-items:center;gap:6px;font-size:0.68rem;color:#333;">
-                <span class="tecla">←</span> incorrecto
-            </div>
-            <div style="display:flex;align-items:center;gap:6px;font-size:0.68rem;color:#333;">
-                correcto <span class="tecla">→</span>
-            </div>
+        <div
+          class="flex items-center justify-center gap-6 mt-6"
+          style="opacity: 0"
+          id="hintTeclado"
+        >
+          <div class="hint-tecla-item">
+            <span class="tecla">←</span> incorrecto
+          </div>
+
+          <div class="hint-tecla-item">
+            correcto <span class="tecla">→</span>
+          </div>
         </div>
+      </main>
+    </div>
 
-    </main>
-</div>
-
-<!-- ── PANTALLA RESULTADO ── -->
-<div class="pantalla-resultado" id="pantallaResultado">
-    <main class="max-w-screen-xl mx-auto px-6 py-16 relative z-10">
+    <!-- ── PANTALLA RESULTADO ── -->
+    <div class="pantalla-resultado" id="pantallaResultado">
+      <main class="max-w-screen-xl mx-auto px-6 py-16 relative z-10">
         <div class="max-w-lg mx-auto text-center">
-            <h1 class="text-4xl font-black text-white mb-2">¡Sesión terminada!</h1>
-            <p class="text-gray-500 text-sm mb-8">Has repasado todas las tarjetas de esta sesión.</p>
+          <h1 class="text-4xl font-black text-white mb-2">
+            ¡Sesión terminada!
+          </h1>
 
-            <!-- Stats resultado -->
-            <div class="card p-6 mb-6" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;">
-                <div class="text-center">
-                    <div style="font-size:2rem;font-weight:900;color:#4ade80;" id="resCorrect">0</div>
-                    <div style="font-size:0.68rem;color:#555;">correctas</div>
-                </div>
-                <div class="text-center" style="border-left:1px solid rgba(255,255,255,0.05);border-right:1px solid rgba(255,255,255,0.05);">
-                    <div style="font-size:2rem;font-weight:900;color:#f87171;" id="resIncorrect">0</div>
-                    <div style="font-size:0.68rem;color:#555;">incorrectas</div>
-                </div>
-                <div class="text-center">
-                    <div style="font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--violeta-claro),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="resPorcentaje">0%</div>
-                    <div style="font-size:0.68rem;color:#555;">acierto</div>
-                </div>
+          <p class="text-gray-500 text-sm mb-8">
+            Has repasado todas las tarjetas de esta sesión.
+          </p>
+
+          <!-- Stats resultado -->
+          <div class="card p-6 mb-6 grid-resultado">
+            <div class="text-center">
+              <div class="num-grande num-grande-verde" id="resCorrect">
+                0
+              </div>
+              <div class="etiqueta-resultado">correctas</div>
             </div>
 
-            <!-- Acciones -->
-            <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                <a href="/dashboard" class="btn-primario">
-                    <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                    </svg>
-                    Ir al dashboard
-                </a>
-                <button onclick="reiniciarSesion()" class="btn-outline">
-                    <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-                    </svg>
-                    Repetir sesión
-                </button>
+            <div class="text-center col-central">
+              <div class="num-grande num-grande-rojo" id="resIncorrect">
+                0
+              </div>
+              <div class="etiqueta-resultado">incorrectas</div>
             </div>
 
+            <div class="text-center">
+              <div
+                class="num-grande num-grande-degradado"
+                id="resPorcentaje"
+              >
+                0%
+              </div>
+              <div class="etiqueta-resultado">acierto</div>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="/inicio" class="btn-primario">
+              <svg
+                class="icono-svg-sm"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                />
+              </svg>
+              Ir al inicio
+            </a>
+
+            <button data-action="reiniciar" class="btn-outline">
+              <svg
+                class="icono-svg-sm"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              Repetir sesión
+            </button>
+          </div>
         </div>
-    </main>
-</div>
+      </main>
+    </div>
 
-<!-- Datos Thymeleaf → JS -->
-<script th:inline="javascript">
-    const TARJETAS = /*[[${tarjetasJson}]]*/ [];
-    const BARAJA_IDS = /*[[${barajaIds}]]*/ '';
-    const MODO = /*[[${modo}]]*/ 'repaso';
-</script>
+    <!-- Datos Thymeleaf → JS -->
+    <script th:inline="javascript">
+      const TARJETAS=/*[[${tarjetasJson}]]*/ [];
+      const BARAJA_IDS=/*[[${barajaIds}]]*/ "";
+      const MODO=/*[[${modo}]]*/ "repaso";
+    </script>
 
-<script th:src="@{/js/repaso.js}" defer></script>
-
-</body>
+    <script th:src="@{/js/repaso.js}" defer></script>
+  </body>
 </html>

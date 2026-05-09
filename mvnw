@@ -225,7 +225,7 @@ fi
 # If specified, validate the SHA-256 sum of the Maven distribution zip file
 if [ -n "${distributionSha256Sum-}" ]; then
   distributionSha256Result=false
-  if [ "$MVN_CMD" = mvnd.sh ]; then
+  if [ "$MVN_CMD"=mvnd.sh ]; then
     echo "Checksum validation is not supported for maven-mvnd." >&2
     echo "Please disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties." >&2
     exit 1
@@ -242,7 +242,7 @@ if [ -n "${distributionSha256Sum-}" ]; then
     echo "Please install either command, or disable validation by removing 'distributionSha256Sum' from your maven-wrapper.properties." >&2
     exit 1
   fi
-  if [ $distributionSha256Result = false ]; then
+  if [ $distributionSha256Result=false ]; then
     echo "Error: Failed to validate Maven distribution SHA-256, your Maven distribution might be compromised." >&2
     echo "If you updated your Maven version, you need to update the specified distributionSha256Sum property." >&2
     exit 1

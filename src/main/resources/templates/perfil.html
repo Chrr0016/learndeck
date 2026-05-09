@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/head :: head('Mi Perfil - LearnDeck')}"></head>
+<head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
 <body class="bg-[#0a0a14] text-white">
 
     <!-- NAVBAR -->
@@ -54,7 +54,7 @@
 
                         <!-- Botones -->
                         <div class="flex items-center justify-end gap-3 pt-4">
-                            <a href="/dashboard" class="btn-outline" style="padding: 0.7rem 1.5rem; font-size: 0.8rem;">
+                            <a href="/inicio" class="btn-outline" style="padding: 0.7rem 1.5rem; font-size: 0.8rem;">
                                 Cancelar
                             </a>
                             <button type="submit" class="btn-primario" style="padding: 0.7rem 2rem;">
@@ -63,19 +63,6 @@
                         </div>
 
                     </form>
-                </div>
-            </section>
-
-            <!-- Sección Peligrosa -->
-            <section class="mt-10 animado delay-2 opacity-50 hover:opacity-100 transition-opacity">
-                <div class="p-6 rounded-2xl border border-red-900/20 bg-red-900/5 flex items-center justify-between">
-
-                    <h4 class="text-red-500 text-sm font-bold">Cuidado, si eliminas tu cuenta pierdes todo y no lo
-                        puedes recuperar</h4>
-
-                    <button class="text-red-500 hover:bg-red-500/10 px-4 py-2 rounded-lg text-xs transition-colors">
-                        Eliminar cuenta
-                    </button>
                 </div>
             </section>
         </div>

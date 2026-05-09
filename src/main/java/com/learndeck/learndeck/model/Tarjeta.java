@@ -6,28 +6,28 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "tarjetas")
+@Table(name="tarjetas")
 public class Tarjeta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable=false, columnDefinition="TEXT")
     private String pregunta;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(nullable=false, columnDefinition="TEXT")
     private String respuesta;
 
-    private Integer nivelDificultad = 0;
+    private Integer nivelDificultad=0;
 
     private LocalDateTime fechaCreacion;
 
     @ManyToOne
-    @JoinColumn(name = "baraja_id", nullable = false)
+    @JoinColumn(name="baraja_id", nullable=false)
     private Baraja baraja;
 
-    @OneToMany(mappedBy = "tarjeta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="tarjeta", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<HistorialEstudio> historial;
 
     public Long getId() {
@@ -35,7 +35,7 @@ public class Tarjeta {
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id=id;
     }
 
     public String getPregunta() {
@@ -43,7 +43,7 @@ public class Tarjeta {
     }
 
     public void setPregunta(String pregunta) {
-        this.pregunta = pregunta;
+        this.pregunta=pregunta;
     }
 
     public String getRespuesta() {
@@ -51,7 +51,7 @@ public class Tarjeta {
     }
 
     public void setRespuesta(String respuesta) {
-        this.respuesta = respuesta;
+        this.respuesta=respuesta;
     }
 
     public Integer getNivelDificultad() {
@@ -59,7 +59,7 @@ public class Tarjeta {
     }
 
     public void setNivelDificultad(Integer nivelDificultad) {
-        this.nivelDificultad = nivelDificultad;
+        this.nivelDificultad=nivelDificultad;
     }
 
     public LocalDateTime getFechaCreacion() {
@@ -67,7 +67,7 @@ public class Tarjeta {
     }
 
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
+        this.fechaCreacion=fechaCreacion;
     }
 
     public Baraja getBaraja() {
@@ -75,7 +75,7 @@ public class Tarjeta {
     }
 
     public void setBaraja(Baraja baraja) {
-        this.baraja = baraja;
+        this.baraja=baraja;
     }
 
     public List<HistorialEstudio> getHistorial() {
@@ -83,6 +83,6 @@ public class Tarjeta {
     }
 
     public void setHistorial(List<HistorialEstudio> historial) {
-        this.historial = historial;
+        this.historial=historial;
     }
 }

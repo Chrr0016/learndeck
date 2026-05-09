@@ -1,127 +1,210 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
 
-<head th:replace="~{fragments/head :: head('LearnDeck - Admin')}"></head>
-
-<body>
-
-    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'admin', ${usuarioRol})}"></nav>
+  <body>
+    <nav
+      th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'admin', ${usuarioRol})}"
+    ></nav>
 
     <main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
+      <!-- Cabecera -->
+      <div class="mb-10">
+        <h1 class="text-3xl font-black text-white">Panel de administración</h1>
+        <p class="text-gray-500 text-sm mt-1">
+          Gestiona usuarios y barajas de la plataforma.
+        </p>
+      </div>
 
-        <!-- Cabecera -->
-        <div class="mb-10">
-            <h1 class="text-3xl font-black text-white">Panel de administración</h1>
-            <p class="text-gray-500 text-sm mt-1">Gestiona usuarios y barajas de la plataforma.</p>
-        </div>
+      <!-- Mensaje de error si viene de una acción inválida -->
+      <div th:if="${param.error}" class="alerta-error mb-6 p-4 rounded-xl">
+        Acción no permitida.
+      </div>
 
-        <!-- Mensaje de error si viene de una acción inválida -->
-        <div th:if="${param.error}" class="mb-6 p-4 rounded-xl"
-            style="background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.3);color:#f87171;font-size:0.82rem;">
-            Acción no permitida.
-        </div>
+      <div class="grid lg:grid-cols-2 gap-8">
+        <!-- ── TABLA USUARIOS ── -->
+        <div class="card p-6">
+          <h2 class="text-lg font-black text-white mb-5">Usuarios</h2>
 
-        <div class="grid lg:grid-cols-2 gap-8">
+          <div
+            th:if="${#lists.isEmpty(usuarios)}"
+            class="text-center py-6"
+            style="color: #333; font-size: 0.8rem"
+          >
+            No hay usuarios registrados
+          </div>
 
-            <!-- ── TABLA USUARIOS ── -->
-            <div class="card p-6">
-                <h2 class="text-lg font-black text-white mb-5">Usuarios</h2>
-
-                <div th:if="${#lists.isEmpty(usuarios)}" class="text-center py-6" style="color:#333;font-size:0.8rem;">
-                    No hay usuarios registrados
-                </div>
-
-                <div th:each="u : ${usuarios}" class="flex items-center justify-between py-3"
-                    style="border-bottom:1px solid rgba(124,58,237,0.08);">
-
-                    <div>
-                        <div style="font-size:0.85rem;font-weight:600;color:white;" th:text="${u.nombre}">Nombre</div>
-                        <div style="font-size:0.7rem;color:#555;" th:text="${u.email}">email</div>
-                    </div>
-
-                    <div class="flex items-center gap-2">
-                        <!-- Badge de rol -->
-                        <span th:text="${u.rol}"
-                            th:style="${u.rol == 'ADMIN'} ?
-                              'font-size:0.65rem;padding:2px 8px;border-radius:6px;background:rgba(248,113,113,0.15);color:#f87171;font-weight:700;' :
-                              'font-size:0.65rem;padding:2px 8px;border-radius:6px;background:rgba(124,58,237,0.15);color:var(--violeta-claro);font-weight:700;'">
-                            USER
-                        </span>
-
-                        <!-- Cambiar rol -->
-                        <form th:action="@{/admin/usuarios/{id}/rol(id=${u.id})}" method="post">
-                            <input type="hidden" name="rol" th:value="${u.rol == 'ADMIN'} ? 'USER' : 'ADMIN'">
-                            <button type="submit"
-                                style="font-size:0.68rem;padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#555;cursor:pointer;"
-                                th:text="${u.rol == 'ADMIN'} ? 'Quitar admin' : 'Hacer admin'">
-                                Hacer admin
-                            </button>
-                        </form>
-
-                        <!-- Eliminar usuario -->
-                        <form th:action="@{/admin/usuarios/{id}/eliminar(id=${u.id})}" method="post"
-                            onsubmit="return confirm('¿Eliminar este usuario y todos sus datos?')">
-                            <button type="submit"
-                                style="font-size:0.68rem;padding:3px 8px;border-radius:6px;border:1px solid rgba(248,113,113,0.3);background:transparent;color:#f87171;cursor:pointer;">
-                                Eliminar
-                            </button>
-                        </form>
-                    </div>
-                </div>
+          <div
+            th:each="u : ${usuarios}"
+            class="fila-tabla flex items-center justify-between py-3"
+          >
+            <div>
+              <div class="tabla-nombre" th:text="${u.nombre}">Nombre</div>
+              <div class="tabla-meta" th:text="${u.email}">email</div>
             </div>
 
-            <!-- ── TABLA BARAJAS ── -->
-            <div class="card p-6">
-                <div class="flex items-center justify-between mb-5">
-                    <h2 class="text-lg font-black text-white">Barajas</h2>
+            <div class="flex items-center gap-2">
+              <!-- Badge de rol -->
+              <span
+                th:text="${u.rol}"
+                th:class="${u.rol == 'ADMIN'} ? 'badge-admin' : 'badge-user'"
+              >
+                USER
+              </span>
 
-                    <!-- Filtro por usuario -->
-                    <select id="filtroUsuario" class="input-cp" style="max-width:200px;font-size:0.78rem;">
-                        <option value="">Todos los usuarios</option>
-                        <option th:each="u : ${usuarios}" th:value="${u.nombre}" th:text="${u.nombre}">
-                            Usuario
-                        </option>
-                    </select>
-                </div>
+              <!-- Cambiar rol -->
+              <form
+                th:action="@{/admin/usuarios/{id}/rol(id=${u.id})}"
+                method="post"
+              >
+                <input
+                  type="hidden"
+                  name="rol"
+                  th:value="${u.rol == 'ADMIN'} ? 'USER' : 'ADMIN'"
+                />
+                <button
+                  type="submit"
+                  class="btn-rol"
+                  th:text="${u.rol == 'ADMIN'} ? 'Quitar admin' : 'Hacer admin'"
+                >
+                  Hacer admin
+                </button>
+              </form>
 
-                <!-- Contador de barajas visibles -->
-                <div style="font-size:0.7rem;color:#555;margin-bottom:1rem;">
-                    Mostrando <span id="contadorBarajasAdmin">0</span> barajas
-                </div>
+              <!-- Eliminar usuario -->
+              <form
+                th:action="@{/admin/usuarios/{id}/eliminar(id=${u.id})}"
+                method="post"
+              >
+                <button
+                  type="button"
+                  data-action="eliminar-admin"
+                  th:attr="data-form-action=@{/admin/usuarios/{id}/eliminar(id=${u.id})},
+                     data-texto='¿Eliminar al usuario ' + ${u.nombre} + ' y todos sus datos?'"
+                  class="btn-eliminar-mini"
+                >
+                  Eliminar
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
 
-                <div th:if="${#lists.isEmpty(barajas)}" class="text-center py-6" style="color:#333;font-size:0.8rem;">
-                    No hay barajas creadas
-                </div>
+        <!-- ── TABLA BARAJAS ── -->
+        <div class="card p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-lg font-black text-white">Barajas</h2>
 
-                <!-- Cada fila tiene data-usuario para que el JS pueda filtrar -->
-                <div th:each="b : ${barajas}" class="baraja-admin-item flex items-center justify-between py-3"
-                    th:attr="data-usuario=${b.usuario.nombre}" style="border-bottom:1px solid rgba(124,58,237,0.08);">
+            <!-- Filtro por usuario -->
+            <select
+              id="filtroUsuario"
+              class="input-cp"
+              style="max-width: 200px; font-size: 0.78rem"
+            >
+              <option value="">Todos los usuarios</option>
+              <option
+                th:each="u : ${usuarios}"
+                th:value="${u.id}"
+                th:text="${u.nombre} + ' (' + ${u.email} + ')'"
+              >
+                Usuario
+              </option>
+            </select>
+          </div>
 
-                    <div>
-                        <div style="font-size:0.85rem;font-weight:600;color:white;" th:text="${b.titulo}">Título</div>
-                        <div style="font-size:0.7rem;color:#555;">
-                            <!-- Nombre del propietario destacado -->
-                            <span style="color:var(--violeta-claro);" th:text="${b.usuario.nombre}">usuario</span>
-                            <span th:if="${b.categoria != null}" th:text="' · ' + ${b.categoria}"></span>
-                            <span
-                                th:text="' · ' + ${b.tarjetas != null ? #lists.size(b.tarjetas) : 0} + ' tarjetas'"></span>
-                        </div>
-                    </div>
+          <!-- Contador de barajas visibles -->
+          <div class="texto-contador">
+            Mostrando <span id="contadorBarajasAdmin">0</span> barajas
+          </div>
 
-                    <form th:action="@{/admin/barajas/{id}/eliminar(id=${b.id})}" method="post"
-                        onsubmit="return confirm('¿Eliminar esta baraja y todas sus tarjetas?')">
-                        <button type="submit"
-                            style="font-size:0.68rem;padding:3px 8px;border-radius:6px;border:1px solid rgba(248,113,113,0.3);background:transparent;color:#f87171;cursor:pointer;">
-                            Eliminar
-                        </button>
-                    </form>
-                </div>
+          <div
+            th:if="${#lists.isEmpty(barajas)}"
+            class="text-center py-6"
+            style="color: #333; font-size: 0.8rem"
+          >
+            No hay barajas creadas
+          </div>
 
+          <!-- Cada fila tiene data-usuario para que el JS pueda filtrar -->
+          <div
+            th:each="b : ${barajas}"
+            class="baraja-admin-item fila-tabla flex items-center justify-between py-3"
+            th:attr="data-usuario-id=${b.usuario.id}"
+          >
+            <div>
+              <div
+                class="tabla-nombre"
+                th:text="${b.titulo}"
+              >
+                Título
+              </div>
+              <div class="tabla-meta">
+                <!-- Nombre del propietario destacado -->
+                <span
+                  class="texto-violeta"
+                  th:text="${b.usuario.nombre}"
+                  >usuario</span
+                >
+                <span
+                  th:if="${b.categoria != null}"
+                  th:text="' · ' + ${b.categoria}"
+                ></span>
+                <span
+                  th:text="' · ' + ${b.tarjetas != null ? #lists.size(b.tarjetas) : 0} + ' tarjetas'"
+                ></span>
+              </div>
             </div>
 
+            <form
+              th:action="@{/admin/barajas/{id}/eliminar(id=${b.id})}"
+              method="post"
+            >
+              <button
+                type="button"
+                data-action="eliminar-admin"
+                th:attr="data-form-action=@{/admin/barajas/{id}/eliminar(id=${b.id})},
+                     data-texto='¿Eliminar la baraja ' + ${b.titulo} + ' y todas sus tarjetas?'"
+                class="btn-eliminar-mini"
+              >
+                Eliminar
+              </button>
+            </form>
+          </div>
         </div>
+      </div>
     </main>
-    <script th:src="@{/js/admin.js}" defer></script>
-</body>
 
+    <div id="modalEliminarAdmin" class="modal-overlay hidden">
+      <div class="modal-box" style="max-width: 420px">
+        <div class="p-6 text-center">
+          <h3 class="text-white font-black text-lg mb-2">
+            ¿Confirmar eliminación?
+          </h3>
+          <p class="text-gray-500 text-sm mb-6" id="textoConfirmarEliminar">
+            Esta acción no se puede deshacer.
+          </p>
+
+          <div class="flex gap-3 justify-center">
+            <button
+              data-action="cancelar-eliminar-admin"
+              class="btn-outline btn-sm"
+            >
+              Cancelar
+            </button>
+            <!-- Formulario vacío que el JS rellenará -->
+            <form id="formEliminarAdmin" method="post">
+              <button
+                type="submit"
+                class="btn-eliminar-confirmar btn-sm"
+              >
+                Confirmar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script th:src="@{/js/admin.js}" defer></script>
+  </body>
 </html>

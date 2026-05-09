@@ -6,39 +6,39 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name="usuarios")
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private String nombre;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable=false, unique=true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private String contrasena;
 
     private LocalDateTime fechaRegistro;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="usuario", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Baraja> barajas;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="usuario", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<HistorialEstudio> historial;
 
-    @Column(nullable = false)
-    private String rol = "USER";
+    @Column(nullable=false)
+    private String rol="USER";
 
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id=id;
     }
 
     public String getNombre() {
@@ -46,7 +46,7 @@ public class Usuario {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre=nombre;
     }
 
     public String getEmail() {
@@ -54,7 +54,7 @@ public class Usuario {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email=email;
     }
 
     public String getContrasena() {
@@ -62,7 +62,7 @@ public class Usuario {
     }
 
     public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+        this.contrasena=contrasena;
     }
 
     public LocalDateTime getFechaRegistro() {
@@ -70,7 +70,7 @@ public class Usuario {
     }
 
     public void setFechaRegistro(LocalDateTime fechaRegistro) {
-        this.fechaRegistro = fechaRegistro;
+        this.fechaRegistro=fechaRegistro;
     }
 
     public List<Baraja> getBarajas() {
@@ -78,7 +78,7 @@ public class Usuario {
     }
 
     public void setBarajas(List<Baraja> barajas) {
-        this.barajas = barajas;
+        this.barajas=barajas;
     }
 
     public List<HistorialEstudio> getHistorial() {
@@ -86,7 +86,7 @@ public class Usuario {
     }
 
     public void setHistorial(List<HistorialEstudio> historial) {
-        this.historial = historial;
+        this.historial=historial;
     }
 
     public String getRol() {
@@ -94,6 +94,6 @@ public class Usuario {
     }
 
     public void setRol(String rol) {
-        this.rol = rol;
+        this.rol=rol;
     }
 }

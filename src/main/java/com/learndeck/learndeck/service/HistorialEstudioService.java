@@ -17,7 +17,7 @@ public class HistorialEstudioService {
     private HistorialEstudioRepository historialRepository;
 
     public void guardarResultado(Usuario usuario, Tarjeta tarjeta, boolean resultado) {
-        HistorialEstudio historial = new HistorialEstudio();
+        HistorialEstudio historial=new HistorialEstudio();
         historial.setUsuario(usuario);
         historial.setTarjeta(tarjeta);
         historial.setResultado(resultado);
@@ -33,13 +33,13 @@ public class HistorialEstudioService {
     // Se podría optimizar haciendo una sola consulta y calculando los tres valores,
     // pero así es más claro de leer y para el volumen de datos de esta app no supone problema.
     public int totalEstudiadas(Long usuarioId) {
-        List<HistorialEstudio> historial = historialRepository.findByUsuarioId(usuarioId);
+        List<HistorialEstudio> historial=historialRepository.findByUsuarioId(usuarioId);
         return historial.size();
     }
 
     public long totalAciertos(Long usuarioId) {
-        List<HistorialEstudio> historial = historialRepository.findByUsuarioId(usuarioId);
-        long aciertos = 0;
+        List<HistorialEstudio> historial=historialRepository.findByUsuarioId(usuarioId);
+        long aciertos=0;
         for (HistorialEstudio h : historial) {
             if (h.getResultado()) {
                 aciertos++;
@@ -49,8 +49,8 @@ public class HistorialEstudioService {
     }
 
     public long totalFallos(Long usuarioId) {
-        List<HistorialEstudio> historial = historialRepository.findByUsuarioId(usuarioId);
-        long fallos = 0;
+        List<HistorialEstudio> historial=historialRepository.findByUsuarioId(usuarioId);
+        long fallos=0;
         for (HistorialEstudio h : historial) {
             if (!h.getResultado()) {
                 fallos++;
@@ -60,11 +60,11 @@ public class HistorialEstudioService {
     }
 
     public double porcentajeAcierto(Long usuarioId) {
-        List<HistorialEstudio> historial = historialRepository.findByUsuarioId(usuarioId);
-        int total = historial.size();
+        List<HistorialEstudio> historial=historialRepository.findByUsuarioId(usuarioId);
+        int total=historial.size();
         if (total == 0) return 0.0;
 
-        long aciertos = 0;
+        long aciertos=0;
         for (HistorialEstudio h : historial) {
             if (h.getResultado()) {
                 aciertos++;

@@ -1,46 +1,39 @@
-// ── Datos de barajas ──
+"use strict";
+
 let barajasEnZona = [];
 let modoActual = "repaso";
 
-// ── Referencias ──
-const buscador        = document.querySelector("#buscadorBarajas");
+const buscador = document.querySelector("#buscadorBarajas");
 const filtroCategoria = document.querySelector("#filtroCategoria");
-const zonaDrop        = document.querySelector("#zonaDrop");
-const listaBarajas    = document.querySelector("#listaBarajas");
-const main            = document.querySelector("main");
+const zonaDrop = document.querySelector("#zonaDrop");
+const listaBarajas = document.querySelector("#listaBarajas");
+const main = document.querySelector("main");
+const todasBarajas = document.querySelectorAll(".baraja-simple");
 
-// ── Filtros (elemento único → listener directo está bien) ──
-buscador.addEventListener("input",  filtrarBarajas);
-filtroCategoria.addEventListener("change", filtrarBarajas);
+document.querySelector("#contadorBarajas").textContent = todasBarajas.length;
 
+// ── Filtros ──
 function filtrarBarajas() {
-  const texto     = buscador.value.toLowerCase();
+  const texto = buscador.value.toLowerCase();
   const categoria = filtroCategoria.value.toLowerCase();
 
-  document.querySelectorAll(".baraja-simple").forEach((baraja) => {
+  todasBarajas.forEach((baraja) => {
     const titulo = baraja.dataset.titulo.toLowerCase();
-    const cat    = (baraja.dataset.categoria || "").toLowerCase();
-
+    const cat = (baraja.dataset.categoria || "").toLowerCase();
     baraja.style.display =
       titulo.includes(texto) && (!categoria || cat === categoria) ? "" : "none";
   });
 }
 
-// ── Contador barajas ──
-const todasBarajas = document.querySelectorAll(".baraja-simple");
-document.querySelector("#contadorBarajas").textContent = todasBarajas.length;
+buscador.addEventListener("input", filtrarBarajas);
+filtroCategoria.addEventListener("change", filtrarBarajas);
 
-// ────────────────────────────────────────────
-// DELEGACIÓN 1 — Drag sobre #listaBarajas
-// Cubre dragstart/dragend de cualquier .baraja-simple
-// (incluye las que se añadan dinámicamente)
-// ────────────────────────────────────────────
+// ── Drag desde lista ──
 let barajaArrastrada = null;
 
 listaBarajas.addEventListener("dragstart", (e) => {
   const baraja = e.target.closest(".baraja-simple");
   if (!baraja) return;
-
   barajaArrastrada = baraja;
   setTimeout(() => baraja.classList.add("arrastrando"), 0);
   e.dataTransfer.effectAllowed = "copy";
@@ -49,12 +42,11 @@ listaBarajas.addEventListener("dragstart", (e) => {
 listaBarajas.addEventListener("dragend", (e) => {
   const baraja = e.target.closest(".baraja-simple");
   if (!baraja) return;
-
   baraja.classList.remove("arrastrando");
   barajaArrastrada = null;
 });
 
-// ── Drop zone (elemento único → listeners directos) ──
+// ── Drop zone ──
 zonaDrop.addEventListener("dragover", (e) => {
   e.preventDefault();
   zonaDrop.classList.add("drag-over");
@@ -72,15 +64,16 @@ zonaDrop.addEventListener("drop", (e) => {
   if (!barajaArrastrada) return;
 
   const { id, titulo, categoria } = barajaArrastrada.dataset;
-  if (barajasEnZona.includes(id)) return;
+  if (barajasEnZona.includes(id)) {
+    mostrarToast(`"${titulo}" ya está en la zona de estudio.`, "info");
+    return;
+  }
 
   añadirBarajaAZona(id, titulo, categoria);
   barajaArrastrada.classList.add("en-zona");
 });
 
-// ────────────────────────────────────────────
-// DELEGACIÓN 2 — Doble click sobre #listaBarajas
-// ────────────────────────────────────────────
+// ── Doble click para añadir/quitar ──
 listaBarajas.addEventListener("dblclick", (e) => {
   const baraja = e.target.closest(".baraja-simple");
   if (!baraja) return;
@@ -95,22 +88,26 @@ listaBarajas.addEventListener("dblclick", (e) => {
   }
 });
 
-// ────────────────────────────────────────────
-// DELEGACIÓN 3 — Clicks en <main>
-// Cubre: modos, limpiar, empezar y .btn-quitar dinámicos
-// ────────────────────────────────────────────
+// ── Clicks delegados en <main> ──
 main.addEventListener("click", (e) => {
-  // Botones de modo
-  if (e.target.closest("#modoRepaso")) { seleccionarModo("repaso"); return; }
-  if (e.target.closest("#modoErrores")) { seleccionarModo("errores"); return; }
+  if (e.target.closest("#modoRepaso")) {
+    seleccionarModo("repaso");
+    return;
+  }
+  if (e.target.closest("#modoErrores")) {
+    seleccionarModo("errores");
+    return;
+  }
+  if (e.target.closest("#btnLimpiar")) {
+    limpiarZona();
+    return;
+  }
+  if (e.target.closest("#btnEmpezar")) {
+    empezarSesion();
+    return;
+  }
 
-  // Limpiar
-  if (e.target.closest("#btnLimpiar")) { limpiarZona(); return; }
-
-  // Empezar sesión
-  if (e.target.closest("#btnEmpezar")) { empezarSesion(); return; }
-
-  // Quitar baraja de la zona (botón creado dinámicamente)
+  // Botón × de cada baraja en la zona (creado dinámicamente)
   const btnQuitar = e.target.closest(".btn-quitar");
   if (btnQuitar) {
     const id = btnQuitar.closest(".baraja-en-zona")?.dataset.id;
@@ -118,8 +115,7 @@ main.addEventListener("click", (e) => {
   }
 });
 
-// ── Helpers ──────────────────────────────────
-
+// ── Funciones de zona ──
 function añadirBarajaAZona(id, titulo, categoria) {
   if (barajasEnZona.includes(id)) return;
 
@@ -128,7 +124,6 @@ function añadirBarajaAZona(id, titulo, categoria) {
   const elemento = document.createElement("div");
   elemento.className = "baraja-en-zona";
   elemento.dataset.id = id;
-  // El botón ya NO necesita onclick; lo maneja la delegación en main
   elemento.innerHTML = `
     <button class="btn-quitar">✕</button>
     <img class="zona-img" src="/imagenes/baraja.png">
@@ -141,13 +136,18 @@ function añadirBarajaAZona(id, titulo, categoria) {
   barajasEnZona.push(id);
   zonaDrop.classList.add("tiene-barajas");
   actualizarUI();
+  mostrarToast(`"${titulo}" añadida a la sesión.`, "exito");
 }
 
 function quitarDeZona(id) {
-  zonaDrop.querySelector(`[data-id="${id}"]`)?.remove();
-  barajasEnZona = barajasEnZona.filter((b) => b !== id);
+  const elemento = zonaDrop.querySelector(`[data-id="${id}"]`);
+  const nombre =
+    elemento?.querySelector(".zona-nombre")?.textContent || "Baraja";
+  elemento?.remove();
 
-  document.querySelector(`.baraja-simple[data-id="${id}"]`)
+  barajasEnZona = barajasEnZona.filter((b) => b !== id);
+  document
+    .querySelector(`.baraja-simple[data-id="${id}"]`)
     ?.classList.remove("en-zona");
 
   if (barajasEnZona.length === 0) {
@@ -156,18 +156,21 @@ function quitarDeZona(id) {
   }
 
   actualizarUI();
+  mostrarToast(`"${nombre}" quitada de la sesión.`, "info");
 }
 
 function limpiarZona() {
+  if (barajasEnZona.length === 0) return;
+
   zonaDrop.querySelectorAll(".baraja-en-zona").forEach((el) => el.remove());
   barajasEnZona = [];
-  document.querySelectorAll(".baraja-simple.en-zona")
+  document
+    .querySelectorAll(".baraja-simple.en-zona")
     .forEach((b) => b.classList.remove("en-zona"));
-
   zonaDrop.classList.remove("tiene-barajas");
-  document.querySelector("#mensajeZona")?.remove();
   mostrarMensajeZonaVacia();
   actualizarUI();
+  mostrarToast("Zona de estudio limpiada.", "info");
 }
 
 function mostrarMensajeZonaVacia() {
@@ -176,10 +179,8 @@ function mostrarMensajeZonaVacia() {
   msg.className = "zona-vacia";
   msg.id = "mensajeZona";
   msg.innerHTML = `
-    <p style="color:#333;">Arrastra las barajas aquí</p>
-    <p style="color:#2a2a3a;font-size:0.75rem;margin-top:0.3rem;">
-      Las barajas que añadas se estudiarán en esta sesión
-    </p>
+    <p class="zona-texto-principal">Arrastra las barajas aquí</p>
+    <p class="zona-texto-secundario">Las barajas que añadas se estudiarán en esta sesión</p>
   `;
   zonaDrop.appendChild(msg);
 }
@@ -187,18 +188,43 @@ function mostrarMensajeZonaVacia() {
 function seleccionarModo(modo) {
   document.querySelector("#modoRepaso").classList.remove("modo-activo");
   document.querySelector("#modoErrores").classList.remove("modo-activo");
-  document.querySelector(modo === "repaso" ? "#modoRepaso" : "#modoErrores")
+  document
+    .querySelector(modo === "repaso" ? "#modoRepaso" : "#modoErrores")
     .classList.add("modo-activo");
   modoActual = modo;
+  mostrarToast(
+    `Modo: ${modo === "repaso" ? "Repaso normal" : "Solo errores"}.`,
+    "info",
+  );
 }
 
 function actualizarUI() {
   const cantidad = barajasEnZona.length;
-  document.querySelector("#contadorZona").textContent = `${cantidad} seleccionadas`;
+  document.querySelector("#contadorZona").textContent =
+    `${cantidad} seleccionadas`;
   document.querySelector("#btnEmpezar").disabled = cantidad === 0;
 }
 
 function empezarSesion() {
   if (barajasEnZona.length === 0) return;
+
+  // Comprobamos que ninguna baraja de la zona esté vacía
+  const barajaVacia = barajasEnZona.find((id) => {
+    const el = document.querySelector(`.baraja-simple[data-id="${id}"]`);
+    return !el || parseInt(el.dataset.count || "0") === 0;
+  });
+
+  if (barajaVacia) {
+    const el = document.querySelector(
+      `.baraja-simple[data-id="${barajaVacia}"]`,
+    );
+    const nombre = el?.dataset.titulo || "Una baraja";
+    mostrarToast(
+      `"${nombre}" no tiene tarjetas. Añade tarjetas antes de estudiar.`,
+      "error",
+    );
+    return;
+  }
+
   window.location.href = `/repasar?barajas=${barajasEnZona.join(",")}&modo=${modoActual}`;
 }

@@ -19,7 +19,7 @@ public class UsuarioService {
         if (usuarioRepository.existsByEmail(email)) {
             return false; // Email ya en uso
         }
-        Usuario usuario = new Usuario();
+        Usuario usuario=new Usuario();
         usuario.setNombre(nombre);
         usuario.setEmail(email);
         usuario.setContrasena(contrasena);
@@ -31,7 +31,7 @@ public class UsuarioService {
 
     // Login
     public Optional<Usuario> login(String email, String contrasena) {
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+        Optional<Usuario> usuario=usuarioRepository.findByEmail(email);
         if (usuario.isPresent() && usuario.get().getContrasena().equals(contrasena)) {
             return usuario;
         }
@@ -40,11 +40,11 @@ public class UsuarioService {
 
     // Actualizar perfil
     public boolean actualizarPerfil(Long id, String nuevoNombre, String nuevoEmail, String nuevaContrasena) {
-        Optional<Usuario> optional = usuarioRepository.findById(id);
+        Optional<Usuario> optional=usuarioRepository.findById(id);
         if (optional.isEmpty())
             return false;
 
-        Usuario usuario = optional.get();
+        Usuario usuario=optional.get();
 
         // Validar si el email ha cambiado y si el nuevo ya existe en otro usuario
         if (!usuario.getEmail().equals(nuevoEmail) && usuarioRepository.existsByEmail(nuevoEmail)) {
@@ -76,11 +76,11 @@ public class UsuarioService {
     }
 
     public void cambiarRol(Long id, String rol) {
-        Optional<Usuario> optional = usuarioRepository.findById(id);
+        Optional<Usuario> optional=usuarioRepository.findById(id);
         if (optional.isEmpty())
             return;
 
-        Usuario usuario = optional.get();
+        Usuario usuario=optional.get();
         usuario.setRol(rol);
         usuarioRepository.save(usuario);
     }

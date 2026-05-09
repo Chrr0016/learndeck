@@ -1,21 +1,58 @@
- const filtroUsuario = document.getElementById('filtroUsuario');
-        const filasBarajas = document.querySelectorAll('.baraja-admin-item');
-        const contadorBarajas = document.getElementById('contadorBarajasAdmin');
+"use strict";
 
-        // Inicializar el contador con el total de barajas
-        contadorBarajas.textContent = filasBarajas.length;
+const filtroUsuario   = document.querySelector("#filtroUsuario");
+const filasBarajas    = document.querySelectorAll(".baraja-admin-item");
+const contadorBarajas = document.querySelector("#contadorBarajasAdmin");
+const modalEliminar   = document.querySelector("#modalEliminarAdmin");
+const textoConfirmar  = document.querySelector("#textoConfirmarEliminar");
+const formEliminar    = document.querySelector("#formEliminarAdmin");
 
-        filtroUsuario.addEventListener('change', () => {
-            const usuarioSeleccionado = filtroUsuario.value.toLowerCase();
-            let visibles = 0;
+contadorBarajas.textContent = filasBarajas.length;
 
-            filasBarajas.forEach(fila => {
-                const propietario = (fila.dataset.usuario || '').toLowerCase();
-                const coincide = !usuarioSeleccionado || propietario === usuarioSeleccionado;
+// ── Filtro por usuario ──
+filtroUsuario.addEventListener("change", () => {
+  const usuarioId = filtroUsuario.value;
+  let visibles = 0;
 
-                fila.style.display = coincide ? '' : 'none';
-                if (coincide) visibles++;
-            });
+  filasBarajas.forEach((fila) => {
+    const coincide = !usuarioId || fila.dataset.usuarioId === usuarioId;
+    fila.style.display = coincide ? "" : "none";
+    if (coincide) visibles++;
+  });
 
-            contadorBarajas.textContent = visibles;
-        });
+  contadorBarajas.textContent = visibles;
+});
+
+// ── Modal de confirmación ──
+function abrirModalEliminar(formAction, texto) {
+  formEliminar.action    = formAction;
+  textoConfirmar.textContent = texto;
+  modalEliminar.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function cerrarModalEliminar() {
+  modalEliminar.classList.add("hidden");
+  document.body.style.overflow = "";
+  formEliminar.action = "";
+}
+
+// ── Evento delegado ──
+document.addEventListener("click", (e) => {
+
+  const btnEliminar = e.target.closest("[data-action='eliminar-admin']");
+  if (btnEliminar) {
+    abrirModalEliminar(btnEliminar.dataset.formAction, btnEliminar.dataset.texto);
+    return;
+  }
+
+  if (e.target.closest("[data-action='cancelar-eliminar-admin']")) {
+    cerrarModalEliminar();
+    return;
+  }
+
+  // Cerrar al hacer clic en el fondo oscuro del modal
+  if (e.target === modalEliminar) {
+    cerrarModalEliminar();
+  }
+});

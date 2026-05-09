@@ -21,17 +21,17 @@ public class PerfilController {
     @GetMapping
     public String verPerfil(HttpSession session, Model model) {
         // Buscamos el ID que guardaste en AuthController
-        Long id = (Long) session.getAttribute("usuarioId");
+        Long id=(Long) session.getAttribute("usuarioId");
         
         if (id == null) {
             return "redirect:/login";
         }
 
         // Buscamos los datos reales en la BD usando el ID
-        Optional<Usuario> usuarioOpt = usuarioService.findById(id);
+        Optional<Usuario> usuarioOpt=usuarioService.findById(id);
         
         if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
+            Usuario usuario=usuarioOpt.get();
             model.addAttribute("usuarioNombre", usuario.getNombre());
             model.addAttribute("usuarioEmail", usuario.getEmail());
             model.addAttribute("usuarioRol", usuario.getRol());
@@ -44,14 +44,14 @@ public class PerfilController {
     @PostMapping("/actualizar")
     public String actualizarPerfil(@RequestParam String nombre,
                                    @RequestParam String email,
-                                   @RequestParam(required = false) String password,
+                                   @RequestParam(required=false) String password,
                                    HttpSession session,
                                    RedirectAttributes redirectAttributes) {
         
-        Long id = (Long) session.getAttribute("usuarioId");
+        Long id=(Long) session.getAttribute("usuarioId");
         if (id == null) return "redirect:/login";
 
-        boolean exito = usuarioService.actualizarPerfil(id, nombre, email, password);
+        boolean exito=usuarioService.actualizarPerfil(id, nombre, email, password);
 
         if (exito) {
             // ¡IMPORTANTE! Actualizamos el nombre en la sesión 

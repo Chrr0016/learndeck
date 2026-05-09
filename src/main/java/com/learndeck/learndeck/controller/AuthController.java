@@ -42,13 +42,13 @@ public class AuthController {
             return "login";
         }*/
 
-        Optional<Usuario> usuario = usuarioService.login(email, contrasena);
+        Optional<Usuario> usuario=usuarioService.login(email, contrasena);
 
         if (usuario.isPresent()) {
             session.setAttribute("usuarioId", usuario.get().getId());
             session.setAttribute("usuarioNombre", usuario.get().getNombre());
             session.setAttribute("usuarioRol", usuario.get().getRol());
-            return "redirect:/dashboard";
+            return "redirect:/inicio";
         }
 
         model.addAttribute("error", "Email o contraseña incorrectos.");
@@ -66,7 +66,7 @@ public class AuthController {
     public String procesarRegistro(@RequestParam String nombre,
                                    @RequestParam String email,
                                    @RequestParam String contrasena,
-                                   @RequestParam(required = false) String confirmar,
+                                   @RequestParam(required=false) String confirmar,
                                    Model model, RedirectAttributes redirectAttributes) {
 
         // Formato email
@@ -87,7 +87,7 @@ public class AuthController {
             return "registro";
         }
 
-        boolean exito = usuarioService.registrar(nombre, email, contrasena);
+        boolean exito=usuarioService.registrar(nombre, email, contrasena);
 
         if (exito) {
             redirectAttributes.addFlashAttribute("mensajeExito", "Cuenta creada correctamente.");

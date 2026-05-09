@@ -1,84 +1,126 @@
 <nav th:fragment="navbar(usuarioNombre, paginaActiva, usuarioRol)"
-    style="background: rgba(10,10,20,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(124,58,237,0.15);"
-    class="sticky top-0 z-50 w-full">
+      class="nav-principal sticky top-0 z-50 w-full">
+
     <div class="max-w-screen-xl mx-auto px-6 py-3 flex items-center justify-between">
 
         <!-- Logo -->
         <a href="/" class="flex items-center">
-            <img th:src="@{/imagenes/logo2.png}" src="/imagenes/logo.png" alt="LearnDeck"
-                style="height: 3.8rem; width: 11rem;">
+            <img th:src="@{/imagenes/logo2.png}" src="/imagenes/logo.png" alt="LearnDeck" class="nav-logo">
         </a>
 
-        <!-- Enlaces de navegación -->
+        <!-- Enlaces de navegación (Desktop) -->
         <div class="hidden md:flex items-center gap-8">
-            <a href="/dashboard"
-                th:style="${paginaActiva == 'inicio'} ? 'color:var(--violeta-claro);' : 'color:#a1a1aa;'"
-                class="text-sm font-medium hover:text-white transition-colors">Inicio</a>
+            <a href="/inicio"
+               th:classappend="${paginaActiva == 'inicio'} ? ' nav-link-activo'"
+               class="nav-link text-sm font-medium hover:text-white transition-colors">Inicio</a>
             <a href="/barajas"
-                th:style="${paginaActiva == 'barajas'} ? 'color:var(--violeta-claro);' : 'color:#a1a1aa;'"
-                class="text-sm font-medium hover:text-white transition-colors">Barajas</a>
+               th:classappend="${paginaActiva == 'barajas'} ? ' nav-link-activo' : 'nav-link'"
+               class="nav-link text-sm font-medium hover:text-white transition-colors">Barajas</a>
             <a href="/estadisticas"
-                th:style="${paginaActiva == 'estadisticas'} ? 'color:var(--violeta-claro);' : 'color:#a1a1aa;'"
-                class="text-sm font-medium hover:text-white transition-colors">Estadísticas</a>
+               th:classappend="${paginaActiva == 'estadisticas'} ? ' nav-link-activo' : 'nav-link'"
+               class="nav-link text-sm font-medium hover:text-white transition-colors">Estadísticas</a>
             <a href="/barajas/comunidad"
-                th:style="${paginaActiva == 'comunidad'} ? 'color:var(--violeta-claro);' : 'color:#a1a1aa;'"
-                class="text-sm font-medium hover:text-white transition-colors">Comunidad</a>
+               th:classappend="${paginaActiva == 'comunidad'} ? ' nav-link-activo' : 'nav-link'"
+               class="nav-link text-sm font-medium hover:text-white transition-colors">Comunidad</a>
             <a th:if="${usuarioRol == 'ADMIN'}" href="/admin"
-                th:style="${paginaActiva == 'admin'} ? 'color:var(--violeta-claro);' : 'color:#a1a1aa;'"
-                class="text-sm font-medium hover:text-white transition-colors">
+               th:classappend="${paginaActiva == 'admin'} ? ' nav-link-activo' : 'nav-link'"
+               class="nav-link text-sm font-medium hover:text-white transition-colors">
                 Admin
             </a>
         </div>
 
+        <!-- Controles Derechos (Perfil y Botón Menú Móvil) -->
+        <div class="flex items-center gap-2 md:gap-4">
 
-        <!-- Perfil de Usuario -->
-        <div class="relative" id="menuPerfil">
+            <!-- Perfil de Usuario -->
+            <div class="relative" id="menuPerfil">
+                <!-- Botón -->
+                <button onclick="document.querySelector('#dropdownPerfil').classList.toggle('hidden')"
+                        class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
+                    <div class="w-7 h-7 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center text-xs font-bold text-violet-300"
+                         th:text="${#strings.substring(usuarioNombre,0,1).toUpperCase()}">U</div>
+                    <span th:text="${usuarioNombre}" class="hidden sm:inline-block">Usuario</span>
+                    <svg class="w-3.5 h-3.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
 
-            <!-- Botón -->
-            <button onclick="document.getElementById('dropdownPerfil').classList.toggle('hidden')"
-                class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors">
-                <div class="w-7 h-7 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center text-xs font-bold text-violet-300"
-                    th:text="${#strings.substring(usuarioNombre,0,1).toUpperCase()}">U</div>
-                <span th:text="${usuarioNombre}">Usuario</span>
-                <svg class="w-3.5 h-3.5 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                <!-- Dropdown -->
+                <div id="dropdownPerfil" class="nav-dropdown hidden absolute right-0 mt-2 w-44 rounded-xl overflow-hidden shadow-xl">
+                    <a href="/perfil"
+                       class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="1.5"
+                                  stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        Mi perfil
+                    </a>
+                    <div class="border-t border-white/5">
+                        <a href="/logout"
+                           class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-500/5 transition-colors">
+                            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                                        stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            Cerrar sesión
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botón Menú Móvil (Hamburguesa) -->
+            <button onclick="document.querySelector('#menuMovil').classList.toggle('hidden')"
+                    class="nav-movil-btn md:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
             </button>
 
-            <!-- Dropdown -->
-            <div id="dropdownPerfil" class="hidden absolute right-0 mt-2 w-44 rounded-xl overflow-hidden shadow-xl"
-                style="background: rgba(12,12,20,0.97); border: 1px solid rgba(255,255,255,0.07);">
-
-                <a href="/perfil"
-                    class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors">
-                    <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" stroke-width="1.5"
-                            stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                    Mi perfil
-                </a>
-
-                <div class="border-t border-white/5">
-                    <a href="/logout"
-                        class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-400/80 hover:text-red-400 hover:bg-red-500/5 transition-colors">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        Cerrar sesión
-                    </a>
-                </div>
-            </div>
         </div>
-
-        <!-- Cerrar al hacer click fuera -->
-        <script>
-            document.addEventListener('click', e => {
-                if (!document.getElementById('menuPerfil').contains(e.target))
-                    document.getElementById('dropdownPerfil').classList.add('hidden');
-            });
-        </script>
-
     </div>
+
+    <!-- Menú Móvil (Desplegable) -->
+    <div id="menuMovil" class="nav-menu-movil hidden md:hidden border-t border-violet-500/10">
+        <div class="flex flex-col px-6 py-4 gap-4">
+            <a href="/inicio"
+               th:classappend="${paginaActiva == 'inicio'} ? ' nav-link-activo' : 'nav-link'"
+               class="text-base font-medium hover:text-white transition-colors block">Inicio</a>
+            <a href="/barajas"
+               th:classappend="${paginaActiva == 'barajas'} ? ' nav-link-activo' : 'nav-link'"
+               class="text-base font-medium hover:text-white transition-colors block">Barajas</a>
+            <a href="/estadisticas"
+               th:classappend="${paginaActiva == 'estadisticas'} ? ' nav-link-activo' : 'nav-link'"
+               class="text-base font-medium hover:text-white transition-colors block">Estadísticas</a>
+            <a href="/barajas/comunidad"
+               th:classappend="${paginaActiva == 'comunidad'} ? ' nav-link-activo' : 'nav-link'"
+               class="text-base font-medium hover:text-white transition-colors block">Comunidad</a>
+            <a th:if="${usuarioRol == 'ADMIN'}" href="/admin"
+               th:classappend="${paginaActiva == 'admin'} ? ' nav-link-activo' : 'nav-link'"
+               class="text-base font-medium hover:text-white transition-colors block">
+                Admin
+            </a>
+        </div>
+    </div>
+
+    <!-- Scripts de comportamiento -->
+    <script>
+        // Cerrar menús al hacer click fuera
+        document.addEventListener('click', e => {
+            const menuPerfil=document.querySelector('#menuPerfil');
+            const dropdownPerfil=document.querySelector('#dropdownPerfil');
+            const btnMenuMovil=e.target.closest('button[onclick*="menuMovil"]');
+            const menuMovil=document.querySelector('#menuMovil');
+
+            // Cierra el perfil si se hace click fuera
+            if (!menuPerfil.contains(e.target)) {   
+                dropdownPerfil.classList.add('hidden');
+            }
+
+            // Cierra el menú móvil si se hace click fuera del menú y del botón hamburguesa
+            if (!menuMovil.contains(e.target) && !btnMenuMovil && !menuMovil.classList.contains('hidden')) {
+                menuMovil.classList.add('hidden');
+            }
+        });
+    </script>
 </nav>

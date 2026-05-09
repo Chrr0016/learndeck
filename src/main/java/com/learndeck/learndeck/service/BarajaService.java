@@ -33,7 +33,7 @@ public class BarajaService {
     private String normalizarCategoria(String categoria) {
         if (categoria == null || categoria.trim().isEmpty())
             return null;
-        String c = categoria.trim();
+        String c=categoria.trim();
         return c.substring(0, 1).toUpperCase() + c.substring(1).toLowerCase();
     }
 
@@ -46,7 +46,7 @@ public class BarajaService {
     }
 
     public Baraja crear(String titulo, String categoria, Usuario usuario) {
-        Baraja baraja = new Baraja();
+        Baraja baraja=new Baraja();
         baraja.setTitulo(titulo);
         baraja.setCategoria(normalizarCategoria(categoria));
         baraja.setUsuario(usuario);
@@ -55,11 +55,11 @@ public class BarajaService {
     }
 
     public boolean editar(Long id, String titulo, String categoria, Long usuarioId) {
-        Optional<Baraja> optional = barajaRepository.findById(id);
+        Optional<Baraja> optional=barajaRepository.findById(id);
         if (optional.isEmpty())
             return false;
 
-        Baraja baraja = optional.get();
+        Baraja baraja=optional.get();
 
         // Comprobar que la baraja pertenece al usuario que hace la peticion
         if (!baraja.getUsuario().getId().equals(usuarioId))
@@ -72,7 +72,7 @@ public class BarajaService {
     }
 
     public boolean eliminar(Long id, Long usuarioId) {
-        Optional<Baraja> optional = barajaRepository.findById(id);
+        Optional<Baraja> optional=barajaRepository.findById(id);
         if (optional.isEmpty())
             return false;
 
@@ -85,12 +85,12 @@ public class BarajaService {
 
     // Devuelve las categorías únicas del usuario, normalizadas y ordenadas
     public List<String> obtenerCategorias(Long usuarioId) {
-        List<String> todasLasCategorias = barajaRepository.findCategoriasByUsuario(usuarioId);
-        List<String> resultado = new ArrayList<>();
+        List<String> todasLasCategorias=barajaRepository.findCategoriasByUsuario(usuarioId);
+        List<String> resultado=new ArrayList<>();
 
         for (String cat : todasLasCategorias) {
             if (cat != null && !cat.trim().isEmpty()) {
-                String normalizada = normalizarCategoria(cat);
+                String normalizada=normalizarCategoria(cat);
                 if (!resultado.contains(normalizada)) {
                     resultado.add(normalizada);
                 }
@@ -118,11 +118,11 @@ public class BarajaService {
     }
 
     public void toggleCompartida(Long id, Long usuarioId) {
-        Optional<Baraja> optional = barajaRepository.findById(id);
+        Optional<Baraja> optional=barajaRepository.findById(id);
         if (optional.isEmpty())
             return;
 
-        Baraja baraja = optional.get();
+        Baraja baraja=optional.get();
         if (!baraja.getUsuario().getId().equals(usuarioId))
             return;
 
@@ -136,23 +136,23 @@ public class BarajaService {
         return false; 
     }
 
-    Optional<Baraja> original = barajaRepository.findById(barajaOriginalId);
+    Optional<Baraja> original=barajaRepository.findById(barajaOriginalId);
     if (original.isEmpty()) return false;
 
-    Optional<Usuario> usuario = usuarioRepository.findById(usuarioIdDestino);
+    Optional<Usuario> usuario=usuarioRepository.findById(usuarioIdDestino);
     if (usuario.isEmpty()) return false;
 
-    Baraja copia = new Baraja();
+    Baraja copia=new Baraja();
     copia.setTitulo(original.get().getTitulo());
     copia.setCategoria(original.get().getCategoria());
     copia.setUsuario(usuario.get());
     copia.setFechaCreacion(LocalDateTime.now());
     copia.setCompartida(false);
     copia.setBarajaOriginalId(barajaOriginalId);
-    Baraja copiaGuardada = barajaRepository.save(copia);
+    Baraja copiaGuardada=barajaRepository.save(copia);
 
     for (Tarjeta tarjeta : original.get().getTarjetas()) {
-        Tarjeta nuevaTarjeta = new Tarjeta();
+        Tarjeta nuevaTarjeta=new Tarjeta();
         nuevaTarjeta.setPregunta(tarjeta.getPregunta());
         nuevaTarjeta.setRespuesta(tarjeta.getRespuesta());
         nuevaTarjeta.setBaraja(copiaGuardada);

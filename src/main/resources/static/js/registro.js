@@ -1,37 +1,35 @@
 function validarRegistro() {
-    const email = document.getElementById('email');
-    const contrasena = document.getElementById('contrasena');
-    const confirmar = document.getElementById('confirmar');
-    let valido = true;
+  const nombreInput    = document.getElementById("nombre");
+  const emailInput     = document.getElementById("email");
+  const contrasenaInput = document.getElementById("contrasena");
+  const confirmarInput = document.getElementById("confirmar");
+  let valido = true;
 
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regexEmail.test(email.value)) {
-        email.style.borderColor = '#ef4444';
-        document.getElementById('errorEmail').classList.remove('hidden');
-        valido = false;
-    } else {
-        email.style.borderColor = '';
-        document.getElementById('errorEmail').classList.add('hidden');
-    }
+  // Validar que el nombre no esté vacío
+  const nombreOk = nombreInput.value.trim().length > 0;
+  nombreInput.style.borderColor = nombreOk ? "" : "#ef4444";
+  document.getElementById("errorNombre").classList.toggle("hidden", nombreOk);
+  if (!nombreOk) valido = false;
 
-    const regexPass = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    if (!regexPass.test(contrasena.value)) {
-        contrasena.style.borderColor = '#ef4444';
-        document.getElementById('errorContrasena').classList.remove('hidden');
-        valido = false;
-    } else {
-        contrasena.style.borderColor = '';
-        document.getElementById('errorContrasena').classList.add('hidden');
-    }
+  // Validar formato email
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const emailOk = regexEmail.test(emailInput.value);
+  emailInput.style.borderColor = emailOk ? "" : "#ef4444";
+  document.getElementById("errorEmail").classList.toggle("hidden", emailOk);
+  if (!emailOk) valido = false;
 
-    if (contrasena.value !== confirmar.value) {
-        confirmar.style.borderColor = '#ef4444';
-        document.getElementById('errorConfirmar').classList.remove('hidden');
-        valido = false;
-    } else {
-        confirmar.style.borderColor = '';
-        document.getElementById('errorConfirmar').classList.add('hidden');
-    }
+  // Mínimo 8 caracteres, una mayúscula y un número
+  const regexPass = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+  const passOk = regexPass.test(contrasenaInput.value);
+  contrasenaInput.style.borderColor = passOk ? "" : "#ef4444";
+  document.getElementById("errorContrasena").classList.toggle("hidden", passOk);
+  if (!passOk) valido = false;
 
-    if (valido) document.querySelector('form').submit();
+  // Confirmar que ambas contraseñas coinciden
+  const coinciden = contrasenaInput.value === confirmarInput.value;
+  confirmarInput.style.borderColor = coinciden ? "" : "#ef4444";
+  document.getElementById("errorConfirmar").classList.toggle("hidden", coinciden);
+  if (!coinciden) valido = false;
+
+  if (valido) document.querySelector("form").submit();
 }

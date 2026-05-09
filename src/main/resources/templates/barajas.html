@@ -1,269 +1,436 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
 
-<head th:replace="~{fragments/head :: head('LearnDeck')}"></head>
-
-<body>
-
+  <body>
     <!-- ==============================
      NAVBAR
 ============================== -->
-    <nav th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'barajas', ${usuarioRol})}"></nav>
+    <nav
+      th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'barajas', ${usuarioRol})}"
+    ></nav>
     <div th:replace="~{fragments/toast :: toast}"></div>
     <!-- ==============================
      CONTENIDO
 ============================== -->
     <main class="max-w-screen-xl mx-auto px-6 py-10 relative z-10">
+      <!-- Cabecera -->
+      <div
+        class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 animado"
+      >
+        <div>
+          <h1 class="text-3xl font-black text-white">Mis barajas</h1>
+          <p class="text-gray-500 text-sm mt-1">
+            Gestiona, edita y organiza tus colecciones de tarjetas.
+          </p>
+        </div>
+        <button
+          data-action="nueva-baraja"
+          class="btn-primario self-start md:self-auto"
+        >
+          <svg
+            style="width: 15px; height: 15px"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
+          </svg>
+          Nueva baraja
+        </button>
+      </div>
 
-        <!-- Cabecera -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10 animado">
-            <div>
-                <h1 class="text-3xl font-black text-white">Mis barajas</h1>
-                <p class="text-gray-500 text-sm mt-1">Gestiona, edita y organiza tus colecciones de tarjetas.</p>
-            </div>
-            <button onclick="abrirModalNuevaBaraja()" class="btn-primario self-start md:self-auto">
-                <svg style="width:15px;height:15px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      <!-- Filtros -->
+      <div class="flex flex-wrap gap-3 mb-6 animado delay-1">
+        <input
+          type="text"
+          id="filtraNombre"
+          placeholder="Buscar por nombre..."
+          class="filtro-input"
+        />
+        <select id="filtroCategoria" class="filtro-select">
+          <option value="">Todas las categorías</option>
+          <option
+            th:each="cat : ${categorias}"
+            th:value="${cat}"
+            th:text="${cat}"
+          >
+            Cat
+          </option>
+        </select>
+        <div class="badge-zona ml-auto">
+          <span id="contadorVisible">0</span> barajas
+        </div>
+      </div>
+
+      <!-- Grid de barajas -->
+      <div
+        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 animado delay-2"
+        id="gridBarajas"
+      >
+        <!-- Sin barajas -->
+        <div
+          th:if="${#lists.isEmpty(barajas)}"
+          class="col-span-full text-center py-20"
+        >
+          <div class="icono-vacio"></div>
+          <p class="texto-vacio">No hay barajas creadas</p>
+          <button
+            data-action="nueva-baraja"
+            class="btn-primario"
+            style="margin-top: 1.5rem; display: inline-flex"
+          >
+            Crear mi primera baraja
+          </button>
+        </div>
+
+        <!-- Baraja card -->
+        <div
+          th:each="baraja : ${barajas}"
+          class="baraja-gestion"
+          th:attr="data-titulo=${baraja.titulo}, data-categoria=${baraja.categoria}, data-id=${baraja.id}"
+        >
+          <!-- Imagen -->
+          <div class="baraja-gestion-img">
+            <img
+              th:src="@{/imagenes/baraja.png}"
+              src="/imagenes/baraja.png"
+              th:alt="${baraja.titulo}"
+            />
+            <!-- Overlay hover con acciones -->
+            <div class="baraja-gestion-acciones">
+              <button
+                class="accion-btn accion-editar"
+                data-action="editar-baraja"
+                th:data-id="${baraja.id}"
+                th:data-titulo="${baraja.titulo}"
+                th:data-categoria="${baraja.categoria}"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  />
                 </svg>
-                Nueva baraja
-            </button>
-        </div>
-
-        <!-- Filtros -->
-        <div class="flex flex-wrap gap-3 mb-6 animado delay-1">
-            <input type="text" id="filtraNombre" placeholder="Buscar por nombre..." class="filtro-input">
-            <select id="filtroCategoria" class="filtro-select">
-                <option value="">Todas las categorías</option>
-                <option th:each="cat : ${categorias}" th:value="${cat}" th:text="${cat}">Cat</option>
-            </select>
-            <div class="badge-zona ml-auto">
-                <span class="pulso inline-block w-1.5 h-1.5 rounded-full" style="background:var(--cyan);"></span>
-                <span id="contadorVisible">0</span> barajas
+              </button>
+              <button
+                class="accion-btn accion-eliminar"
+                data-action="eliminar-baraja"
+                th:attr="data-id=${baraja.id}, data-titulo=${baraja.titulo}"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+              </button>
+              <button
+                class="accion-btn"
+                data-action="compartir-baraja"
+                th:classappend="${baraja.compartida} ? ' accion-compartida' : ' accion-no-compartida'"
+                th:attr="data-id=${baraja.id}, data-compartida=${baraja.compartida}"
+              >
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                  />
+                </svg>
+              </button>
             </div>
-        </div>
+          </div>
 
-        <!-- Grid de barajas -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5 animado delay-2"
-            id="gridBarajas">
-
-            <!-- Sin barajas -->
-            <div th:if="${#lists.isEmpty(barajas)}" class="col-span-full text-center py-20">
-                <div style="font-size:3rem;margin-bottom:1rem;opacity:0.3;"></div>
-                <p style="color:#444;font-size:0.85rem;">No hay barajas creadas
-                </p>
-                <button onclick="abrirModalNuevaBaraja()" class="btn-primario"
-                    style="margin-top:1.5rem;display:inline-flex;">
-                    Crear mi primera baraja
-                </button>
+          <!-- Footer -->
+          <div class="baraja-gestion-footer">
+            <div class="baraja-gestion-nombre" th:text="${baraja.titulo}">
+              Nombre
             </div>
-
-            <!-- Baraja card -->
-            <div th:each="baraja : ${barajas}" class="baraja-gestion"
-                th:attr="data-titulo=${baraja.titulo}, data-categoria=${baraja.categoria}, data-id=${baraja.id}"
-                onclick="abrirBaraja(this.dataset.id)">
-
-                <!-- Imagen -->
-                <div class="baraja-gestion-img">
-                    <img th:src="@{/imagenes/baraja.png}" src="/imagenes/baraja.png" th:alt="${baraja.titulo}">
-                    <!-- Overlay hover con acciones -->
-                    <div class="baraja-gestion-acciones">
-                        <button class="accion-btn accion-editar" th:data-id="${baraja.id}"
-                            th:data-titulo="${baraja.titulo}" th:data-categoria="${baraja.categoria}"
-                            onclick="prepararEdicionBaraja(this); event.stopPropagation();">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                        </button>
-                        <button class="accion-btn accion-eliminar" title="Eliminar baraja"
-                            th:attr="data-id=${baraja.id}, data-titulo=${baraja.titulo}"
-                            onclick="event.stopPropagation(); confirmarEliminar(this.dataset.id, this.dataset.titulo)">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                        </button>
-                        <button class="accion-btn" title="Compartir en comunidad"
-                            th:attr="data-id=${baraja.id}, data-compartida=${baraja.compartida}"
-                            th:style="${baraja.compartida} ? 'background:rgba(34,211,238,0.2);border:1px solid rgba(34,211,238,0.4);color:var(--cyan);' : 'background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:#555;'"
-                            onclick="toggleCompartir(this.dataset.id, this); event.stopPropagation();">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Footer -->
-                <div class="baraja-gestion-footer">
-                    <div class="baraja-gestion-nombre" th:text="${baraja.titulo}">Nombre</div>
-                    <div class="baraja-gestion-meta">
-                        <span th:text="${baraja.tarjetas != null ? #lists.size(baraja.tarjetas) : 0} + ' tarjetas'">0
-                            tarjetas</span>
-                        <span th:if="${baraja.categoria != null}" class="baraja-gestion-cat"
-                            th:text="${baraja.categoria}">cat</span>
-                    </div>
-                </div>
+            <div class="baraja-gestion-meta">
+              <span
+                th:text="${baraja.tarjetas != null ? #lists.size(baraja.tarjetas) : 0} + ' tarjetas'"
+                >0 tarjetas</span
+              >
+              <span
+                th:if="${baraja.categoria != null}"
+                class="baraja-gestion-cat"
+                th:text="${baraja.categoria}"
+                >cat</span
+              >
             </div>
-
+          </div>
         </div>
+      </div>
     </main>
 
     <!-- ==============================
      MODAL — DETALLE BARAJA
 ============================== -->
     <div id="modalBaraja" class="modal-overlay hidden">
-        <div class="modal-box">
-
-            <!-- Header modal -->
-            <div class="modal-header">
-                <div>
-                    <h2 class="text-xl font-black text-white" id="modalTitulo">Nombre baraja</h2>
-                    <div style="font-size:0.72rem;color:#555;margin-top:2px;" id="modalMeta">0 tarjetas · categoría
-                    </div>
-                </div>
-                <div class="flex items-center gap-2">
-                    <a id="modalBtnEditar" href="#" class="btn-outline" style="padding:0.5rem 1rem;font-size:0.78rem;">
-                        <svg style="width:13px;height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Editar
-                    </a>
-                    <button id="modalBtnCerrar" class="modal-cerrar">✕</button>
-                </div>
-            </div>
-
-            <!-- Buscador tarjetas -->
-            <div class="px-6 py-3" style="border-bottom: 1px solid rgba(124,58,237,0.1);">
-                <input type="text" id="buscarTarjeta" placeholder="Buscar tarjetas" class="filtro-input w-full">
-            </div>
-
-            <!-- Lista tarjetas -->
-            <div class="modal-tarjetas" id="listaTarjetas">
-                <div class="text-center py-10" style="color:#333;font-size:0.8rem;">
-                    Listado de tarjetas de la baraja
-                </div>
-            </div>
-
-            <!-- Footer modal -->
-            <div class="modal-footer">
-                <button id="modalBtnNuevaTarjeta" onclick="abrirModalNuevaTarjeta()" class="btn-primario"
-                    style="font-size:0.8rem;padding:0.55rem 1.2rem;">
-                    <svg style="width:13px;height:13px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Nueva tarjeta
-                </button>
-                <span style="font-size:0.72rem;color:#333;" id="modalContador">0
-                    tarjetas</span>
-            </div>
-
+      <div class="modal-box">
+        <!-- Header modal -->
+        <div class="modal-header">
+          <div>
+            <h2 class="text-xl font-black text-white" id="modalTitulo">
+              Nombre baraja
+            </h2>
+            <div class="texto-meta" id="modalMeta">0 tarjetas · categoría</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <a
+              id="modalBtnEditar"
+              href="#"
+              data-action="editar-baraja-modal"
+              class="btn-outline btn-sm"
+            >
+              <svg
+                style="width: 13px; height: 13px"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
+              </svg>
+              Editar
+            </a>
+            <button data-action="cerrar-modal-baraja" class="modal-cerrar">
+              ✕
+            </button>
+          </div>
         </div>
+
+        <!-- Buscador tarjetas -->
+        <div class="buscador-modal-wrap px-6 py-3">
+          <input
+            type="text"
+            id="buscarTarjeta"
+            placeholder="Buscar tarjetas"
+            class="filtro-input w-full"
+          />
+        </div>
+
+        <!-- Lista tarjetas -->
+        <div class="modal-tarjetas" id="listaTarjetas">
+          <div class="text-center py-10" style="color: #333; font-size: 0.8rem">
+            Listado de tarjetas de la baraja
+          </div>
+        </div>
+
+        <!-- Footer modal -->
+        <div class="modal-footer">
+          <button
+            id="modalBtnNuevaTarjeta"
+            data-action="nueva-tarjeta"
+            class="btn-primario btn-sm"
+          >
+            <svg
+              style="width: 13px; height: 13px"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            Nueva tarjeta
+          </button>
+          <span class="modal-contador-texto" id="modalContador"
+            >0 tarjetas</span
+          >
+        </div>
+      </div>
     </div>
 
     <!-- ==============================
  MODAL — NUEVA TARJETA
 ============================== -->
     <div id="modalNuevaTarjeta" class="modal-overlay hidden">
-        <div class="modal-box" style="max-width: 520px;">
-
-            <div class="modal-header">
-                <div>
-                    <h2 id="ntTitulo" class="text-xl font-black text-white">Nueva tarjeta</h2>
-                    <div style="font-size:0.72rem;color:#555;margin-top:2px;" id="ntBarajaNombre"></div>
-                </div>
-                <button onclick="cerrarModalNuevaTarjeta()" class="modal-cerrar">✕</button>
-            </div>
-
-            <div class="p-6 flex flex-col gap-5">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-400 mb-2">Pregunta</label>
-                    <textarea id="ntPregunta" rows="3" placeholder="Ej: ¿Qué es una variable?"
-                        class="input-cp resize-none w-full"></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-400 mb-2">Respuesta</label>
-                    <textarea id="ntRespuesta" rows="4" placeholder="Ej: Espacio en memoria que almacena datos."
-                        class="input-cp resize-none w-full"></textarea>
-                </div>
-                <div id="ntError" class="text-red-400 text-xs hidden">Rellena ambos campos.</div>
-            </div>
-
-            <div class="modal-footer">
-                <button onclick="submitNuevaTarjeta()" class="btn-primario" id="ntBtnSubmit"
-                    style="font-size:0.8rem;padding:0.55rem 1.2rem;">
-                    Crear tarjeta
-                </button>
-                <button onclick="cerrarModalNuevaTarjeta()" class="btn-outline"
-                    style="font-size:0.8rem;padding:0.55rem 1.2rem;">
-                    Cancelar
-                </button>
-            </div>
+      <div class="modal-box modal-md">
+        <div class="modal-header">
+          <div>
+            <h2 id="ntTitulo" class="text-xl font-black text-white">
+              Nueva tarjeta
+            </h2>
+            <div class="texto-meta" id="ntBarajaNombre"></div>
+          </div>
+          <button data-action="cerrar-modal-tarjeta" class="modal-cerrar">
+            ✕
+          </button>
         </div>
-    </div>
 
+        <div class="p-6 flex flex-col gap-5">
+          <div>
+            <label class="block text-sm font-semibold text-gray-400 mb-2"
+              >Pregunta</label
+            >
+            <textarea
+              id="ntPregunta"
+              rows="3"
+              placeholder="Ej: ¿Qué es una variable?"
+              class="input-cp resize-none w-full"
+            ></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-400 mb-2"
+              >Respuesta</label
+            >
+            <textarea
+              id="ntRespuesta"
+              rows="4"
+              placeholder="Ej: Espacio en memoria que almacena datos."
+              class="input-cp resize-none w-full"
+            ></textarea>
+          </div>
+          <div id="ntError" class="text-red-400 text-xs hidden">
+            Rellena ambos campos.
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            id="ntBtnSubmit"
+            data-action="submit-tarjeta"
+            class="btn-primario btn-sm"
+          >
+            Crear tarjeta
+          </button>
+          <button data-action="cerrar-modal-tarjeta" class="btn-outline btn-sm">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!-- ==============================
      MODAL — GESTIÓN BARAJA (NUEVA/EDITAR)
 ============================== -->
     <div id="modalGestionBaraja" class="modal-overlay hidden">
-        <div class="modal-box" style="max-width: 450px;">
-            <div class="modal-header">
-                <h2 id="gbTituloModal" class="text-xl font-black text-white">Nueva baraja</h2>
-                <button onclick="cerrarModalGestionBaraja()" class="modal-cerrar">✕</button>
-            </div>
-            <form id="formGestionBaraja" class="p-6 flex flex-col gap-5">
-                <input type="hidden" id="gbId">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-400 mb-2">Nombre de la baraja</label>
-                    <input type="text" id="gbTitulo" name="titulo" required placeholder="Ej: Java Avanzado"
-                        class="input-cp">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-400 mb-2">Categoría</label>
-                    <input type="text" id="gbCategoria" name="categoria" placeholder="Ej: Programación"
-                        class="input-cp">
-                </div>
-                <div id="gbError" class="text-red-400 text-xs hidden">Ocurrió un error.</div>
-
-                <div class="flex gap-3 mt-4">
-                    <button type="submit" id="gbBtnSubmit" class="btn-primario">Guardar</button>
-                    <button type="button" onclick="cerrarModalGestionBaraja()" class="btn-outline">Cancelar</button>
-                </div>
-            </form>
+      <div class="modal-box modal-sm">
+        <div class="modal-header">
+          <h2 id="gbTituloModal" class="text-xl font-black text-white">
+            Nueva baraja
+          </h2>
+          <button data-action="cerrar-gestion-baraja" class="modal-cerrar">
+            ✕
+          </button>
         </div>
+        <form id="formGestionBaraja" class="p-6 flex flex-col gap-5">
+          <input type="hidden" id="gbId" />
+          <div>
+            <label class="block text-sm font-semibold text-gray-400 mb-2"
+              >Nombre de la baraja</label
+            >
+            <input
+              type="text"
+              id="gbTitulo"
+              name="titulo"
+              required
+              placeholder="Ej: Java Avanzado"
+              class="input-cp"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-400 mb-2"
+              >Categoría</label
+            >
+            <input
+              type="text"
+              id="gbCategoria"
+              name="categoria"
+              placeholder="Ej: Programación"
+              class="input-cp"
+              required
+            />
+          </div>
+          <div id="gbError" class="text-red-400 text-xs hidden">
+            Ocurrió un error.
+          </div>
+
+          <div class="flex gap-3 mt-4">
+            <button type="submit" id="gbBtnSubmit" class="btn-primario">
+              Guardar
+            </button>
+            <button data-action="cerrar-gestion-baraja" class="btn-outline">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- ==============================
      MODAL — CONFIRMAR ELIMINAR
 ============================== -->
-    <div id="modalEliminar" class="modal-overlay hidden">
-        <div class="modal-box" style="max-width: 420px;">
-            <div class="p-6 text-center">
-                <h3 class="text-white font-black text-lg mb-6">¿Eliminar baraja?</h3>
-                <p class="text-gray-500 text-sm mb-1">Vas a eliminar la baraja:</p>
-                <p class="text-violet-300 font-bold mb-8" id="nombreBarajaEliminar">Nombre</p>
-                <div class="flex gap-3 justify-center">
-                    <button onclick="cancelarEliminar()" class="btn-outline"
-                        style="padding:0.55rem 1.2rem;font-size:0.8rem;">
-                        Cancelar
-                    </button>
-                    <form id="formEliminar" method="post">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn-eliminar-confirmar">
-                            Sí, eliminar
-                        </button>
-                    </form>
-                </div>
-            </div>
+    <!-- MODAL — CONFIRMAR ELIMINAR TARJETA -->
+    <div id="modalEliminarTarjeta" class="modal-overlay hidden">
+      <div class="modal-box modal-xs">
+        <div class="p-6 text-center">
+          <h3 class="text-white font-black text-lg mb-6">¿Eliminar tarjeta?</h3>
+          <p class="text-gray-500 text-sm mb-8">
+            Esta acción no se puede deshacer.
+          </p>
+          <div class="flex gap-3 justify-center">
+            <button
+              data-action="cancelar-eliminar-tarjeta"
+              class="btn-outline btn-sm"
+            >
+              Cancelar
+            </button>
+            <button
+              id="btnConfirmarEliminarTarjeta"
+              class="btn-eliminar-confirmar btn-sm"
+            >
+              Sí, eliminar
+            </button>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <div id="modalEliminar" class="modal-overlay hidden">
+      <div class="modal-box modal-xs">
+        <div class="p-6 text-center">
+          <h3 class="text-white font-black text-lg mb-6">¿Eliminar baraja?</h3>
+          <p class="text-gray-500 text-sm mb-1">Vas a eliminar la baraja:</p>
+          <p class="text-violet-300 font-bold mb-8" id="nombreBarajaEliminar">
+            Nombre
+          </p>
+          <div class="flex gap-3 justify-center">
+            <button data-action="cancelar-eliminar" class="btn-outline btn-sm">
+              Cancelar
+            </button>
+            <form id="formEliminar" method="post">
+              <input type="hidden" name="_method" value="DELETE" />
+              <button type="submit" class="btn-eliminar-confirmar">
+                Sí, eliminar
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script th:src="@{/js/animacion.js}" defer></script>
     <script th:src="@{/js/barajas.js}" defer></script>
-
-</body>
-
+  </body>
 </html>

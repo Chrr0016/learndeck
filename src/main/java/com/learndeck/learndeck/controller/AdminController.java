@@ -28,20 +28,20 @@ public class AdminController {
 
     // Comprueba que hay sesión activa y que el usuario es ADMIN
     private boolean esAdmin(HttpSession session) {
-        String rol = (String) session.getAttribute("usuarioRol");
+        String rol=(String) session.getAttribute("usuarioRol");
         return "ADMIN".equals(rol);
     }
 
     // ── Panel principal ──
     @GetMapping
     public String panel(HttpSession session, Model model) {
-        if (!esAdmin(session)) return "redirect:/dashboard";
+        if (!esAdmin(session)) return "redirect:/inicio";
 
-        List<Usuario> usuarios = usuarioService.obtenerTodos();
-        List<Baraja> barajas   = barajaService.obtenerTodas();
+        List<Usuario> usuarios=usuarioService.obtenerTodos();
+        List<Baraja> barajas  =barajaService.obtenerTodas();
 
         // Calculamos estadísticas globales de la plataforma
-        int totalTarjetasEstudiadas = 0;
+        int totalTarjetasEstudiadas=0;
         for (Usuario u : usuarios) {
             totalTarjetasEstudiadas += historialService.totalEstudiadas(u.getId());
         }
@@ -60,10 +60,10 @@ public class AdminController {
     // ── Eliminar usuario ──
     @PostMapping("/usuarios/{id}/eliminar")
     public String eliminarUsuario(@PathVariable Long id, HttpSession session) {
-        if (!esAdmin(session)) return "redirect:/dashboard";
+        if (!esAdmin(session)) return "redirect:/inicio";
 
         // Un admin no puede eliminarse a sí mismo
-        Long adminId = (Long) session.getAttribute("usuarioId");
+        Long adminId=(Long) session.getAttribute("usuarioId");
         if (id.equals(adminId)) return "redirect:/admin?error=no-puedes-eliminarte";
 
         usuarioService.eliminar(id);
@@ -75,10 +75,10 @@ public class AdminController {
     public String cambiarRol(@PathVariable Long id,
                               @RequestParam String rol,
                               HttpSession session) {
-        if (!esAdmin(session)) return "redirect:/dashboard";
+        if (!esAdmin(session)) return "redirect:/inicio";
 
         // Un admin no puede quitarse su propio rol
-        Long adminId = (Long) session.getAttribute("usuarioId");
+        Long adminId=(Long) session.getAttribute("usuarioId");
         if (id.equals(adminId)) return "redirect:/admin?error=no-puedes-cambiar-tu-rol";
 
         usuarioService.cambiarRol(id, rol);
@@ -88,7 +88,7 @@ public class AdminController {
     // ── Eliminar baraja (como admin, sin comprobar propietario) ──
     @PostMapping("/barajas/{id}/eliminar")
     public String eliminarBaraja(@PathVariable Long id, HttpSession session) {
-        if (!esAdmin(session)) return "redirect:/dashboard";
+        if (!esAdmin(session)) return "redirect:/inicio";
 
         barajaService.eliminarComoAdmin(id);
         return "redirect:/admin";

@@ -9,8 +9,8 @@
 
             <!-- Logo -->
             <div class="text-center mb-8">
-                <h1 style="font-size: 2rem; font-weight: 900; letter-spacing: -0.5px;">
-                    <span style="color: var(--violeta-claro);">learn</span><span style="color: var(--cyan);">deck</span>
+                <h1 class="logo-titulo">
+                    <span class="logo-violeta">learn</span><span class="logo-cyan">deck</span>
                 </h1>
                 <div class="linea mx-auto" ></div>
                 <p class="text-gray-500 text-sm mt-2">Crea tu cuenta gratuita y empieza a estudiar.</p>
@@ -26,11 +26,12 @@
 
                 <div>
                     <label for="nombre"
-                        style="display: block; font-size: 0.8rem; font-weight: 600; color: #9ca3af; margin-bottom: 0.4rem;">
+                        class="label-form">
                         nombre
                     </label>
                     <input type="text" id="nombre" name="nombre" placeholder="Tu nombre" required autofocus
                         class="input-cp">
+                        <p id="errorNombre" class="text-red-400 text-xs mt-1 hidden">El nombre no puede estar vacío.</p>
                 </div>
 
                 <div>
@@ -46,7 +47,7 @@
                 </div>
                 <div>
                     <label for="confirmar"
-                           style="display: block; font-size: 0.8rem; font-weight: 600; color: #9ca3af; margin-bottom: 0.4rem;">
+                           class="label-form">
                         confirmar contraseña
                     </label>
                     <input type="password" id="confirmar" name="confirmar" placeholder="••••••••" required
@@ -64,13 +65,13 @@
 
             <!-- Separador -->
             <div
-                style="height: 1px; background: linear-gradient(to right, transparent, rgba(124,58,237,0.2), transparent); margin: 1.5rem 0;">
+                class="sep-form">
             </div>
 
             <!-- Link login -->
             <p class="text-center text-sm text-gray-600">
                 ¿Ya tienes cuenta?
-                <a href="/login" style="color: var(--violeta-claro); font-weight: 600;" class="hover:underline">Inicia
+                <a href="/login" class="enlace-violeta hover:underline">Inicia
                     sesión</a>
             </p>
         </div>

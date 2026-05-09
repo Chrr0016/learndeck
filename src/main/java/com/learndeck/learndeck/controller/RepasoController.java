@@ -34,18 +34,18 @@ public class RepasoController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public String iniciarRepaso(@RequestParam(required = false) String barajas,
-                                @RequestParam(defaultValue = "repaso") String modo,
+    public String iniciarRepaso(@RequestParam(required=false) String barajas,
+                                @RequestParam(defaultValue="repaso") String modo,
                                 HttpSession session,
                                 Model model, RedirectAttributes redirectAttributes) {
 
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        Long usuarioId=(Long) session.getAttribute("usuarioId");
         if (usuarioId == null) return "redirect:/login";
 
-        if (barajas == null || barajas.isEmpty()) return "redirect:/dashboard";
+        if (barajas == null || barajas.isEmpty()) return "redirect:/inicio";
 
         // Convertimos el string "4,6,7" en una lista de números [4, 6, 7]
-        List<Long> barajaIds = new ArrayList<>();
+        List<Long> barajaIds=new ArrayList<>();
         for (String idStr : barajas.split(",")) {
             try {
                 barajaIds.add(Long.parseLong(idStr.trim()));
@@ -54,26 +54,26 @@ public class RepasoController {
             }
         }
 
-        List<Tarjeta> tarjetas = new ArrayList<>();
+        List<Tarjeta> tarjetas=new ArrayList<>();
 
         if ("errores".equals(modo)) {
             // Modo errores: solo tarjetas cuyo último intento fue incorrecto
-            List<Long> idsFalladas = historialService.obtenerIdsTarjetasFalladasPorBarajas(usuarioId, barajaIds);
+            List<Long> idsFalladas=historialService.obtenerIdsTarjetasFalladasPorBarajas(usuarioId, barajaIds);
 
             if (idsFalladas.isEmpty()) {
                 redirectAttributes.addFlashAttribute("mensajeInfo", "No hay tarjetas con errores en las barajas seleccionadas.");
-                return "redirect:/dashboard";
+                return "redirect:/inicio";
             }
 
-            tarjetas = new ArrayList<>(tarjetaService.obtenerPorIds(idsFalladas));
+            tarjetas=new ArrayList<>(tarjetaService.obtenerPorIds(idsFalladas));
 
         } else {
             // Modo repaso: todas las tarjetas de las barajas seleccionadas
             for (Long barajaId : barajaIds) {
-                Optional<Baraja> barajaOpt = barajaService.obtenerPorId(barajaId);
+                Optional<Baraja> barajaOpt=barajaService.obtenerPorId(barajaId);
                 if (barajaOpt.isEmpty()) continue;
 
-                Baraja baraja = barajaOpt.get();
+                Baraja baraja=barajaOpt.get();
 
                 // Solo añadimos tarjetas de barajas que pertenecen al usuario
                 if (baraja.getUsuario().getId().equals(usuarioId)) {
@@ -82,16 +82,16 @@ public class RepasoController {
             }
         }
 
-        if (tarjetas.isEmpty()) return "redirect:/dashboard";
+        if (tarjetas.isEmpty()) return "redirect:/inicio";
 
         // Mezclamos las tarjetas aleatoriamente para cada sesión
         Collections.shuffle(tarjetas);
 
         // Convertimos las tarjetas a una lista de mapas para pasarlas al JS
         // No podemos pasar objetos Java directamente al JavaScript
-        List<Map<String, Object>> tarjetasJson = new ArrayList<>();
+        List<Map<String, Object>> tarjetasJson=new ArrayList<>();
         for (Tarjeta t : tarjetas) {
-            Map<String, Object> map = new LinkedHashMap<>();
+            Map<String, Object> map=new LinkedHashMap<>();
             map.put("id", t.getId());
             map.put("pregunta", t.getPregunta());
             map.put("respuesta", t.getRespuesta());
@@ -117,17 +117,17 @@ public class RepasoController {
             @RequestBody Map<String, Object> body,
             HttpSession session) {
 
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        Long usuarioId=(Long) session.getAttribute("usuarioId");
         if (usuarioId == null) return ResponseEntity.status(401).build();
 
         try {
-            Long tarjetaId = ((Number) body.get("tarjetaId")).longValue();
-            boolean resultado = (Boolean) body.get("resultado");
+            Long tarjetaId=((Number) body.get("tarjetaId")).longValue();
+            boolean resultado=(Boolean) body.get("resultado");
 
-            Optional<Usuario> usuario = usuarioService.findById(usuarioId);
+            Optional<Usuario> usuario=usuarioService.findById(usuarioId);
             if (usuario.isEmpty()) return ResponseEntity.status(401).build();
 
-            Optional<Tarjeta> tarjeta = tarjetaService.obtenerPorId(tarjetaId);
+            Optional<Tarjeta> tarjeta=tarjetaService.obtenerPorId(tarjetaId);
             if (tarjeta.isEmpty()) {
                 return ResponseEntity.badRequest().body(Map.of("error", "Tarjeta no encontrada"));
             }

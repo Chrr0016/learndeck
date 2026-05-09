@@ -25,11 +25,11 @@ public class TarjetaController {
     public String editarForm(@PathVariable Long id,
             HttpSession session,
             Model model) {
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        Long usuarioId=(Long) session.getAttribute("usuarioId");
         if (usuarioId == null)
             return "redirect:/login";
 
-        Optional<Tarjeta> tarjeta = tarjetaService.obtenerPorId(id);
+        Optional<Tarjeta> tarjeta=tarjetaService.obtenerPorId(id);
         if (tarjeta.isEmpty())
             return "redirect:/barajas";
 
@@ -51,7 +51,7 @@ public class TarjetaController {
             @RequestParam String pregunta,
             @RequestParam String respuesta,
             HttpSession session) {
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        Long usuarioId=(Long) session.getAttribute("usuarioId");
         if (usuarioId == null)
             return "redirect:/login";
 
@@ -63,11 +63,11 @@ public class TarjetaController {
     @DeleteMapping("/{id}")
     @ResponseBody
     public ResponseEntity<Void> eliminar(@PathVariable Long id, HttpSession session) {
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        Long usuarioId=(Long) session.getAttribute("usuarioId");
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 
-        boolean ok = tarjetaService.eliminar(id, usuarioId);
+        boolean ok=tarjetaService.eliminar(id, usuarioId);
         return ok ? ResponseEntity.ok().build() : ResponseEntity.status(403).build();
     }
 
@@ -75,11 +75,11 @@ public class TarjetaController {
     @ResponseBody
     public ResponseEntity<?> obtenerTarjeta(@PathVariable Long id, HttpSession session) {
 
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        Long usuarioId=(Long) session.getAttribute("usuarioId");
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 
-        Optional<Tarjeta> tarjeta = tarjetaService.obtenerPorId(id);
+        Optional<Tarjeta> tarjeta=tarjetaService.obtenerPorId(id);
         if (tarjeta.isEmpty())
             return ResponseEntity.notFound().build();
 
@@ -87,7 +87,7 @@ public class TarjetaController {
             return ResponseEntity.status(403).build();
         }
 
-        Map<String, Object> res = new HashMap<>();
+        Map<String, Object> res=new HashMap<>();
         res.put("id", tarjeta.get().getId());
         res.put("pregunta", tarjeta.get().getPregunta());
         res.put("respuesta", tarjeta.get().getRespuesta());
@@ -103,7 +103,7 @@ public class TarjetaController {
             @RequestParam String respuesta,
             HttpSession session) {
 
-        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        Long usuarioId=(Long) session.getAttribute("usuarioId");
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 

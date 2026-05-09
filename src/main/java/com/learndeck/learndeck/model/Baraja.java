@@ -6,14 +6,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "barajas")
+@Table(name="barajas")
 public class Baraja {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable=false)
     private String titulo;
 
     private String categoria;
@@ -21,16 +21,16 @@ public class Baraja {
     private LocalDateTime fechaCreacion;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name="usuario_id", nullable=false)
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "baraja", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="baraja", cascade=CascadeType.ALL, orphanRemoval=true)
     private List<Tarjeta> tarjetas;
 
-    @Column(nullable = false)
-    private boolean compartida = false;
+    @Column(nullable=false)
+    private boolean compartida=false;
 
-    @Column(name = "baraja_original_id")
+    @Column(name="baraja_original_id")
     private Long barajaOriginalId;
 
     public Long getId() {
@@ -38,7 +38,7 @@ public class Baraja {
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id=id;
     }
 
     public String getTitulo() {
@@ -46,7 +46,7 @@ public class Baraja {
     }
 
     public void setTitulo(String titulo) {
-        this.titulo = titulo;
+        this.titulo=titulo;
     }
 
     public String getCategoria() {
@@ -54,7 +54,7 @@ public class Baraja {
     }
 
     public void setCategoria(String categoria) {
-        this.categoria = categoria;
+        this.categoria=categoria;
     }
 
     public LocalDateTime getFechaCreacion() {
@@ -62,7 +62,7 @@ public class Baraja {
     }
 
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
+        this.fechaCreacion=fechaCreacion;
     }
 
     public Usuario getUsuario() {
@@ -70,7 +70,7 @@ public class Baraja {
     }
 
     public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
+        this.usuario=usuario;
     }
 
     public List<Tarjeta> getTarjetas() {
@@ -78,7 +78,7 @@ public class Baraja {
     }
 
     public void setTarjetas(List<Tarjeta> tarjetas) {
-        this.tarjetas = tarjetas;
+        this.tarjetas=tarjetas;
     }
 
     public boolean isCompartida() {
@@ -86,7 +86,7 @@ public class Baraja {
     }
 
     public void setCompartida(boolean compartida) {
-        this.compartida = compartida;
+        this.compartida=compartida;
     }
 
     public Long getBarajaOriginalId() {
@@ -94,6 +94,6 @@ public class Baraja {
     }
 
     public void setBarajaOriginalId(Long barajaOriginalId) {
-        this.barajaOriginalId = barajaOriginalId;
+        this.barajaOriginalId=barajaOriginalId;
     }
 }
