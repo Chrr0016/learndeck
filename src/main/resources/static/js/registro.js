@@ -1,6 +1,6 @@
 function validarRegistro() {
-  const nombreInput    = document.getElementById("nombre");
-  const emailInput     = document.getElementById("email");
+  const nombreInput = document.getElementById("nombre");
+  const emailInput = document.getElementById("email");
   const contrasenaInput = document.getElementById("contrasena");
   const confirmarInput = document.getElementById("confirmar");
   let valido = true;
@@ -12,7 +12,7 @@ function validarRegistro() {
   if (!nombreOk) valido = false;
 
   // Validar formato email
-  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/u;
   const emailOk = regexEmail.test(emailInput.value);
   emailInput.style.borderColor = emailOk ? "" : "#ef4444";
   document.getElementById("errorEmail").classList.toggle("hidden", emailOk);
@@ -28,7 +28,9 @@ function validarRegistro() {
   // Confirmar que ambas contraseñas coinciden
   const coinciden = contrasenaInput.value === confirmarInput.value;
   confirmarInput.style.borderColor = coinciden ? "" : "#ef4444";
-  document.getElementById("errorConfirmar").classList.toggle("hidden", coinciden);
+  document
+    .getElementById("errorConfirmar")
+    .classList.toggle("hidden", coinciden);
   if (!coinciden) valido = false;
 
   if (valido) document.querySelector("form").submit();

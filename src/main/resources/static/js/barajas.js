@@ -26,6 +26,11 @@ let tarjetasActuales = [];
 let barajaActualId = null;
 let tarjetaPendienteEliminar = null;
 
+const LIMITE_NOMBRE_BARAJA = 50;
+const LIMITE_CATEGORIA = 30;
+const LIMITE_PREGUNTA = 300;
+const LIMITE_RESPUESTA = 500;
+
 if (contadorVisible) contadorVisible.textContent = todasBarajas.length;
 
 // ── Filtros ──
@@ -93,11 +98,47 @@ if (formGestionBaraja) {
     const titulo = document.querySelector("#gbTitulo").value.trim();
     const categoria = document.querySelector("#gbCategoria").value.trim();
 
+     if (!titulo) {
+      gbError.textContent = "El nombre de la baraja no puede estar vacío.";
+      gbError.classList.remove("hidden");
+      return;
+    }
+
+    if (titulo.length > LIMITE_NOMBRE_BARAJA) {
+      gbError.textContent = `El nombre no puede superar ${LIMITE_NOMBRE_BARAJA} caracteres.`;
+      gbError.classList.remove("hidden");
+      return;
+    }
+
+
     if (!categoria) {
       gbError.textContent = "La categoría no puede estar vacía.";
       gbError.classList.remove("hidden");
       return;
     }
+
+    if (categoria.length > LIMITE_CATEGORIA) {
+      gbError.textContent = `La categoría no puede superar ${LIMITE_CATEGORIA} caracteres.`;
+      gbError.classList.remove("hidden");
+      return;
+    }
+
+    // Nombre duplicado 
+    // (solo para creación, en edición comparamos excluyendo la propia baraja)
+    const esEdicion = id !== "";
+    const nombreDuplicado = [...todasBarajas].some((b) => {
+      const mismoNombre = b.dataset.titulo?.toLowerCase() === titulo.toLowerCase();
+      // en edición ignoramos la baraja que estamos editando
+      const mismaBaraja = b.dataset.id === id;
+      return mismoNombre && (!esEdicion || !mismaBaraja);
+    });
+
+    if (nombreDuplicado) {
+      gbError.textContent = "Ya tienes una baraja con ese nombre.";
+      gbError.classList.remove("hidden");
+      return;
+    }
+
 
     try {
       const res = await fetch("/barajas/guardar/ajax", {
@@ -251,6 +292,17 @@ const submitNuevaTarjeta = async function () {
     document.querySelector("#ntError").classList.remove("hidden");
     return;
   }
+  if (pregunta.length > LIMITE_PREGUNTA) {
+    errorEl.textContent = `La pregunta no puede superar ${LIMITE_PREGUNTA} caracteres.`;
+    errorEl.classList.remove("hidden");
+    return;
+  }
+
+  if (respuesta.length > LIMITE_RESPUESTA) {
+    errorEl.textContent = `La respuesta no puede superar ${LIMITE_RESPUESTA} caracteres.`;
+    errorEl.classList.remove("hidden");
+    return;
+  }
 
   ntBtnSubmit.disabled = true;
   ntBtnSubmit.textContent = "Guardando...";
@@ -300,6 +352,27 @@ const submitEditarTarjeta = async function (id) {
   const pregunta = document.querySelector("#ntPregunta").value.trim();
   const respuesta = document.querySelector("#ntRespuesta").value.trim();
 
+
+  if (!pregunta || !respuesta) {
+    errorEl.textContent = "Rellena ambos campos.";
+    errorEl.classList.remove("hidden");
+    return;
+  }
+
+  if (pregunta.length > LIMITE_PREGUNTA) {
+    errorEl.textContent = `La pregunta no puede superar ${LIMITE_PREGUNTA} caracteres.`;
+    errorEl.classList.remove("hidden");
+    return;
+  }
+
+  if (respuesta.length > LIMITE_RESPUESTA) {
+    errorEl.textContent = `La respuesta no puede superar ${LIMITE_RESPUESTA} caracteres.`;
+    errorEl.classList.remove("hidden");
+    return;
+  }
+
+
+
   const res = await fetch(`/tarjetas/${id}/editar/ajax`, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -320,19 +393,20 @@ const submitEditarTarjeta = async function (id) {
 
 const actualizarContadoresGlobales = function () {
   const total = tarjetasActuales.length;
-  
+
   modalContador.textContent = `${total} tarjetas`;
-  
+
   let categoria = modalBtnEditar.dataset.categoria;
-  categoria = (!categoria || categoria === "null") ? "sin categoría" : categoria;
+  categoria = !categoria || categoria === "null" ? "sin categoría" : categoria;
   modalMeta.textContent = `${total} tarjetas · ${categoria}`;
 
-  const cardContador = document.querySelector(`.baraja-gestion[data-id="${barajaActualId}"] .baraja-gestion-meta span:first-child`);
+  const cardContador = document.querySelector(
+    `.baraja-gestion[data-id="${barajaActualId}"] .baraja-gestion-meta span:first-child`,
+  );
   if (cardContador) {
     cardContador.textContent = `${total} tarjetas`;
   }
-}
-
+};
 
 // ── Eliminar tarjeta ──
 const eliminarTarjeta = function (id) {

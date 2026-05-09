@@ -8,6 +8,7 @@
       th:replace="~{fragments/nav :: navbar(${usuarioNombre}, 'inicio', ${usuarioRol})}"
     ></nav>
 
+    <div th:replace="~{fragments/toast :: toast}"></div>
     <!-- ── PANTALLA REPASO ── -->
     <div class="pantalla-repaso" id="pantallaRepaso">
       <main class="max-w-screen-xl mx-auto px-6 py-8 relative z-10">

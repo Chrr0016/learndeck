@@ -80,11 +80,9 @@ async function responder(esCorrecta) {
   if (esCorrecta) {
     correctas++;
     contCorrect.textContent = correctas;
-    mostrarToast("¡Correcto!", "exito");
   } else {
     incorrectas++;
     contIncorrect.textContent = incorrectas;
-    mostrarToast("Incorrecto. ¡Sigue intentándolo!", "error");
   }
 
   indice++;
