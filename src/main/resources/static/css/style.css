@@ -2043,8 +2043,8 @@ select.input-cp:focus {
 /* ── TOAST ── */
 .toast-contenedor {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  top: 2rem;
+  left: 2rem;
   z-index: 9999;
   display: none;
   align-items: center;
@@ -2060,7 +2060,7 @@ select.input-cp:focus {
     opacity 0.4s ease,
     transform 0.4s ease;
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(-16px);
 }
 .toast-icono {
   font-size: 1.1rem;
