@@ -267,6 +267,8 @@ const submitNuevaTarjeta = async function () {
       tarjetasActuales.push(nueva);
       renderizarTarjetas(tarjetasActuales);
       modalContador.textContent = `${tarjetasActuales.length} tarjetas`;
+
+      actualizarContadoresGlobales();
       preguntaInput.value = "";
       respuestaInput.value = "";
       preguntaInput.focus();
@@ -316,6 +318,22 @@ const submitEditarTarjeta = async function (id) {
   }
 };
 
+const actualizarContadoresGlobales = function () {
+  const total = tarjetasActuales.length;
+  
+  modalContador.textContent = `${total} tarjetas`;
+  
+  let categoria = modalBtnEditar.dataset.categoria;
+  categoria = (!categoria || categoria === "null") ? "sin categoría" : categoria;
+  modalMeta.textContent = `${total} tarjetas · ${categoria}`;
+
+  const cardContador = document.querySelector(`.baraja-gestion[data-id="${barajaActualId}"] .baraja-gestion-meta span:first-child`);
+  if (cardContador) {
+    cardContador.textContent = `${total} tarjetas`;
+  }
+}
+
+
 // ── Eliminar tarjeta ──
 const eliminarTarjeta = function (id) {
   tarjetaPendienteEliminar = id;
@@ -332,6 +350,7 @@ const confirmarEliminarTarjeta = async function () {
   if (res.ok) {
     tarjetasActuales = tarjetasActuales.filter((t) => t.id !== id);
     renderizarTarjetas(tarjetasActuales);
+    actualizarContadoresGlobales();
     modalContador.textContent = `${tarjetasActuales.length} tarjetas`;
     mostrarToast("Tarjeta eliminada.", "info");
   } else {
