@@ -70,7 +70,7 @@ public class AuthController {
                                    Model model, RedirectAttributes redirectAttributes) {
 
         // Formato email
-        if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+        if (!email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$")) {
             model.addAttribute("error", "El formato del correo no es válido.");
             return "registro";
         }

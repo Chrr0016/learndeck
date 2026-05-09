@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @Controller
-public class MenuPrincipalController {
+public class InicioController {
 
     @Autowired
     private BarajaService barajaService;
@@ -46,6 +46,6 @@ public class MenuPrincipalController {
         model.addAttribute("porcentaje", String.format("%.0f", porcentaje));
         model.addAttribute("categorias", categorias);
 
-        return "menuPrincipal";
+        return "inicio";
     }
 }

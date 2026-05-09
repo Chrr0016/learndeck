@@ -6,7 +6,7 @@ function validarLogin() {
   let valido=true;
 
   // Validar formato de email
-  const regexEmail=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/u;
   
   const emailOk=regexEmail.test(emailInput.value);
   
