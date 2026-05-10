@@ -48,8 +48,6 @@ public class AdminController {
 
         model.addAttribute("usuarios", usuarios);
         model.addAttribute("barajas", barajas);
-        model.addAttribute("totalUsuarios", usuarios.size());
-        model.addAttribute("totalBarajas", barajas.size());
         model.addAttribute("totalTarjetasEstudiadas", totalTarjetasEstudiadas);
         model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
         model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));

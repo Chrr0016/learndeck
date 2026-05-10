@@ -31,19 +31,9 @@ public class InicioController {
         List<Baraja> barajas=barajaService.obtenerBarajasPorUsuario(usuarioId);
         List<String> categorias=barajaService.obtenerCategorias(usuarioId);
 
-        int totalEstudiadas=historialService.totalEstudiadas(usuarioId);
-        long totalAciertos=historialService.totalAciertos(usuarioId);
-        long totalFallos=historialService.totalFallos(usuarioId);
-        double porcentaje=historialService.porcentajeAcierto(usuarioId);
-
         model.addAttribute("usuarioNombre", usuarioNombre);
         model.addAttribute("barajas", barajas);
-        model.addAttribute("totalBarajas", barajas.size());
-        model.addAttribute("totalEstudiadas", totalEstudiadas);
-        model.addAttribute("totalAciertos", totalAciertos);
-        model.addAttribute("totalFallos", totalFallos);
         model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
-        model.addAttribute("porcentaje", String.format("%.0f", porcentaje));
         model.addAttribute("categorias", categorias);
 
         return "inicio";

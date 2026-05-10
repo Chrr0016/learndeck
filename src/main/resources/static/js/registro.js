@@ -1,3 +1,5 @@
+"use strict";
+
 function validarRegistro() {
   const nombreInput = document.getElementById("nombre");
   const emailInput = document.getElementById("email");
