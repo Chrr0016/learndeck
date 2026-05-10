@@ -3,6 +3,7 @@ package com.learndeck.learndeck.service;
 import com.learndeck.learndeck.model.Usuario;
 import com.learndeck.learndeck.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,10 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
+
     // Registro
     public boolean registrar(String nombre, String email, String contrasena) {
         if (usuarioRepository.existsByEmail(email)) {
@@ -22,7 +27,7 @@ public class UsuarioService {
         Usuario usuario=new Usuario();
         usuario.setNombre(nombre);
         usuario.setEmail(email);
-        usuario.setContrasena(contrasena);
+         usuario.setContrasena(passwordEncoder.encode(contrasena));
         usuario.setRol("USER");
         usuario.setFechaRegistro(LocalDateTime.now());
         usuarioRepository.save(usuario);
@@ -32,7 +37,7 @@ public class UsuarioService {
     // Login
     public Optional<Usuario> login(String email, String contrasena) {
         Optional<Usuario> usuario=usuarioRepository.findByEmail(email);
-        if (usuario.isPresent() && usuario.get().getContrasena().equals(contrasena)) {
+        if (usuario.isPresent() && passwordEncoder.matches(contrasena, usuario.get().getContrasena())) {
             return usuario;
         }
         return Optional.empty();
@@ -56,7 +61,7 @@ public class UsuarioService {
 
         // Solo actualizamos la contraseña si el usuario escribió algo en el campo
         if (nuevaContrasena != null && !nuevaContrasena.trim().isEmpty()) {
-            usuario.setContrasena(nuevaContrasena);
+            usuario.setContrasena(passwordEncoder.encode(nuevaContrasena));
         }
 
         usuarioRepository.save(usuario);

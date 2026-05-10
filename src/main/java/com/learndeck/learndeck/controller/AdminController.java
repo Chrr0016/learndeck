@@ -40,15 +40,8 @@ public class AdminController {
         List<Usuario> usuarios=usuarioService.obtenerTodos();
         List<Baraja> barajas  =barajaService.obtenerTodas();
 
-        // Calculamos estadísticas globales de la plataforma
-        int totalTarjetasEstudiadas=0;
-        for (Usuario u : usuarios) {
-            totalTarjetasEstudiadas += historialService.totalEstudiadas(u.getId());
-        }
-
         model.addAttribute("usuarios", usuarios);
         model.addAttribute("barajas", barajas);
-        model.addAttribute("totalTarjetasEstudiadas", totalTarjetasEstudiadas);
         model.addAttribute("usuarioNombre", session.getAttribute("usuarioNombre"));
         model.addAttribute("usuarioRol", session.getAttribute("usuarioRol"));
 
@@ -62,7 +55,7 @@ public class AdminController {
 
         // Un admin no puede eliminarse a sí mismo
         Long adminId=(Long) session.getAttribute("usuarioId");
-        if (id.equals(adminId)) return "redirect:/admin?error=no-puedes-eliminarte";
+        if (id.equals(adminId)) return "redirect:/admin";
 
         usuarioService.eliminar(id);
         return "redirect:/admin";
@@ -77,7 +70,7 @@ public class AdminController {
 
         // Un admin no puede quitarse su propio rol
         Long adminId=(Long) session.getAttribute("usuarioId");
-        if (id.equals(adminId)) return "redirect:/admin?error=no-puedes-cambiar-tu-rol";
+        if (id.equals(adminId)) return "redirect:/admin";
 
         usuarioService.cambiarRol(id, rol);
         return "redirect:/admin";
