@@ -17,6 +17,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.*;
 
+/**
+ * Gestiona las sesiones de repaso.
+ * No persiste estado entre peticiones — las tarjetas se cargan,
+ * se mezclan y se pasan a la vista en una sola petición GET.
+ * Cada respuesta del usuario se guarda individualmente via POST desde el JS.
+ */
 @Controller
 @RequestMapping("/repasar")
 public class RepasoController {

@@ -15,6 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+/**
+ * Gestiona las operaciones CRUD de barajas.
+ * Tiene dos tipos de endpoints:
+ * Endpoints normales que devuelven vistas Thymeleaf (redirecciones)
+ * Endpoints AJAX (@ResponseBody) que devuelven JSON para el JavaScript del
+ * frontend
+ */
 @Controller
 @RequestMapping("/barajas")
 public class BarajaController {
@@ -28,7 +35,8 @@ public class BarajaController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // Método auxiliar para obtener el ID del usuario de la sesión
+    // Todos los endpoints lo usan como primera comprobación — si devuelve
+    // null es que no hay sesión activa y se redirige a /login.
     private Long getUsuarioId(HttpSession session) {
         return (Long) session.getAttribute("usuarioId");
     }
@@ -36,15 +44,15 @@ public class BarajaController {
     // Muestra la lista de barajas del usuario
     @GetMapping
     public String listar(HttpSession session, Model model) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
-        List<Baraja> barajas=barajaService.obtenerBarajasPorUsuario(usuarioId);
+        List<Baraja> barajas = barajaService.obtenerBarajasPorUsuario(usuarioId);
 
         // Usamos el service para obtener las categorías, ya normaliza y elimina
         // duplicados
-        List<String> categorias=barajaService.obtenerCategorias(usuarioId);
+        List<String> categorias = barajaService.obtenerCategorias(usuarioId);
 
         model.addAttribute("barajas", barajas);
         model.addAttribute("categorias", categorias);
@@ -56,7 +64,7 @@ public class BarajaController {
     // Muestra el formulario para crear una nueva baraja
     @GetMapping("/nueva")
     public String nuevaBarajaForm(HttpSession session, Model model) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
@@ -70,13 +78,13 @@ public class BarajaController {
     // Procesa el formulario de creación de baraja
     @PostMapping("/nueva")
     public String crearBaraja(@RequestParam String titulo,
-            @RequestParam(required=false) String categoria,
+            @RequestParam(required = false) String categoria,
             HttpSession session) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
-        Optional<Usuario> usuario=usuarioService.findById(usuarioId);
+        Optional<Usuario> usuario = usuarioService.findById(usuarioId);
         if (usuario.isEmpty())
             return "redirect:/login";
 
@@ -89,11 +97,11 @@ public class BarajaController {
     public String editarBarajaForm(@PathVariable Long id,
             HttpSession session,
             Model model) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
-        Optional<Baraja> baraja=barajaService.obtenerPorId(id);
+        Optional<Baraja> baraja = barajaService.obtenerPorId(id);
 
         // Si la baraja no existe o no pertenece al usuario, redirigimos
         if (baraja.isEmpty() || !baraja.get().getUsuario().getId().equals(usuarioId)) {
@@ -111,9 +119,9 @@ public class BarajaController {
     @PostMapping("/{id}/editar")
     public String editarBaraja(@PathVariable Long id,
             @RequestParam String titulo,
-            @RequestParam(required=false) String categoria,
+            @RequestParam(required = false) String categoria,
             HttpSession session) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
@@ -124,7 +132,7 @@ public class BarajaController {
     // Elimina una baraja
     @PostMapping("/{id}/eliminar")
     public String eliminarBaraja(@PathVariable Long id, HttpSession session) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
@@ -138,22 +146,25 @@ public class BarajaController {
     @ResponseBody
     public ResponseEntity<Map<String, Object>> tarjetasJson(@PathVariable Long id,
             HttpSession session) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 
-        Optional<Baraja> baraja=barajaService.obtenerPorId(id);
+        Optional<Baraja> baraja = barajaService.obtenerPorId(id);
+        // Verificamos que la baraja pertenece al usuario en sesión antes de
+        // devolver sus datos. Sin esta comprobación cualquier usuario podría
+        // ver barajas ajenas conociendo el id.
         if (baraja.isEmpty() || !baraja.get().getUsuario().getId().equals(usuarioId)) {
             return ResponseEntity.status(403).build();
         }
 
-        List<Tarjeta> tarjetas=tarjetaService.obtenerPorBaraja(id);
+        List<Tarjeta> tarjetas = tarjetaService.obtenerPorBaraja(id);
 
         // Convertimos cada tarjeta a un mapa porque el JS no puede leer objetos Java
         // directamente
-        List<Map<String, Object>> tarjetasJson=new ArrayList<>();
+        List<Map<String, Object>> tarjetasJson = new ArrayList<>();
         for (Tarjeta t : tarjetas) {
-            Map<String, Object> map=new HashMap<>();
+            Map<String, Object> map = new HashMap<>();
             map.put("id", t.getId());
             map.put("pregunta", t.getPregunta());
             map.put("respuesta", t.getRespuesta());
@@ -161,7 +172,7 @@ public class BarajaController {
             tarjetasJson.add(map);
         }
 
-        Map<String, Object> respuesta=new HashMap<>();
+        Map<String, Object> respuesta = new HashMap<>();
         respuesta.put("id", baraja.get().getId());
         respuesta.put("titulo", baraja.get().getTitulo());
         respuesta.put("categoria", baraja.get().getCategoria());
@@ -175,11 +186,11 @@ public class BarajaController {
     public String nuevaTarjetaForm(@PathVariable Long id,
             HttpSession session,
             Model model) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
-        Optional<Baraja> baraja=barajaService.obtenerPorId(id);
+        Optional<Baraja> baraja = barajaService.obtenerPorId(id);
         if (baraja.isEmpty() || !baraja.get().getUsuario().getId().equals(usuarioId)) {
             return "redirect:/barajas";
         }
@@ -198,11 +209,11 @@ public class BarajaController {
             @RequestParam String pregunta,
             @RequestParam String respuesta,
             HttpSession session) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
-        Optional<Baraja> baraja=barajaService.obtenerPorId(id);
+        Optional<Baraja> baraja = barajaService.obtenerPorId(id);
         if (baraja.isEmpty() || !baraja.get().getUsuario().getId().equals(usuarioId)) {
             return "redirect:/barajas";
         }
@@ -219,18 +230,18 @@ public class BarajaController {
             @RequestParam String respuesta,
             HttpSession session) {
 
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 
-        Optional<Baraja> baraja=barajaService.obtenerPorId(id);
+        Optional<Baraja> baraja = barajaService.obtenerPorId(id);
         if (baraja.isEmpty() || !baraja.get().getUsuario().getId().equals(usuarioId)) {
             return ResponseEntity.status(403).build();
         }
 
-        Tarjeta nueva=tarjetaService.crear(pregunta, respuesta, baraja.get());
+        Tarjeta nueva = tarjetaService.crear(pregunta, respuesta, baraja.get());
 
-        Map<String, Object> result=new HashMap<>();
+        Map<String, Object> result = new HashMap<>();
         result.put("id", nueva.getId());
         result.put("pregunta", nueva.getPregunta());
         result.put("respuesta", nueva.getRespuesta());
@@ -242,17 +253,17 @@ public class BarajaController {
     @PostMapping("/guardar/ajax")
     @ResponseBody
     public ResponseEntity<?> guardarBarajaAjax(
-            @RequestParam(required=false) Long id,
+            @RequestParam(required = false) Long id,
             @RequestParam String titulo,
-            @RequestParam(required=false) String categoria,
+            @RequestParam(required = false) String categoria,
             HttpSession session) {
 
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 
-        String tituloLimpio=titulo != null ? titulo.trim() : "";
-        String categoriaLimpia=categoria != null ? categoria.trim() : "";
+        String tituloLimpio = titulo != null ? titulo.trim() : "";
+        String categoriaLimpia = categoria != null ? categoria.trim() : "";
 
         // Validaciones
         if (tituloLimpio.isEmpty())
@@ -271,7 +282,7 @@ public class BarajaController {
             return ResponseEntity.badRequest().body("Ya tienes una baraja con ese nombre.");
 
         if (id == null) {
-            Optional<Usuario> usuario=usuarioService.findById(usuarioId);
+            Optional<Usuario> usuario = usuarioService.findById(usuarioId);
             barajaService.crear(tituloLimpio, categoriaLimpia, usuario.get());
         } else {
             barajaService.editar(id, tituloLimpio, categoriaLimpia, usuarioId);
@@ -282,7 +293,7 @@ public class BarajaController {
 
     @PostMapping("/{id}/compartir")
     public ResponseEntity<?> compartir(@PathVariable Long id, HttpSession session) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 
@@ -293,12 +304,12 @@ public class BarajaController {
 
     @GetMapping("/comunidad")
     public String comunidad(HttpSession session, Model model) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return "redirect:/login";
 
-        List<Baraja> barajasCompartidas=barajaService.obtenerCompartidas(usuarioId);
-        List<String> categorias=barajaService.obtenerCategoriasComunidad(usuarioId);
+        List<Baraja> barajasCompartidas = barajaService.obtenerCompartidas(usuarioId);
+        List<String> categorias = barajaService.obtenerCategoriasComunidad(usuarioId);
 
         model.addAttribute("barajasCompartidas", barajasCompartidas);
         model.addAttribute("categorias", categorias);
@@ -310,11 +321,11 @@ public class BarajaController {
     @PostMapping("/{id}/guardar-copia")
     @ResponseBody
     public ResponseEntity<?> guardarCopia(@PathVariable Long id, HttpSession session) {
-        Long usuarioId=getUsuarioId(session);
+        Long usuarioId = getUsuarioId(session);
         if (usuarioId == null)
             return ResponseEntity.status(401).build();
 
-        boolean guardada=barajaService.guardarCopia(id, usuarioId);
+        boolean guardada = barajaService.guardarCopia(id, usuarioId);
 
         if (!guardada) {
             return ResponseEntity.status(409).build();

@@ -1,13 +1,14 @@
 "use strict";
 
-const todasBarajas   =document.querySelectorAll(".baraja-gestion");
-const filtraNombre   =document.querySelector("#filtraNombre");
+const todasBarajas=document.querySelectorAll(".baraja-gestion");
+const filtraNombre=document.querySelector("#filtraNombre");
 const filtroCategoria=document.querySelector("#filtroCategoria");
 
-// IDs de barajas guardadas en esta sesión (evita guardar dos veces)
+// Registramos los ids guardados durante esta sesión de navegador
+// para evitar que el usuario pulse "guardar" dos veces en la misma baraja
 const yaGuardadas=[];
 
-// ── Filtros ──
+
 function filtrar() {
   const nombre   =filtraNombre    ? filtraNombre.value.toLowerCase()    : "";
   const categoria=filtroCategoria ? filtroCategoria.value.toLowerCase() : "";
@@ -23,7 +24,7 @@ function filtrar() {
 if (filtraNombre)    filtraNombre.addEventListener("input",  filtrar);
 if (filtroCategoria) filtroCategoria.addEventListener("change", filtrar);
 
-// ── Guardar copia en mi colección ──
+// Guardar copia en mi colección
 async function guardarCopia(id, titulo) {
   if (yaGuardadas.includes(id)) {
     mostrarToast("Ya guardaste esta baraja en esta sesión.", "info");
@@ -47,6 +48,8 @@ async function guardarCopia(id, titulo) {
   }
 }
 
+// cambia el borde de la card y añade un badge
+// sin recargar la página
 function marcarComoGuardada(id) {
   const card=document.querySelector(`.baraja-gestion[data-id="${id}"]`);
   if (!card) return;
@@ -64,7 +67,6 @@ function marcarComoGuardada(id) {
   }
 }
 
-// ── Evento delegado ──
 document.addEventListener("click", (e) => {
   const btn=e.target.closest("[data-action='guardar-copia']");
   if (!btn) return;

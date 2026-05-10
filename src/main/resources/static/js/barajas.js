@@ -254,7 +254,7 @@ if (buscarTarjeta) {
   buscarTarjeta.addEventListener("input", () => {
     const busqueda = buscarTarjeta.value.toLowerCase();
     const tarjetasFiltradas = [];
-    
+
     tarjetasActuales.forEach((t) => {
       const preguntaCoincide = t.pregunta.toLowerCase().includes(busqueda);
       const respuestaCoincide = t.respuesta.toLowerCase().includes(busqueda);
@@ -268,7 +268,8 @@ if (buscarTarjeta) {
   });
 }
 
-// ── Renderizar lista de tarjetas ──
+// Reconstruye el HTML de la lista completa cada vez que cambian los datos.
+// Es más simple que actualizar elementos individuales y evita bugs de sincronización.
 function renderizarTarjetas(tarjetas) {
   if (tarjetas.length === 0) {
     listaTarjetas.innerHTML = `<div class="text-center py-10"><p class="text-gray-400">No se encontraron tarjetas.</p></div>`;
@@ -527,9 +528,13 @@ const toggleCompartir = async function (id, boton) {
   }
 };
 
-// ── Evento delegado global ──
+// Un solo listener en document captura todos los clics del fichero.
+// Usamos data-action para identificar qué botón se pulsó sin asignar
+// un listener a cada elemento generado dinámicamente.
 document.addEventListener("click", (e) => {
-  // Acciones del overlay — van primero para no activar abrirBaraja
+  // Van primero los botones del overlay (editar/eliminar/compartir)
+  // porque si no, e.target.closest('.baraja-gestion') los capturaría
+  // antes y abriría el modal de detalle en lugar de la acción correcta
   const btnEditarBaraja = e.target.closest("[data-action='editar-baraja']");
   if (btnEditarBaraja) {
     e.stopPropagation();

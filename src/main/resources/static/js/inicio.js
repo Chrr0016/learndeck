@@ -12,7 +12,8 @@ const todasBarajas=document.querySelectorAll(".baraja-simple");
 
 document.querySelector("#contadorBarajas").textContent=todasBarajas.length;
 
-// ── Filtros ──
+// Filtra las cards del DOM directamente sin peticiones al servidor,
+// comparando los data-attributes que Thymeleaf inyectó al renderizar
 function filtrarBarajas() {
   const texto=buscador.value.toLowerCase();
   const categoria=filtroCategoria.value.toLowerCase();
@@ -28,7 +29,9 @@ function filtrarBarajas() {
 buscador.addEventListener("input", filtrarBarajas);
 filtroCategoria.addEventListener("change", filtrarBarajas);
 
-// ── Drag desde lista ──
+
+// Drag and Drop API nativa del navegador.
+// Los eventos relevantes son: dragstart, dragover, dragleave, drop
 let barajaArrastrada=null;
 
 listaBarajas.addEventListener("dragstart", (e) => {
@@ -52,6 +55,9 @@ zonaDrop.addEventListener("dragover", (e) => {
   zonaDrop.classList.add("drag-over");
 });
 
+// dragleave se dispara al entrar en un hijo del contenedor,
+// lo que quitaría el estilo 'drag-over' por error.
+// La comprobación contains(e.relatedTarget) evita ese comportamiento.
 zonaDrop.addEventListener("dragleave", (e) => {
   if (!zonaDrop.contains(e.relatedTarget)) {
     zonaDrop.classList.remove("drag-over");
@@ -73,7 +79,8 @@ zonaDrop.addEventListener("drop", (e) => {
   barajaArrastrada.classList.add("en-zona");
 });
 
-// ── Doble click para añadir/quitar ──
+// Alternativa al drag & drop para navegadores o dispositivos
+// que no soportan la Drag and Drop API correctamente
 listaBarajas.addEventListener("dblclick", (e) => {
   const baraja=e.target.closest(".baraja-simple");
   if (!baraja) return;
@@ -115,7 +122,7 @@ main.addEventListener("click", (e) => {
   }
 });
 
-// ── Funciones de zona ──
+//Funciones de zona
 function añadirBarajaAZona(id, titulo, categoria) {
   if (barajasEnZona.includes(id)) return;
 

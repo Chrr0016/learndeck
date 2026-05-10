@@ -32,7 +32,6 @@ public class AdminController {
         return "ADMIN".equals(rol);
     }
 
-    // ── Panel principal ──
     @GetMapping
     public String panel(HttpSession session, Model model) {
         if (!esAdmin(session)) return "redirect:/inicio";
@@ -48,7 +47,7 @@ public class AdminController {
         return "admin";
     }
 
-    // ── Eliminar usuario ──
+    //Eliminar usuario
     @PostMapping("/usuarios/{id}/eliminar")
     public String eliminarUsuario(@PathVariable Long id, HttpSession session) {
         if (!esAdmin(session)) return "redirect:/inicio";
@@ -61,7 +60,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    // ── Cambiar rol de usuario ──
+    // Cambiar rol de usuario
     @PostMapping("/usuarios/{id}/rol")
     public String cambiarRol(@PathVariable Long id,
                               @RequestParam String rol,
@@ -76,7 +75,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    // ── Eliminar baraja (como admin, sin comprobar propietario) ──
+    // Eliminar baraja (como admin, sin comprobar propietario) ──
     @PostMapping("/barajas/{id}/eliminar")
     public String eliminarBaraja(@PathVariable Long id, HttpSession session) {
         if (!esAdmin(session)) return "redirect:/inicio";

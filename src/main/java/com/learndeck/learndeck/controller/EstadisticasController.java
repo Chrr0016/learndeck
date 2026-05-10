@@ -15,6 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Calcula las estadísticas de progreso del usuario.
+ * Todas las estadísticas se calculan dinámicamente a partir del historial
+ * en lugar de mantener una tabla de estadísticas separada,
+ * lo que evita inconsistencias de sincronización entre tablas.
+ */
 @Controller
 @RequestMapping("/estadisticas")
 public class EstadisticasController {
@@ -28,35 +34,39 @@ public class EstadisticasController {
     @GetMapping
     public String estadisticas(HttpSession session, Model model) {
 
-        Long usuarioId=(Long) session.getAttribute("usuarioId");
-        if (usuarioId == null) return "redirect:/login";
+        Long usuarioId = (Long) session.getAttribute("usuarioId");
+        if (usuarioId == null)
+            return "redirect:/login";
 
-        List<HistorialEstudio> historial=historialService.obtenerTodo(usuarioId);
+        List<HistorialEstudio> historial = historialService.obtenerTodo(usuarioId);
 
         // ── Stats globales ──
-        long totalEstudiadas=historial.size();
-        long totalAciertos=0;
+        long totalEstudiadas = historial.size();
+        long totalAciertos = 0;
         for (HistorialEstudio h : historial) {
-            if (h.getResultado()) totalAciertos++;
+            if (h.getResultado())
+                totalAciertos++;
         }
-        long totalFallos=totalEstudiadas - totalAciertos;
-        int porcentaje=totalEstudiadas > 0
+        long totalFallos = totalEstudiadas - totalAciertos;
+        int porcentaje = totalEstudiadas > 0
                 ? (int) Math.round((double) totalAciertos / totalEstudiadas * 100)
                 : 0;
 
-        int porcentajeFallos=totalEstudiadas > 0 ? 100 - porcentaje : 0;
+        int porcentajeFallos = totalEstudiadas > 0 ? 100 - porcentaje : 0;
 
-        // ── Actividad últimos 7 días ──
-        String[] nombresDias={"L", "M", "X", "J", "V", "S", "D"};
-        List<Map<String, Object>> datosSemana=new ArrayList<>();
-        List<String> diasSemana=new ArrayList<>();
-        LocalDate hoy=LocalDate.now();
+        // Generamos los datos del gráfico en el servidor como lista de mapas.
+        // El JavaScript los recibe y los convierte en barras ajustando la altura
+        // de forma proporcional al valor máximo del periodo.
+        String[] nombresDias = { "L", "M", "X", "J", "V", "S", "D" };
+        List<Map<String, Object>> datosSemana = new ArrayList<>();
+        List<String> diasSemana = new ArrayList<>();
+        LocalDate hoy = LocalDate.now();
 
-        for (int i=6; i >= 0; i--) {
-            LocalDate dia=hoy.minusDays(i);
+        for (int i = 6; i >= 0; i--) {
+            LocalDate dia = hoy.minusDays(i);
 
             // Contamos cuántas tarjetas se estudiaron ese día
-            long cantidad=0;
+            long cantidad = 0;
             for (HistorialEstudio h : historial) {
                 if (h.getFechaEstudio() != null &&
                         h.getFechaEstudio().toLocalDate().equals(dia)) {
@@ -64,28 +74,28 @@ public class EstadisticasController {
                 }
             }
 
-            Map<String, Object> datosDia=new HashMap<>();
+            Map<String, Object> datosDia = new HashMap<>();
             datosDia.put("cantidad", cantidad);
             datosDia.put("fecha", dia.toString());
             datosSemana.add(datosDia);
 
-            // getDayOfWeek().getValue() devuelve 1=Lunes ... 7=Domingo
-            int indiceDia=dia.getDayOfWeek().getValue() - 1;
+            // getDayOfWeek().getValue() devuelve 1=Lunes y en el js lunes es 0
+            int indiceDia = dia.getDayOfWeek().getValue() - 1;
             diasSemana.add(nombresDias[indiceDia]);
         }
 
-        long totalSemana=0;
+        long totalSemana = 0;
         for (Map<String, Object> dia : datosSemana) {
             totalSemana += ((Number) dia.get("cantidad")).longValue();
         }
 
-        // ── Estadísticas por baraja ──
-        List<Baraja> barajas=barajaService.obtenerBarajasPorUsuario(usuarioId);
-        List<Map<String, Object>> estadisticasPorBaraja=new ArrayList<>();
+        // Estadísticas por baraja
+        List<Baraja> barajas = barajaService.obtenerBarajasPorUsuario(usuarioId);
+        List<Map<String, Object>> estadisticasPorBaraja = new ArrayList<>();
 
         for (Baraja baraja : barajas) {
             // Filtramos el historial que corresponde a esta baraja
-            List<HistorialEstudio> historialBaraja=new ArrayList<>();
+            List<HistorialEstudio> historialBaraja = new ArrayList<>();
             for (HistorialEstudio h : historial) {
                 if (h.getTarjeta() != null &&
                         h.getTarjeta().getBaraja() != null &&
@@ -94,16 +104,18 @@ public class EstadisticasController {
                 }
             }
 
-            if (historialBaraja.isEmpty()) continue;
+            if (historialBaraja.isEmpty())
+                continue;
 
-            long aciertosBaraja=0;
+            long aciertosBaraja = 0;
             for (HistorialEstudio h : historialBaraja) {
-                if (h.getResultado()) aciertosBaraja++;
+                if (h.getResultado())
+                    aciertosBaraja++;
             }
-            long fallosBaraja=historialBaraja.size() - aciertosBaraja;
-            int pctBaraja=(int) Math.round((double) aciertosBaraja / historialBaraja.size() * 100);
+            long fallosBaraja = historialBaraja.size() - aciertosBaraja;
+            int pctBaraja = (int) Math.round((double) aciertosBaraja / historialBaraja.size() * 100);
 
-            Map<String, Object> est=new LinkedHashMap<>();
+            Map<String, Object> est = new LinkedHashMap<>();
             est.put("titulo", baraja.getTitulo());
             est.put("total", historialBaraja.size());
             est.put("aciertos", aciertosBaraja);
@@ -113,31 +125,34 @@ public class EstadisticasController {
             estadisticasPorBaraja.add(est);
         }
 
+        // Ordenamos de mayor a menor (b.compareTo(a) en lugar de a.compareTo(b))
+        // para que las barajas con más tarjetas estudiadas aparezcan primero.//
         // Ordenamos de mayor a menor número de tarjetas estudiadas
         estadisticasPorBaraja.sort(new Comparator<Map<String, Object>>() {
             @Override
             public int compare(Map<String, Object> a, Map<String, Object> b) {
-                Integer totalA=(Integer) a.get("total");
-                Integer totalB=(Integer) b.get("total");
-                // Orden descendente: comparamos b contra a
+                Integer totalA = (Integer) a.get("total");
+                Integer totalB = (Integer) b.get("total");
+                // Orden descendente
                 return totalB.compareTo(totalA);
             }
         });
 
-        // ── Top 5 tarjetas más falladas ──
+        // Top 5 tarjetas más falladas
         // Contamos los fallos de cada tarjeta usando su ID como clave
-        Map<Long, Long> fallosPorTarjeta=new HashMap<>();
-        Map<Long, Tarjeta> tarjetasPorId=new HashMap<>();
+        Map<Long, Long> fallosPorTarjeta = new HashMap<>();
+        Map<Long, Tarjeta> tarjetasPorId = new HashMap<>();
 
         for (HistorialEstudio h : historial) {
-            if (h.getResultado() || h.getTarjeta() == null) continue;
-            Long tarjetaId=h.getTarjeta().getId();
+            if (h.getResultado() || h.getTarjeta() == null)
+                continue;
+            Long tarjetaId = h.getTarjeta().getId();
             fallosPorTarjeta.put(tarjetaId, fallosPorTarjeta.getOrDefault(tarjetaId, 0L) + 1);
             tarjetasPorId.put(tarjetaId, h.getTarjeta());
         }
 
         // Convertimos el mapa a lista y ordenamos por número de fallos
-        List<Map.Entry<Long, Long>> entradasOrdenadas=new ArrayList<>(fallosPorTarjeta.entrySet());
+        List<Map.Entry<Long, Long>> entradasOrdenadas = new ArrayList<>(fallosPorTarjeta.entrySet());
         entradasOrdenadas.sort(new Comparator<Map.Entry<Long, Long>>() {
             @Override
             public int compare(Map.Entry<Long, Long> a, Map.Entry<Long, Long> b) {
@@ -146,14 +161,14 @@ public class EstadisticasController {
             }
         });
 
-        List<Map<String, Object>> tarjetasDificiles=new ArrayList<>();
-        int limite=Math.min(5, entradasOrdenadas.size());
+        List<Map<String, Object>> tarjetasDificiles = new ArrayList<>();
+        int limite = Math.min(5, entradasOrdenadas.size());
 
-        for (int i=0; i<limite; i++) {
-            Map.Entry<Long, Long> entrada=entradasOrdenadas.get(i);
-            Tarjeta tarjeta=tarjetasPorId.get(entrada.getKey());
+        for (int i = 0; i < limite; i++) {
+            Map.Entry<Long, Long> entrada = entradasOrdenadas.get(i);
+            Tarjeta tarjeta = tarjetasPorId.get(entrada.getKey());
 
-            Map<String, Object> td=new LinkedHashMap<>();
+            Map<String, Object> td = new LinkedHashMap<>();
             td.put("pregunta", tarjeta.getPregunta());
             td.put("baraja", tarjeta.getBaraja() != null ? tarjeta.getBaraja().getTitulo() : "");
             td.put("fallos", entrada.getValue());

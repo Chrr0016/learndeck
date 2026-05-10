@@ -209,7 +209,7 @@
               </svg>
               Editar
             </a>
-            <button data-action="cerrar-modal-baraja" class="modal-cerrar">
+            <button type="button" data-action="cerrar-modal-baraja" class="modal-cerrar">
               ✕
             </button>
           </div>
@@ -314,7 +314,7 @@
           >
             Crear tarjeta
           </button>
-          <button data-action="cerrar-modal-tarjeta" class="btn-outline btn-sm">
+          <button type="button" data-action="cerrar-modal-tarjeta" class="btn-outline btn-sm">
             Cancelar
           </button>
         </div>
@@ -370,7 +370,7 @@
             <button type="submit" id="gbBtnSubmit" class="btn-primario">
               Guardar
             </button>
-            <button data-action="cerrar-gestion-baraja" class="btn-outline">
+            <button type="button" data-action="cerrar-gestion-baraja" class="btn-outline">
               Cancelar
             </button>
           </div>
@@ -390,13 +390,13 @@
             Esta acción no se puede deshacer.
           </p>
           <div class="flex gap-3 justify-center">
-            <button
+            <button type="button"
               data-action="cancelar-eliminar-tarjeta"
               class="btn-outline btn-sm"
             >
               Cancelar
             </button>
-            <button
+            <button type="button"
               id="btnConfirmarEliminarTarjeta"
               class="btn-eliminar-confirmar btn-sm"
             >
@@ -416,7 +416,7 @@
             Nombre
           </p>
           <div class="flex gap-3 justify-center">
-            <button data-action="cancelar-eliminar" class="btn-outline btn-sm">
+            <button type="button" data-action="cancelar-eliminar" class="btn-outline btn-sm">
               Cancelar
             </button>
             <form id="formEliminar" method="post">

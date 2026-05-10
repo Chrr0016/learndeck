@@ -9,6 +9,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Gestiona toda la lógica de negocio relacionada con usuarios:
+ * registro, login, actualización de perfil y administración.
+ * Es la única clase que accede a las contraseñas — el resto de capas
+ * nunca las ven en texto plano.
+ */
 @Service
 public class UsuarioService {
 
@@ -18,25 +24,27 @@ public class UsuarioService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-
-    // Registro
+    // Comprobamos primero si el email ya existe antes de crear el usuario.
+    // Si existsByEmail() devuelve true, retornamos false para que el
+    // controlador muestre el error sin lanzar excepciones.
     public boolean registrar(String nombre, String email, String contrasena) {
         if (usuarioRepository.existsByEmail(email)) {
             return false; // Email ya en uso
         }
-        Usuario usuario=new Usuario();
+        Usuario usuario = new Usuario();
         usuario.setNombre(nombre);
         usuario.setEmail(email);
-         usuario.setContrasena(passwordEncoder.encode(contrasena));
+        usuario.setContrasena(passwordEncoder.encode(contrasena));
         usuario.setRol("USER");
         usuario.setFechaRegistro(LocalDateTime.now());
         usuarioRepository.save(usuario);
         return true;
     }
 
-    // Login
+    // passwordEncoder.matches() compara la contraseña en texto plano
+    // con el hash almacenado sin desencriptarlo 
     public Optional<Usuario> login(String email, String contrasena) {
-        Optional<Usuario> usuario=usuarioRepository.findByEmail(email);
+        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
         if (usuario.isPresent() && passwordEncoder.matches(contrasena, usuario.get().getContrasena())) {
             return usuario;
         }
@@ -45,11 +53,11 @@ public class UsuarioService {
 
     // Actualizar perfil
     public boolean actualizarPerfil(Long id, String nuevoNombre, String nuevoEmail, String nuevaContrasena) {
-        Optional<Usuario> optional=usuarioRepository.findById(id);
+        Optional<Usuario> optional = usuarioRepository.findById(id);
         if (optional.isEmpty())
             return false;
 
-        Usuario usuario=optional.get();
+        Usuario usuario = optional.get();
 
         // Validar si el email ha cambiado y si el nuevo ya existe en otro usuario
         if (!usuario.getEmail().equals(nuevoEmail) && usuarioRepository.existsByEmail(nuevoEmail)) {
@@ -81,11 +89,11 @@ public class UsuarioService {
     }
 
     public void cambiarRol(Long id, String rol) {
-        Optional<Usuario> optional=usuarioRepository.findById(id);
+        Optional<Usuario> optional = usuarioRepository.findById(id);
         if (optional.isEmpty())
             return;
 
-        Usuario usuario=optional.get();
+        Usuario usuario = optional.get();
         usuario.setRol(rol);
         usuarioRepository.save(usuario);
     }

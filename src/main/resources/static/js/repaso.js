@@ -1,12 +1,11 @@
 "use strict";
 
-// ── Estado de la sesión ──
-let indice=0;
-let correctas=0;
-let incorrectas=0;
-let girada=false; // true cuando la tarjeta está volteada
-
-// ── Referencias ──
+// Estado de la sesión actual — se reinician con reiniciarSesion()
+let indice = 0;      // posición de la tarjeta actual en el array TARJETAS
+let correctas = 0;
+let incorrectas = 0;
+let girada = false;  // true cuando la tarjeta está mostrando la respuesta
+//Referencias
 const escena=document.querySelector("#escena");
 const textoPregunta=document.querySelector("#textoPregunta");
 const textoRespuesta=document.querySelector("#textoRespuesta");
@@ -28,6 +27,8 @@ function iniciar() {
   mostrarTarjeta();
 }
 
+//Carga la tarjeta en la posición actual, resetea el estado visual
+// y relanza la animación de entrada forzando un reflow del DOM
 function mostrarTarjeta() {
   const t=TARJETAS[indice];
 
@@ -51,6 +52,8 @@ function mostrarTarjeta() {
   escena.style.animation="entradaTarjeta 0.35s ease";
 }
 
+// Añade la clase CSS 'girada' que activa el transform rotateY(180deg)
+// y muestra los botones de correcto/incorrecto
 function voltearTarjeta() {
   if (girada) return;
   girada=true;
@@ -61,6 +64,10 @@ function voltearTarjeta() {
   hintTeclado.style.opacity="1";
 }
 
+
+// Guardamos el resultado en base de datos de forma asíncrona.
+// Si falla la petición, la sesión continúa igualmente — no bloqueamos
+// al usuario por un error de red puntual
 async function responder(esCorrecta) {
   if (!girada) return;
 
@@ -93,6 +100,9 @@ async function responder(esCorrecta) {
   }
 }
 
+
+// Intercambia visibilidad entre las dos pantallas (repaso ↔ resultado)
+// usando las clases CSS 'oculta' y 'visible' definidas en style.css
 function mostrarResultado() {
   barraProgreso.style.width="100%";
 
@@ -121,7 +131,7 @@ function reiniciarSesion() {
   mostrarToast("Sesión reiniciada.", "info");
 }
 
-// ── Evento delegado ──
+//Evento delegado
 document.addEventListener("click", (e) => {
   const accion=e.target.closest("[data-action]")?.dataset.action;
   switch (accion) {
@@ -140,7 +150,7 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// ── Teclado ──
+//Teclado
 document.addEventListener("keydown", (e) => {
   if ((e.key === "Enter" || e.key === " ") && !girada) {
     e.preventDefault();

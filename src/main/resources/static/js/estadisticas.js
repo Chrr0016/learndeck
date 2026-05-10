@@ -1,12 +1,7 @@
 "use strict";
-//estadisticas.js
 
-
-// ==============================
-// ANIMAR LAS BARRAS DE PROGRESO
 // Esperamos 400ms para que la animación
 // de entrada de la página termine primero
-// ==============================
 window.addEventListener("load", () => {
   setTimeout(() => {
 
@@ -19,11 +14,9 @@ window.addEventListener("load", () => {
   }, 400);
 });
 
-// ==============================
-// GRÁFICO DE ACTIVIDAD SEMANAL
+
 // Construimos las barras del gráfico
 // con los datos que vienen de Thymeleaf
-// ==============================
 const grafico=document.querySelector("#graficoDias");
 
 // Solo construimos el gráfico si el elemento existe y hay datos
