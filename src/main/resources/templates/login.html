@@ -36,11 +36,11 @@
                 <div>
                     <label for="contrasena" ...>contraseña</label>
                     <input type="password" id="contrasena" name="contrasena" placeholder="••••••••" required class="input-cp">
-                    <p id="errorContrasena" class="text-red-400 text-xs mt-1 hidden">La contraseña debe tener al menos 8 caracteres.</p>
+                    <p id="errorContrasena" class="text-red-400 text-xs mt-1 hidden">Mínimo 8 caracteres, una mayúscula y un número.</p>
                 </div>
 
                 <div class="flex justify-center pt-2">
-                    <button onclick="validarLogin()" class="btn-primario"  >
+                    <button type="button" onclick="validarLogin()" class="btn-primario"  >
                         Iniciar sesión
                     </button>
                 </div>
@@ -61,5 +61,5 @@
         </div>
     </div>
 </body>
-<!--<script th:src="@{/js/login.js} defer"></script>-->
+<script th:src="@{/js/login.js}" defer></script>
 </html>

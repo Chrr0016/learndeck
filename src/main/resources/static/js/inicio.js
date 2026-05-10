@@ -186,7 +186,7 @@ function mostrarMensajeZonaVacia() {
   msg.className="zona-vacia";
   msg.id="mensajeZona";
   msg.innerHTML=`
-    <p class="zona-texto-principal">Arrastra las barajas aquí</p>
+    <p class="zona-texto-principal">Arrastra las barajas aquí o doble click</p>
     <p class="zona-texto-secundario">Las barajas que añadas se estudiarán en esta sesión</p>
   `;
   zonaDrop.appendChild(msg);

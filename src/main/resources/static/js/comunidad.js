@@ -1,27 +1,27 @@
 "use strict";
 
-const todasBarajas=document.querySelectorAll(".baraja-gestion");
-const filtraNombre=document.querySelector("#filtraNombre");
-const filtroCategoria=document.querySelector("#filtroCategoria");
+const todasBarajas = document.querySelectorAll(".baraja-gestion");
+const filtraNombre = document.querySelector("#filtraNombre");
+const filtroCategoria = document.querySelector("#filtroCategoria");
 
 // Registramos los ids guardados durante esta sesión de navegador
 // para evitar que el usuario pulse "guardar" dos veces en la misma baraja
-const yaGuardadas=[];
+const yaGuardadas = [];
 
 
 function filtrar() {
-  const nombre   =filtraNombre    ? filtraNombre.value.toLowerCase()    : "";
-  const categoria=filtroCategoria ? filtroCategoria.value.toLowerCase() : "";
+  const nombre = filtraNombre ? filtraNombre.value.toLowerCase() : "";
+  const categoria = filtroCategoria ? filtroCategoria.value.toLowerCase() : "";
 
   todasBarajas.forEach((baraja) => {
-    const titulo=(baraja.dataset.titulo    || "").toLowerCase();
-    const cat   =(baraja.dataset.categoria || "").toLowerCase();
-    const esVisible=titulo.includes(nombre) && (!categoria || cat === categoria);
-    baraja.style.display=esVisible ? "" : "none";
+    const titulo = (baraja.dataset.titulo || "").toLowerCase();
+    const cat = (baraja.dataset.categoria || "").toLowerCase();
+    const esVisible = titulo.includes(nombre) && (!categoria || cat === categoria);
+    baraja.style.display = esVisible ? "" : "none";
   });
 }
 
-if (filtraNombre)    filtraNombre.addEventListener("input",  filtrar);
+if (filtraNombre) filtraNombre.addEventListener("input", filtrar);
 if (filtroCategoria) filtroCategoria.addEventListener("change", filtrar);
 
 // Guardar copia en mi colección
@@ -32,7 +32,7 @@ async function guardarCopia(id, titulo) {
   }
 
   try {
-    const res=await fetch(`/barajas/${id}/guardar-copia`, { method: "POST" });
+    const res = await fetch(`/barajas/${id}/guardar-copia`, { method: "POST" });
 
     if (res.ok) {
       yaGuardadas.push(id);
@@ -51,24 +51,24 @@ async function guardarCopia(id, titulo) {
 // cambia el borde de la card y añade un badge
 // sin recargar la página
 function marcarComoGuardada(id) {
-  const card=document.querySelector(`.baraja-gestion[data-id="${id}"]`);
+  const card = document.querySelector(`.baraja-gestion[data-id="${id}"]`);
   if (!card) return;
 
-  card.style.borderColor="rgba(74, 222, 128, 0.5)";
-  card.style.boxShadow  ="0 0 20px rgba(74, 222, 128, 0.1)";
+  card.style.borderColor = "rgba(74, 222, 128, 0.5)";
+  card.style.boxShadow = "0 0 20px rgba(74, 222, 128, 0.1)";
 
   // Añadimos un badge visible de "guardada"
-  const footer=card.querySelector(".baraja-gestion-footer");
+  const footer = card.querySelector(".baraja-gestion-footer");
   if (footer) {
-    const badge=document.createElement("div");
-    badge.className="badge-guardada";
-    badge.textContent="✓ guardada";
+    const badge = document.createElement("div");
+    badge.className = "badge-guardada";
+    badge.textContent = "✓ guardada";
     card.insertBefore(badge, footer);
   }
 }
 
 document.addEventListener("click", (e) => {
-  const btn=e.target.closest("[data-action='guardar-copia']");
+  const btn = e.target.closest("[data-action='guardar-copia']");
   if (!btn) return;
   e.stopPropagation();
   guardarCopia(btn.dataset.id, btn.dataset.titulo);

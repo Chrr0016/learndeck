@@ -110,7 +110,7 @@ public class BarajaService {
     }
 
     public List<Baraja> obtenerCompartidas(Long usuarioId) {
-        return barajaRepository.findByCompartidaTrueAndUsuarioIdNot(usuarioId);
+        return barajaRepository.findByCompartidaTrueAndUsuarioIdNot(usuarioId); //findByCompartidaTrue() muestra todas las compartidas
     }
 
     public List<String> obtenerCategoriasComunidad(Long usuarioId) {

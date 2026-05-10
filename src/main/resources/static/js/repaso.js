@@ -5,6 +5,7 @@ let indice = 0;      // posición de la tarjeta actual en el array TARJETAS
 let correctas = 0;
 let incorrectas = 0;
 let girada = false;  // true cuando la tarjeta está mostrando la respuesta
+let sesionTerminada=false;
 //Referencias
 const escena=document.querySelector("#escena");
 const textoPregunta=document.querySelector("#textoPregunta");
@@ -104,6 +105,7 @@ async function responder(esCorrecta) {
 // Intercambia visibilidad entre las dos pantallas (repaso ↔ resultado)
 // usando las clases CSS 'oculta' y 'visible' definidas en style.css
 function mostrarResultado() {
+  sesionTerminada=true
   barraProgreso.style.width="100%";
 
   document.querySelector("#pantallaRepaso").classList.add("oculta");
@@ -120,7 +122,10 @@ function mostrarResultado() {
 }
 
 function reiniciarSesion() {
-  indice=correctas=incorrectas=0;
+  indice=0;
+  correctas=0;
+  incorrectas=0;
+  sesionTerminada=false;
   contCorrect.textContent="0";
   contIncorrect.textContent="0";
 
@@ -152,6 +157,8 @@ document.addEventListener("click", (e) => {
 
 //Teclado
 document.addEventListener("keydown", (e) => {
+  if(sesionTerminada) return;
+
   if ((e.key === "Enter" || e.key === " ") && !girada) {
     e.preventDefault();
     voltearTarjeta();
